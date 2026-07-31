@@ -33,7 +33,7 @@ export function Sidebar({
           </button>
         ))}
       </nav>
-      <p className="version-label">PHASE 4 / LOCAL ONLY</p>
+      <p className="version-label">PHASE 6 / LOCAL ONLY</p>
     </aside>
   );
 }

@@ -1,6 +1,6 @@
 # muneeb-systems
 
-Responsive static portfolio for **MUNEEB.SYSTEMS** plus a private local generator for GitHub discovery, local AI draft generation, and a persistent one-at-a-time processing queue.
+Responsive static portfolio for **MUNEEB.SYSTEMS** plus a private local generator for GitHub sync, AI drafts, review, staged edits, previews, and approval bundles.
 
 ```bash
 pnpm install
@@ -12,7 +12,7 @@ Generator UI: `http://localhost:4173`
 Generator API: `http://localhost:4000`
 API docs: `http://localhost:4000/api/docs`
 
-GitHub sync stores snapshots in `data/github/`. Local AI queue state and private drafts stay in ignored `data/ai/`. Generated drafts never modify public `data/projects.json` until a later review phase.
+Private generator state stays ignored under `data/github/`, `data/ai/`, `data/review/`, `data/staged/`, `data/preview/`, and `data/publishing/`. Public `data/*.json` is edited only by intentional manual publish work.
 
 Local AI defaults: `LOCAL_AI_MODEL=Qwen3-8B-Q4_K_M`, `LOCAL_AI_MODEL_PATH=D:\Desktop\Model\Qwen3-8B-Q4_K_M.gguf`, `LOCAL_AI_BASE_URL=http://host.docker.internal:8080/v1`.
 

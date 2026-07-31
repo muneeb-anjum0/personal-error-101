@@ -2,6 +2,7 @@ import {
   apiHealthResponseSchema,
   apiReadinessResponseSchema,
   apiVersionResponseSchema,
+  draftReviewSchema,
   aiRuntimeStateSchema,
   aiTestGenerationResultSchema,
   contentDetailResponseSchema,
@@ -21,19 +22,63 @@ import {
   discoveredRepositorySchema,
   repositorySelectionSchema,
   logsResponseSchema,
+  previewSessionSchema,
+  publishingBundleSchema,
+  reviewApprovalSchema,
+  reviewRejectionSchema,
+  reviewRevisionSchema,
+  reviewValidationResultSchema,
+  reviewsResponseSchema,
+  revisionComparisonSchema,
+  stagedContentBundleSchema,
+  stagedContentStatusSchema,
   systemInformationSchema
 } from "@muneeb-systems/shared-schemas";
 import type {
+  ApproveReviewRequest,
   GitHubBulkSelectionRequest,
   GitHubNotesUpdate,
   GitHubSelectionUpdate,
   GitHubSyncRequest,
   AiTestGenerationRequest,
   EnqueueRepositoriesRequest,
-  GeneratorSettingsUpdate
+  GeneratorSettingsUpdate,
+  OpenReviewRequest,
+  RejectReviewRequest,
+  SaveReviewRevisionRequest,
+  UpdateReviewMappingRequest,
+  UpdateWorkingCopyRequest
 } from "@muneeb-systems/shared-types";
-import type { z } from "zod";
+import { z } from "zod";
 import { parseApiError } from "./api-error";
+
+const reviewRevisionsResponseSchema = z.object({
+  items: z.array(reviewRevisionSchema),
+  total: z.number().int().nonnegative()
+});
+
+const previewSessionsResponseSchema = z.object({
+  items: z.array(previewSessionSchema),
+  total: z.number().int().nonnegative()
+});
+
+const previewDataResponseSchema = z.object({
+  session: previewSessionSchema,
+  data: stagedContentBundleSchema
+});
+
+const publishingStatusSchema = z.object({
+  schemaVersion: z.literal(1),
+  bundles: z.number().int().nonnegative(),
+  currentBundleId: z.string().nullable(),
+  readyForManualPublish: z.boolean(),
+  notice: z.literal("PHASE 6 PREPARATION ONLY. NO GIT COMMIT, PUSH, OR DEPLOYMENT WILL OCCUR.")
+});
+
+const publishingBundlesResponseSchema = z.object({
+  items: z.array(publishingBundleSchema),
+  total: z.number().int().nonnegative()
+});
 
 export class GeneratorApiClient {
   public constructor(private readonly baseUrl: string) {}
@@ -286,6 +331,242 @@ export class GeneratorApiClient {
     return this.get(
       `/api/drafts/${encodeURIComponent(draftId)}`,
       generatedProjectDraftSchema,
+      signal
+    );
+  }
+
+  public reviews(signal?: AbortSignal) {
+    return this.get("/api/reviews", reviewsResponseSchema, signal);
+  }
+
+  public openReview(request: OpenReviewRequest, signal?: AbortSignal) {
+    return this.request("/api/reviews", draftReviewSchema, {
+      method: "POST",
+      body: JSON.stringify(request),
+      signal
+    });
+  }
+
+  public review(reviewId: string, signal?: AbortSignal) {
+    return this.get(`/api/reviews/${encodeURIComponent(reviewId)}`, draftReviewSchema, signal);
+  }
+
+  public updateReviewWorkingCopy(
+    reviewId: string,
+    request: UpdateWorkingCopyRequest,
+    signal?: AbortSignal
+  ) {
+    return this.request(
+      `/api/reviews/${encodeURIComponent(reviewId)}/working-copy`,
+      draftReviewSchema,
+      {
+        method: "PUT",
+        body: JSON.stringify(request),
+        signal
+      }
+    );
+  }
+
+  public saveReviewRevision(
+    reviewId: string,
+    request: SaveReviewRevisionRequest,
+    signal?: AbortSignal
+  ) {
+    return this.request(
+      `/api/reviews/${encodeURIComponent(reviewId)}/revisions`,
+      reviewRevisionSchema,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+        signal
+      }
+    );
+  }
+
+  public reviewRevisions(reviewId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/reviews/${encodeURIComponent(reviewId)}/revisions`,
+      reviewRevisionsResponseSchema,
+      signal
+    );
+  }
+
+  public compareReview(reviewId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/reviews/${encodeURIComponent(reviewId)}/compare`,
+      revisionComparisonSchema,
+      signal
+    );
+  }
+
+  public validateReview(reviewId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/reviews/${encodeURIComponent(reviewId)}/validate`,
+      reviewValidationResultSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public approveReview(reviewId: string, request: ApproveReviewRequest, signal?: AbortSignal) {
+    return this.request(
+      `/api/reviews/${encodeURIComponent(reviewId)}/approve`,
+      reviewApprovalSchema,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+        signal
+      }
+    );
+  }
+
+  public rejectReview(reviewId: string, request: RejectReviewRequest, signal?: AbortSignal) {
+    return this.request(
+      `/api/reviews/${encodeURIComponent(reviewId)}/reject`,
+      reviewRejectionSchema,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+        signal
+      }
+    );
+  }
+
+  public reopenReview(reviewId: string, signal?: AbortSignal) {
+    return this.request(`/api/reviews/${encodeURIComponent(reviewId)}/reopen`, draftReviewSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public updateReviewMapping(
+    reviewId: string,
+    request: UpdateReviewMappingRequest,
+    signal?: AbortSignal
+  ) {
+    return this.request(`/api/reviews/${encodeURIComponent(reviewId)}/mapping`, draftReviewSchema, {
+      method: "PUT",
+      body: JSON.stringify(request),
+      signal
+    });
+  }
+
+  public staged(signal?: AbortSignal) {
+    return this.get("/api/staged", stagedContentBundleSchema, signal);
+  }
+
+  public stagedStatus(signal?: AbortSignal) {
+    return this.get("/api/staged/status", stagedContentStatusSchema, signal);
+  }
+
+  public stagedContent(type: string, signal?: AbortSignal) {
+    return this.get(`/api/staged/${encodeURIComponent(type)}`, z.unknown(), signal);
+  }
+
+  public updateStagedContent(type: string, content: unknown, signal?: AbortSignal) {
+    return this.request(`/api/staged/${encodeURIComponent(type)}`, z.unknown(), {
+      method: "PUT",
+      body: JSON.stringify(content),
+      signal
+    });
+  }
+
+  public addStagedProject(content: unknown, signal?: AbortSignal) {
+    return this.request("/api/staged/projects", z.unknown(), {
+      method: "POST",
+      body: JSON.stringify(content),
+      signal
+    });
+  }
+
+  public updateStagedProject(projectId: string, content: unknown, signal?: AbortSignal) {
+    return this.request(`/api/staged/projects/${encodeURIComponent(projectId)}`, z.unknown(), {
+      method: "PUT",
+      body: JSON.stringify(content),
+      signal
+    });
+  }
+
+  public hideStagedProject(projectId: string, signal?: AbortSignal) {
+    return this.request(`/api/staged/projects/${encodeURIComponent(projectId)}/hide`, z.unknown(), {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public showStagedProject(projectId: string, signal?: AbortSignal) {
+    return this.request(`/api/staged/projects/${encodeURIComponent(projectId)}/show`, z.unknown(), {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public deleteStagedProject(projectId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/staged/projects/${encodeURIComponent(projectId)}/stage-delete`,
+      z.unknown(),
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public previewSessions(signal?: AbortSignal) {
+    return this.get("/api/preview/sessions", previewSessionsResponseSchema, signal);
+  }
+
+  public createPreviewSession(signal?: AbortSignal) {
+    return this.request("/api/preview/sessions", previewSessionSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public previewSession(sessionId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/preview/sessions/${encodeURIComponent(sessionId)}`,
+      previewSessionSchema,
+      signal
+    );
+  }
+
+  public previewData(sessionId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/preview/sessions/${encodeURIComponent(sessionId)}/data`,
+      previewDataResponseSchema,
+      signal
+    );
+  }
+
+  public publishingStatus(signal?: AbortSignal) {
+    return this.get("/api/publishing/status", publishingStatusSchema, signal);
+  }
+
+  public publishingBundles(signal?: AbortSignal) {
+    return this.get("/api/publishing/bundles", publishingBundlesResponseSchema, signal);
+  }
+
+  public preparePublishingBundle(signal?: AbortSignal) {
+    return this.request("/api/publishing/bundles", publishingBundleSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public publishingBundle(bundleId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/publishing/bundles/${encodeURIComponent(bundleId)}`,
+      publishingBundleSchema,
       signal
     );
   }

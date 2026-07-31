@@ -116,6 +116,15 @@ export const logCategorySchema = z.enum([
   "QUEUE",
   "QUEUE_RECOVERY",
   "DRAFT",
+  "REVIEW",
+  "REVIEW_REVISION",
+  "REVIEW_VALIDATION",
+  "APPROVAL",
+  "REJECTION",
+  "STAGED_CONTENT",
+  "PREVIEW",
+  "PUBLISHING_BUNDLE",
+  "CONTENT_DIFF",
   "FUTURE_AI",
   "FUTURE_PUBLISH"
 ]);
@@ -757,6 +766,278 @@ export const draftSummarySchema = z.object({
 export const draftsResponseSchema = z.object({
   items: z.array(draftSummarySchema),
   total: z.number().int().nonnegative()
+});
+
+export const reviewStatusSchema = z.enum([
+  "UNREVIEWED",
+  "IN_REVIEW",
+  "CHANGES_REQUESTED",
+  "VALIDATION_FAILED",
+  "READY_FOR_APPROVAL",
+  "APPROVED",
+  "REJECTED",
+  "SUPERSEDED",
+  "STALE_SOURCE",
+  "PUBLISHING_CONFLICT"
+]);
+
+export const reviewMappingSchema = z.object({
+  type: z.enum(["UNMAPPED", "EXISTING_PROJECT", "NEW_PROJECT"]),
+  projectId: z.string().nullable(),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .nullable(),
+  acknowledgedDuplicate: z.boolean().default(false),
+  notes: z.string().max(2000).default("")
+});
+
+export const reviewContentSchema = generatedProjectDraftSchema
+  .pick({
+    title: true,
+    subtitle: true,
+    summary: true,
+    description: true,
+    problem: true,
+    solution: true,
+    features: true,
+    architecture: true,
+    challenges: true,
+    technologies: true,
+    categories: true,
+    tags: true,
+    impact: true,
+    limitations: true,
+    missingInformation: true,
+    confidenceNotes: true
+  })
+  .extend({
+    slug: z
+      .string()
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+      .max(120),
+    realWorldExample: z.string().max(2000).default(""),
+    approachSteps: z.array(z.string().min(1).max(2000)).max(30).default([]),
+    technicalHighlights: z.array(z.string().min(1).max(2000)).max(30).default([]),
+    impactVerified: z.boolean().default(false)
+  });
+
+export const reviewValidationResultSchema = z.object({
+  valid: z.boolean(),
+  blockingErrors: z.array(z.string()),
+  warnings: z.array(z.string()),
+  checkedAt: z.string().datetime(),
+  contentHash: z.string().min(1)
+});
+
+export const reviewWorkingCopySchema = z.object({
+  schemaVersion: z.literal(1),
+  reviewId: z.string().min(1),
+  version: z.number().int().nonnegative(),
+  updatedAt: z.string().datetime(),
+  updatedBy: z.string().min(1),
+  content: reviewContentSchema,
+  validation: reviewValidationResultSchema.nullable(),
+  hasUnsavedChanges: z.boolean().default(false)
+});
+
+export const reviewRevisionSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  reviewId: z.string().min(1),
+  parentRevisionId: z.string().nullable(),
+  sourceDraftId: z.string().min(1),
+  createdAt: z.string().datetime(),
+  authorLabel: z.string().min(1),
+  changeSummary: z.string().max(2000),
+  revisionNumber: z.number().int().positive(),
+  contentHash: z.string().min(1),
+  content: reviewContentSchema,
+  validation: reviewValidationResultSchema
+});
+
+export const reviewApprovalSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  draftId: z.string().min(1),
+  reviewId: z.string().min(1),
+  reviewRevisionId: z.string().min(1),
+  repositoryId: z.string().min(1),
+  repositorySnapshotHash: z.string().min(1),
+  reviewerLabel: z.string().min(1),
+  approvedAt: z.string().datetime(),
+  validation: reviewValidationResultSchema,
+  acknowledgedWarnings: z.array(z.string()),
+  mapping: reviewMappingSchema,
+  approvalNotes: z.string().max(2000)
+});
+
+export const rejectionReasonSchema = z.enum([
+  "NOT_PORTFOLIO_WORTHY",
+  "INSUFFICIENT_DOCUMENTATION",
+  "INACCURATE_GENERATION",
+  "DUPLICATE_PROJECT",
+  "OUTDATED_PROJECT",
+  "FORK_OR_TEMPLATE",
+  "NEEDS_REPOSITORY_CLEANUP",
+  "MANUAL_REWRITE_REQUIRED",
+  "OTHER"
+]);
+
+export const reviewRejectionSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  draftId: z.string().min(1),
+  reviewId: z.string().min(1),
+  reviewRevisionId: z.string().nullable(),
+  reason: rejectionReasonSchema,
+  notes: z.string().max(2000),
+  rejectedAt: z.string().datetime()
+});
+
+export const draftReviewSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  draftId: z.string().min(1),
+  sourceDraftId: z.string().min(1),
+  repositoryId: z.string().min(1),
+  repositoryFullName: z.string().min(1),
+  repositorySnapshotHash: z.string().min(1),
+  sourceCommitSha: z.string().nullable(),
+  readmeHash: z.string().nullable(),
+  status: reviewStatusSchema,
+  flags: z.object({
+    hasManualEdits: z.boolean(),
+    sourceChanged: z.boolean(),
+    hasValidationWarnings: z.boolean(),
+    mappedToExistingProject: z.boolean(),
+    createsNewProject: z.boolean(),
+    includedInPublishingBundle: z.boolean()
+  }),
+  mapping: reviewMappingSchema,
+  workingCopy: reviewWorkingCopySchema,
+  revisionIds: z.array(z.string()),
+  approvalId: z.string().nullable(),
+  rejectionId: z.string().nullable(),
+  version: z.number().int().nonnegative(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime()
+});
+
+export const reviewSummarySchema = z.object({
+  id: z.string().min(1),
+  draftId: z.string().min(1),
+  title: z.string().min(1),
+  repositoryFullName: z.string().min(1),
+  status: reviewStatusSchema,
+  validationState: z.enum(["VALID", "INVALID", "NOT_VALIDATED"]),
+  mapping: reviewMappingSchema,
+  revisionCount: z.number().int().nonnegative(),
+  updatedAt: z.string().datetime()
+});
+
+export const reviewsResponseSchema = z.object({
+  items: z.array(reviewSummarySchema),
+  total: z.number().int().nonnegative()
+});
+
+export const openReviewRequestSchema = z.object({
+  draftId: z.string().min(1),
+  reviewerLabel: z.string().min(1).default("Muneeb Anjum")
+});
+
+export const updateWorkingCopyRequestSchema = z.object({
+  expectedVersion: z.number().int().nonnegative(),
+  reviewerLabel: z.string().min(1).default("Muneeb Anjum"),
+  content: reviewContentSchema
+});
+
+export const saveReviewRevisionRequestSchema = z.object({
+  expectedVersion: z.number().int().nonnegative(),
+  authorLabel: z.string().min(1).default("Muneeb Anjum"),
+  changeSummary: z.string().max(2000).default("")
+});
+
+export const approveReviewRequestSchema = z.object({
+  expectedVersion: z.number().int().nonnegative(),
+  reviewerLabel: z.string().min(1).default("Muneeb Anjum"),
+  acknowledgedWarnings: z.array(z.string()).default([]),
+  approvalNotes: z.string().max(2000).default("")
+});
+
+export const rejectReviewRequestSchema = z.object({
+  reason: rejectionReasonSchema,
+  notes: z.string().max(2000).default("")
+});
+
+export const updateReviewMappingRequestSchema = z.object({
+  expectedVersion: z.number().int().nonnegative(),
+  mapping: reviewMappingSchema
+});
+
+export const contentDiffSchema = z.object({
+  field: z.string().min(1),
+  state: z.enum(["ADDED", "REMOVED", "MODIFIED", "UNCHANGED"]),
+  before: z.unknown().nullable(),
+  after: z.unknown().nullable()
+});
+
+export const revisionComparisonSchema = z.object({
+  leftId: z.string().min(1),
+  rightId: z.string().min(1),
+  fields: z.array(contentDiffSchema)
+});
+
+export const stagedContentStatusSchema = z.object({
+  schemaVersion: z.literal(1),
+  profile: z.boolean(),
+  projects: z.number().int().nonnegative(),
+  experience: z.number().int().nonnegative(),
+  skills: z.number().int().nonnegative(),
+  activity: z.number().int().nonnegative(),
+  conflicts: z.array(z.string()),
+  updatedAt: z.string().datetime().nullable()
+});
+
+export const stagedContentBundleSchema = z.object({
+  schemaVersion: z.literal(1),
+  profile: z.unknown().nullable(),
+  projects: z.array(z.unknown()),
+  experience: z.array(z.unknown()),
+  skills: z.array(z.unknown()),
+  activity: z.array(z.unknown()),
+  metadata: z.object({
+    updatedAt: z.string().datetime(),
+    updatedBy: z.string().min(1),
+    source: z.enum(["AI_REVIEW", "MANUAL_EDIT", "IMPORTED_PUBLIC_BASELINE"])
+  })
+});
+
+export const previewSessionSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  createdAt: z.string().datetime(),
+  expiresAt: z.string().datetime(),
+  status: z.enum(["ACTIVE", "EXPIRED", "INVALIDATED"]),
+  bundleHash: z.string().min(1),
+  warnings: z.array(z.string())
+});
+
+export const publishingBundleSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  createdAt: z.string().datetime(),
+  status: z.enum(["PREPARED", "VALIDATED", "SUPERSEDED", "INVALID"]),
+  approvalIds: z.array(z.string()),
+  baselineHash: z.string().min(1),
+  bundleHash: z.string().min(1),
+  diff: z.array(contentDiffSchema),
+  validation: z.object({
+    valid: z.boolean(),
+    errors: z.array(z.string()),
+    warnings: z.array(z.string())
+  }),
+  notice: z.literal("PHASE 6 PREPARATION ONLY. NO GIT COMMIT, PUSH, OR DEPLOYMENT WILL OCCUR.")
 });
 
 export const apiHealthResponseSchema = z.object({

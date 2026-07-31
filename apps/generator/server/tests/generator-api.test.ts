@@ -40,7 +40,7 @@ describe("generator API", () => {
     });
     expect((await instance.inject({ method: "GET", url: "/api/version" })).json()).toMatchObject({
       name: "MUNEEB.SYSTEMS GENERATOR",
-      phase: "phase-5-local-ai-runtime-queue"
+      phase: "phase-6-draft-review-content-approval"
     });
   });
 
@@ -87,6 +87,18 @@ describe("generator API", () => {
     expect((await instance.inject({ method: "GET", url: "/api/drafts" })).json()).toHaveProperty(
       "items"
     );
+    expect((await instance.inject({ method: "GET", url: "/api/reviews" })).json()).toHaveProperty(
+      "items"
+    );
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/staged/status" })).json()
+    ).toHaveProperty("conflicts");
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/preview/sessions" })).json()
+    ).toHaveProperty("items");
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/publishing/status" })).json()
+    ).toHaveProperty("readyForManualPublish");
     expect((await instance.inject({ method: "GET", url: "/api/docs" })).json()).toHaveProperty(
       "openapi",
       "3.1.0"

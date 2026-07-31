@@ -7,7 +7,7 @@ export function registerDocsRoutes(app: FastifyInstance): void {
       title: "MUNEEB.SYSTEMS GENERATOR API",
       version: app.appConfig.version,
       description:
-        "Local-only Phase 5 generator management API with GitHub sync, local AI runtime, private draft queueing, and recovery. Do not expose publicly."
+        "Local-only Phase 6 generator management API with draft review, manual editing, staged content, preview sessions, and approval bundles. Do not expose publicly."
     },
     paths: Object.fromEntries(
       [
@@ -46,6 +46,35 @@ export function registerDocsRoutes(app: FastifyInstance): void {
         "/api/queue/retry-failed",
         "/api/drafts",
         "/api/drafts/{draftId}",
+        "/api/reviews",
+        "/api/reviews/{reviewId}",
+        "/api/reviews/{reviewId}/working-copy",
+        "/api/reviews/{reviewId}/revisions",
+        "/api/reviews/{reviewId}/compare",
+        "/api/reviews/{reviewId}/validate",
+        "/api/reviews/{reviewId}/approve",
+        "/api/reviews/{reviewId}/reject",
+        "/api/reviews/{reviewId}/reopen",
+        "/api/reviews/{reviewId}/mapping",
+        "/api/staged",
+        "/api/staged/status",
+        "/api/staged/profile",
+        "/api/staged/projects",
+        "/api/staged/projects/{projectId}",
+        "/api/staged/projects/{projectId}/hide",
+        "/api/staged/projects/{projectId}/show",
+        "/api/staged/projects/{projectId}/stage-delete",
+        "/api/staged/experience",
+        "/api/staged/experience/{entryId}",
+        "/api/staged/skills",
+        "/api/staged/activity",
+        "/api/staged/activity/{entryId}",
+        "/api/preview/sessions",
+        "/api/preview/sessions/{sessionId}",
+        "/api/preview/sessions/{sessionId}/data",
+        "/api/publishing/status",
+        "/api/publishing/bundles",
+        "/api/publishing/bundles/{bundleId}",
         "/api/system",
         "/api/docs"
       ].map((apiPath) => [

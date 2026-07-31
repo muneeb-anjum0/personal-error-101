@@ -30,6 +30,24 @@ export interface GeneratorAppConfig {
   aiCheckpointDirectory: string;
   aiBackupDirectory: string;
   aiLogDirectory: string;
+  reviewDirectory: string;
+  reviewStatePath: string;
+  reviewApprovalsPath: string;
+  reviewRejectionsPath: string;
+  reviewAuditPath: string;
+  reviewRevisionDirectory: string;
+  reviewBackupDirectory: string;
+  stagedDirectory: string;
+  stagedMetadataPath: string;
+  stagedBackupDirectory: string;
+  previewDirectory: string;
+  previewSessionsDirectory: string;
+  previewCurrentPath: string;
+  publishingDirectory: string;
+  publishingBundlesDirectory: string;
+  publishingCurrentPath: string;
+  publishingDiffDirectory: string;
+  publishingBackupDirectory: string;
   aiHostBaseUrl: string;
   aiApiKey: string;
   aiContextSize: number;
@@ -64,7 +82,7 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
     port: environment.GENERATOR_API_PORT,
     corsOrigins: ["http://localhost:4173", "http://127.0.0.1:4173"],
     version: "0.0.0",
-    phase: "phase-5-local-ai-runtime-queue",
+    phase: "phase-6-draft-review-content-approval",
     environment: environment.NODE_ENV,
     repositoryRoot,
     dataDirectory,
@@ -95,6 +113,24 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
     aiCheckpointDirectory: path.join(dataDirectory, "ai", "checkpoints"),
     aiBackupDirectory: path.join(dataDirectory, "ai", "backups"),
     aiLogDirectory: path.join(dataDirectory, "ai", "logs"),
+    reviewDirectory: path.join(dataDirectory, "review"),
+    reviewStatePath: path.join(dataDirectory, "review", "reviews.json"),
+    reviewApprovalsPath: path.join(dataDirectory, "review", "approvals.json"),
+    reviewRejectionsPath: path.join(dataDirectory, "review", "rejections.json"),
+    reviewAuditPath: path.join(dataDirectory, "review", "audit-events.jsonl"),
+    reviewRevisionDirectory: path.join(dataDirectory, "review", "revisions"),
+    reviewBackupDirectory: path.join(dataDirectory, "review", "backups"),
+    stagedDirectory: path.join(dataDirectory, "staged"),
+    stagedMetadataPath: path.join(dataDirectory, "staged", "metadata.json"),
+    stagedBackupDirectory: path.join(dataDirectory, "staged", "backups"),
+    previewDirectory: path.join(dataDirectory, "preview"),
+    previewSessionsDirectory: path.join(dataDirectory, "preview", "sessions"),
+    previewCurrentPath: path.join(dataDirectory, "preview", "current.json"),
+    publishingDirectory: path.join(dataDirectory, "publishing"),
+    publishingBundlesDirectory: path.join(dataDirectory, "publishing", "bundles"),
+    publishingCurrentPath: path.join(dataDirectory, "publishing", "current.json"),
+    publishingDiffDirectory: path.join(dataDirectory, "publishing", "diffs"),
+    publishingBackupDirectory: path.join(dataDirectory, "publishing", "backups"),
     aiHostBaseUrl: environment.LOCAL_AI_HOST_BASE_URL,
     aiApiKey: environment.LOCAL_AI_API_KEY,
     aiContextSize: environment.LOCAL_AI_CONTEXT_SIZE,

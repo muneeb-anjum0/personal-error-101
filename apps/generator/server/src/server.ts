@@ -13,9 +13,13 @@ import { registerDocsRoutes } from "./api/routes/docs-routes.js";
 import { registerGitHubRoutes } from "./api/routes/github-routes.js";
 import { registerHealthRoutes } from "./api/routes/health-routes.js";
 import { registerLogsRoutes } from "./api/routes/logs-routes.js";
+import { registerPreviewRoutes } from "./api/routes/preview-routes.js";
+import { registerPublishingRoutes } from "./api/routes/publishing-routes.js";
 import { registerReadinessRoutes } from "./api/routes/readiness-routes.js";
 import { registerQueueRoutes } from "./api/routes/queue-routes.js";
+import { registerReviewRoutes } from "./api/routes/review-routes.js";
 import { registerSettingsRoutes } from "./api/routes/settings-routes.js";
+import { registerStagedContentRoutes } from "./api/routes/staged-content-routes.js";
 import { registerSystemRoutes } from "./api/routes/system-routes.js";
 import { registerVersionRoutes } from "./api/routes/version-routes.js";
 import { ContentStatusService } from "./application/services/content-status-service.js";
@@ -24,8 +28,12 @@ import { DashboardService } from "./application/services/dashboard-service.js";
 import { GitHubService } from "./application/services/github-service.js";
 import { LogQueryService } from "./application/services/log-query-service.js";
 import { ProcessingQueueService } from "./application/services/processing-queue-service.js";
+import { PreviewService } from "./application/services/preview-service.js";
+import { PublishingBundleService } from "./application/services/publishing-bundle-service.js";
 import { ReadinessService } from "./application/services/readiness-service.js";
+import { ReviewService } from "./application/services/review-service.js";
 import { SettingsService } from "./application/services/settings-service.js";
+import { StagedContentService } from "./application/services/staged-content-service.js";
 import { SystemService } from "./application/services/system-service.js";
 import { VersionService } from "./application/services/version-service.js";
 import { AiReadiness } from "./infrastructure/ai/ai-readiness.js";
@@ -36,6 +44,10 @@ import { GitHubReadiness } from "./infrastructure/github/github-readiness.js";
 import { JsonGitHubStateRepository } from "./infrastructure/github/json-github-state-repository.js";
 import { JsonDraftRepository } from "./infrastructure/drafts/json-draft-repository.js";
 import { JsonProcessingQueueRepository } from "./infrastructure/queue/json-processing-queue-repository.js";
+import { PreviewSessionRepository } from "./infrastructure/preview/preview-session-repository.js";
+import { PublishingBundleRepository } from "./infrastructure/publishing/publishing-bundle-repository.js";
+import { JsonReviewRepository } from "./infrastructure/reviews/json-review-repository.js";
+import { StagedContentRepository } from "./infrastructure/staged/staged-content-repository.js";
 import { ApplicationLogger } from "./infrastructure/logging/application-logger.js";
 import { EnvironmentInspector } from "./infrastructure/system/environment-inspector.js";
 
@@ -49,8 +61,12 @@ declare module "fastify" {
     githubService: GitHubService;
     logQueryService: LogQueryService;
     processingQueueService: ProcessingQueueService;
+    previewService: PreviewService;
+    publishingBundleService: PublishingBundleService;
     readinessService: ReadinessService;
+    reviewService: ReviewService;
     settingsService: SettingsService;
+    stagedContentService: StagedContentService;
     systemService: SystemService;
     versionService: VersionService;
   }
@@ -60,7 +76,7 @@ export async function buildServer() {
   const environment = loadEnvironment();
   const appConfig = createAppConfig(environment);
   const app = Fastify({
-    bodyLimit: 256 * 1024,
+    bodyLimit: 1024 * 1024,
     logger: {
       level: environment.NODE_ENV === "test" ? "silent" : "info"
     }
@@ -71,6 +87,11 @@ export async function buildServer() {
   const settingsService = new SettingsService(new JsonSettingsRepository(appConfig), appConfig);
   const logQueryService = new LogQueryService(applicationLogger);
   const aiRuntimeService = new AiRuntimeService(appConfig, applicationLogger);
+  const draftRepository = new JsonDraftRepository(appConfig);
+  const stagedContentService = new StagedContentService(
+    new StagedContentRepository(appConfig),
+    applicationLogger
+  );
   const githubService = new GitHubService(
     appConfig,
     new JsonGitHubStateRepository(appConfig),
@@ -79,10 +100,25 @@ export async function buildServer() {
   );
   const processingQueueService = new ProcessingQueueService(
     new JsonProcessingQueueRepository(appConfig),
-    new JsonDraftRepository(appConfig),
+    draftRepository,
     githubService,
     aiRuntimeService,
     applicationLogger
+  );
+  const reviewService = new ReviewService(
+    appConfig,
+    new JsonReviewRepository(appConfig),
+    draftRepository,
+    applicationLogger
+  );
+  const previewService = new PreviewService(
+    new PreviewSessionRepository(appConfig),
+    stagedContentService
+  );
+  const publishingBundleService = new PublishingBundleService(
+    new PublishingBundleRepository(appConfig),
+    reviewService,
+    stagedContentService
   );
   await processingQueueService.recover();
 
@@ -99,14 +135,21 @@ export async function buildServer() {
       logQueryService,
       githubService,
       aiRuntimeService,
-      processingQueueService
+      processingQueueService,
+      reviewService,
+      stagedContentService,
+      publishingBundleService
     )
   );
   app.decorate("githubService", githubService);
   app.decorate("logQueryService", logQueryService);
   app.decorate("processingQueueService", processingQueueService);
+  app.decorate("previewService", previewService);
+  app.decorate("publishingBundleService", publishingBundleService);
   app.decorate("readinessService", createReadinessService(appConfig));
+  app.decorate("reviewService", reviewService);
   app.decorate("settingsService", settingsService);
+  app.decorate("stagedContentService", stagedContentService);
   app.decorate(
     "systemService",
     new SystemService(new EnvironmentInspector(appConfig, contentInspector))
@@ -133,6 +176,10 @@ export async function buildServer() {
   await app.register(registerLogsRoutes);
   await app.register(registerGitHubRoutes);
   await app.register(registerQueueRoutes);
+  await app.register(registerReviewRoutes);
+  await app.register(registerStagedContentRoutes);
+  await app.register(registerPreviewRoutes);
+  await app.register(registerPublishingRoutes);
   await app.register(registerSystemRoutes);
   await app.register(registerDocsRoutes);
 

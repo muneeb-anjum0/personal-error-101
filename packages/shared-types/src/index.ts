@@ -73,6 +73,30 @@ import type {
   queueEventSchema,
   queueMetricsSchema,
   queueStateSchema,
+  approveReviewRequestSchema,
+  contentDiffSchema,
+  draftReviewSchema,
+  openReviewRequestSchema,
+  previewSessionSchema,
+  publishingBundleSchema,
+  rejectionReasonSchema,
+  rejectReviewRequestSchema,
+  reviewApprovalSchema,
+  reviewContentSchema,
+  reviewMappingSchema,
+  reviewRejectionSchema,
+  reviewRevisionSchema,
+  reviewStatusSchema,
+  reviewSummarySchema,
+  reviewValidationResultSchema,
+  reviewWorkingCopySchema,
+  reviewsResponseSchema,
+  revisionComparisonSchema,
+  saveReviewRevisionRequestSchema,
+  stagedContentBundleSchema,
+  stagedContentStatusSchema,
+  updateReviewMappingRequestSchema,
+  updateWorkingCopyRequestSchema,
   safeConfigurationSummarySchema,
   serviceStatusSchema,
   skillCategorySchema,
@@ -131,6 +155,30 @@ export type EnqueueRepositoriesRequest = z.infer<typeof enqueueRepositoriesReque
 export type EnqueueRepositoriesResponse = z.infer<typeof enqueueRepositoriesResponseSchema>;
 export type DraftSummary = z.infer<typeof draftSummarySchema>;
 export type DraftsResponse = z.infer<typeof draftsResponseSchema>;
+export type ReviewStatus = z.infer<typeof reviewStatusSchema>;
+export type ReviewMapping = z.infer<typeof reviewMappingSchema>;
+export type ReviewContent = z.infer<typeof reviewContentSchema>;
+export type ReviewValidationResult = z.infer<typeof reviewValidationResultSchema>;
+export type ReviewWorkingCopy = z.infer<typeof reviewWorkingCopySchema>;
+export type ReviewRevision = z.infer<typeof reviewRevisionSchema>;
+export type ReviewApproval = z.infer<typeof reviewApprovalSchema>;
+export type RejectionReason = z.infer<typeof rejectionReasonSchema>;
+export type ReviewRejection = z.infer<typeof reviewRejectionSchema>;
+export type DraftReview = z.infer<typeof draftReviewSchema>;
+export type ReviewSummary = z.infer<typeof reviewSummarySchema>;
+export type ReviewsResponse = z.infer<typeof reviewsResponseSchema>;
+export type OpenReviewRequest = z.infer<typeof openReviewRequestSchema>;
+export type UpdateWorkingCopyRequest = z.infer<typeof updateWorkingCopyRequestSchema>;
+export type SaveReviewRevisionRequest = z.infer<typeof saveReviewRevisionRequestSchema>;
+export type ApproveReviewRequest = z.infer<typeof approveReviewRequestSchema>;
+export type RejectReviewRequest = z.infer<typeof rejectReviewRequestSchema>;
+export type UpdateReviewMappingRequest = z.infer<typeof updateReviewMappingRequestSchema>;
+export type ContentDiff = z.infer<typeof contentDiffSchema>;
+export type RevisionComparison = z.infer<typeof revisionComparisonSchema>;
+export type StagedContentStatus = z.infer<typeof stagedContentStatusSchema>;
+export type StagedContentBundle = z.infer<typeof stagedContentBundleSchema>;
+export type PreviewSession = z.infer<typeof previewSessionSchema>;
+export type PublishingBundle = z.infer<typeof publishingBundleSchema>;
 export type GitHubAuthenticationState = z.infer<typeof githubAuthenticationStateSchema>;
 export type GitHubAuthenticationMode = z.infer<typeof githubAuthenticationModeSchema>;
 export type RepositoryVisibility = z.infer<typeof repositoryVisibilitySchema>;

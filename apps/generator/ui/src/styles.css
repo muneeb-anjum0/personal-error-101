@@ -28,9 +28,15 @@ body {
   background: var(--background);
 }
 
+html,
+body {
+  overflow-x: clip;
+}
+
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -58,7 +64,7 @@ button:disabled {
   top: 0;
   display: grid;
   height: 100vh;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 28px;
   border-right: 1px solid var(--border);
   padding: 24px;
@@ -96,6 +102,9 @@ small {
   display: grid;
   align-content: start;
   gap: 8px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
 }
 
 .sidebar button,
@@ -134,6 +143,7 @@ small {
 
 .workspace {
   min-width: 0;
+  max-width: 100%;
 }
 
 .topbar {
@@ -206,6 +216,7 @@ small {
 .page-stack {
   display: grid;
   gap: 24px;
+  min-width: 0;
 }
 
 .page-header {
@@ -238,6 +249,7 @@ small {
 .metric-card,
 .state,
 .settings-form {
+  min-width: 0;
   border: 1px solid var(--border);
   background: var(--surface);
   padding: 18px;
@@ -559,6 +571,32 @@ small {
   resize: vertical;
 }
 
+.editor-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.json-editor {
+  width: 100%;
+  min-height: 520px;
+  resize: vertical;
+  border: 1px solid var(--border-strong);
+  background: #fafafa;
+  color: var(--foreground);
+  padding: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.inner-panel {
+  background: #fafafa;
+}
+
+.review-layout {
+  grid-template-columns: minmax(260px, 0.42fr) minmax(0, 1fr);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -683,6 +721,15 @@ small {
     min-width: 0;
   }
 
+  .topbar span,
+  .topbar strong,
+  .page-header h1,
+  .page-header p,
+  .metric-card strong,
+  .state {
+    overflow-wrap: anywhere;
+  }
+
   .key-value-list div,
   .log-entry summary {
     grid-template-columns: 1fr;
@@ -694,8 +741,12 @@ small {
 
   .repository-controls label,
   .repository-controls button,
-  .button-row button {
+  .button-row button,
+  .toolbar button {
     width: 100%;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .detail-panel {

@@ -6,6 +6,9 @@ import type { SettingsService } from "./settings-service.js";
 import type { GitHubService } from "./github-service.js";
 import type { AiRuntimeService } from "./ai-runtime-service.js";
 import type { ProcessingQueueService } from "./processing-queue-service.js";
+import type { PublishingBundleService } from "./publishing-bundle-service.js";
+import type { ReviewService } from "./review-service.js";
+import type { StagedContentService } from "./staged-content-service.js";
 
 export class DashboardService {
   public constructor(
@@ -15,19 +18,34 @@ export class DashboardService {
     private readonly logs: LogQueryService,
     private readonly github: GitHubService,
     private readonly ai: AiRuntimeService,
-    private readonly queue: ProcessingQueueService
+    private readonly queue: ProcessingQueueService,
+    private readonly reviews: ReviewService,
+    private readonly staged: StagedContentService,
+    private readonly publishing: PublishingBundleService
   ) {}
 
   public async getOverview(): Promise<DashboardOverview> {
-    const [metrics, configuration, recentLogs, githubStatus, aiState, queueState] =
-      await Promise.all([
-        this.content.metrics(),
-        this.settings.getSafeConfiguration(),
-        this.logs.getLogs({ limit: 6, order: "newest" }).entries,
-        this.github.getStatus(),
-        this.ai.inspect(),
-        this.queue.getQueue()
-      ]);
+    const [
+      metrics,
+      configuration,
+      recentLogs,
+      githubStatus,
+      aiState,
+      queueState,
+      reviewState,
+      stagedState,
+      publishingState
+    ] = await Promise.all([
+      this.content.metrics(),
+      this.settings.getSafeConfiguration(),
+      this.logs.getLogs({ limit: 6, order: "newest" }).entries,
+      this.github.getStatus(),
+      this.ai.inspect(),
+      this.queue.getQueue(),
+      this.reviews.listReviews(),
+      this.staged.status(),
+      this.publishing.status()
+    ]);
 
     return {
       application: {
@@ -52,9 +70,11 @@ export class DashboardService {
         `AI RUNTIME: ${aiState.status}`,
         `QUEUE PROCESSING: AVAILABLE / ${queueState.metrics.pending} PENDING / ${queueState.metrics.active} ACTIVE`,
         `GENERATE CONTENT: AVAILABLE / ${queueState.metrics.completedDrafts} PRIVATE DRAFTS`,
+        `REVIEW AND EDIT: AVAILABLE / ${reviewState.total} REVIEWS`,
+        `PREVIEW PORTFOLIO: AVAILABLE / ${stagedState.conflicts.length} CONFLICTS`,
+        `PREPARE PUBLISHING BUNDLE: AVAILABLE / ${publishingState.bundles} BUNDLES`,
         `GITHUB RATE LIMIT: ${githubStatus.rateLimit.remaining}/${githubStatus.rateLimit.limit}`,
-        "REVIEW AND EDIT: FUTURE",
-        "PUBLISH STATIC DATA: FUTURE"
+        "COMMIT AND DEPLOY: FUTURE"
       ]
     };
   }

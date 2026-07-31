@@ -18,5 +18,9 @@ data/backups/*
 !data/backups/.gitkeep
 data/generator-settings.json
 data/ai/
+data/review/
+data/staged/
+data/preview/
+data/publishing/
 data/github/
 data/logs/
