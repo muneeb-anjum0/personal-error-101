@@ -6,10 +6,24 @@ import {
   contentStatusResponseSchema,
   dashboardOverviewSchema,
   generatorSettingsSchema,
+  githubBulkSelectionResponseSchema,
+  githubRateLimitStatusSchema,
+  githubRepositoriesResponseSchema,
+  githubStatusResponseSchema,
+  githubSyncProgressSchema,
+  githubSyncResponseSchema,
+  discoveredRepositorySchema,
+  repositorySelectionSchema,
   logsResponseSchema,
   systemInformationSchema
 } from "@muneeb-systems/shared-schemas";
-import type { GeneratorSettingsUpdate } from "@muneeb-systems/shared-types";
+import type {
+  GitHubBulkSelectionRequest,
+  GitHubNotesUpdate,
+  GitHubSelectionUpdate,
+  GitHubSyncRequest,
+  GeneratorSettingsUpdate
+} from "@muneeb-systems/shared-types";
 import type { z } from "zod";
 import { parseApiError } from "./api-error";
 
@@ -58,6 +72,90 @@ export class GeneratorApiClient {
 
   public system(signal?: AbortSignal) {
     return this.get("/api/system", systemInformationSchema, signal);
+  }
+
+  public githubStatus(signal?: AbortSignal) {
+    return this.get("/api/github/status", githubStatusResponseSchema, signal);
+  }
+
+  public githubRateLimit(signal?: AbortSignal) {
+    return this.get("/api/github/rate-limit", githubRateLimitStatusSchema, signal);
+  }
+
+  public githubRepositories(query = "", signal?: AbortSignal) {
+    return this.get(`/api/github/repositories${query}`, githubRepositoriesResponseSchema, signal);
+  }
+
+  public githubRepository(repositoryId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/github/repositories/${encodeURIComponent(repositoryId)}`,
+      discoveredRepositorySchema,
+      signal
+    );
+  }
+
+  public syncGithub(request: GitHubSyncRequest = {}, signal?: AbortSignal) {
+    return this.request("/api/github/sync", githubSyncResponseSchema, {
+      method: "POST",
+      body: JSON.stringify(request),
+      signal
+    });
+  }
+
+  public fullSyncGithub(request: GitHubSyncRequest = {}, signal?: AbortSignal) {
+    return this.request("/api/github/sync/full", githubSyncResponseSchema, {
+      method: "POST",
+      body: JSON.stringify(request),
+      signal
+    });
+  }
+
+  public cancelGithubSync(signal?: AbortSignal) {
+    return this.request("/api/github/sync/cancel", githubSyncResponseSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public githubSyncStatus(signal?: AbortSignal) {
+    return this.get("/api/github/sync/status", githubSyncProgressSchema, signal);
+  }
+
+  public updateGithubSelection(
+    repositoryId: string,
+    update: GitHubSelectionUpdate,
+    signal?: AbortSignal
+  ) {
+    return this.request(
+      `/api/github/selections/${encodeURIComponent(repositoryId)}`,
+      repositorySelectionSchema,
+      {
+        method: "PUT",
+        body: JSON.stringify(update),
+        signal
+      }
+    );
+  }
+
+  public updateGithubNotes(repositoryId: string, update: GitHubNotesUpdate, signal?: AbortSignal) {
+    return this.request(
+      `/api/github/repositories/${encodeURIComponent(repositoryId)}/notes`,
+      repositorySelectionSchema,
+      {
+        method: "PUT",
+        body: JSON.stringify(update),
+        signal
+      }
+    );
+  }
+
+  public bulkGithubSelection(request: GitHubBulkSelectionRequest, signal?: AbortSignal) {
+    return this.request("/api/github/selections/bulk", githubBulkSelectionResponseSchema, {
+      method: "POST",
+      body: JSON.stringify(request),
+      signal
+    });
   }
 
   private get<T extends z.ZodType>(

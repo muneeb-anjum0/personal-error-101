@@ -5,10 +5,11 @@ test("homepage loads the complete public portfolio", async ({ page }) => {
 
   await expect(page.getByRole("link", { name: "MUNEEB.SYSTEMS home" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /I BUILD/i })).toBeVisible();
-  await expect(page.getByText("01 / IDENTITY")).toBeVisible();
-  await expect(page.getByText("02 / CAPABILITIES")).toBeVisible();
-  await expect(page.getByText("03 / EXPERIENCE")).toBeVisible();
-  await expect(page.getByText("04 / SELECTED SYSTEMS")).toBeVisible();
+  const main = page.getByRole("main");
+  await expect(main.getByText("01 / IDENTITY").first()).toBeVisible();
+  await expect(main.getByText("02 / CAPABILITIES").first()).toBeVisible();
+  await expect(main.getByText("03 / EXPERIENCE").first()).toBeVisible();
+  await expect(main.getByText("04 / SELECTED SYSTEMS").first()).toBeVisible();
   await expect(page.getByText("07 / CONTACT")).toBeVisible();
 });
 

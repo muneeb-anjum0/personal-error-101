@@ -1,5 +1,6 @@
 export const activeRoutes = [
   { path: "/", label: "OVERVIEW" },
+  { path: "/repositories", label: "REPOSITORIES" },
   { path: "/content", label: "CONTENT" },
   { path: "/settings", label: "SETTINGS" },
   { path: "/logs", label: "LOGS" },
@@ -7,7 +8,6 @@ export const activeRoutes = [
 ] as const;
 
 export const futureRoutes = [
-  { path: "/repositories", label: "REPOSITORIES" },
   { path: "/queue", label: "PROCESSING QUEUE" },
   { path: "/ai", label: "LOCAL AI" },
   { path: "/publish", label: "PUBLISH" }

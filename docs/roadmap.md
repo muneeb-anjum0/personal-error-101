@@ -19,8 +19,7 @@ Local generator platform foundation: Fastify management API, routed React dashbo
 ## Future Phases
 
 - Portfolio content management UI
-- GitHub repository synchronization
-- Manual repository selection
+- GitHub repository synchronization and manual repository selection: completed in Phase 4
 - Local AI model orchestration
 - AI-based project content generation
 - Static frontend publishing

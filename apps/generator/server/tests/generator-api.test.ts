@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { buildServer } from "../src/server";
 
@@ -6,6 +6,7 @@ let app: FastifyInstance | undefined;
 
 async function server(): Promise<FastifyInstance> {
   process.env.NODE_ENV = "test";
+  process.env.GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? "";
   app = await buildServer();
   return app;
 }
@@ -16,6 +17,10 @@ afterEach(async () => {
 });
 
 describe("generator API", () => {
+  beforeEach(() => {
+    process.env.GITHUB_TOKEN = "";
+  });
+
   it("returns health, readiness, and version metadata", async () => {
     const instance = await server();
 
@@ -28,14 +33,14 @@ describe("generator API", () => {
         filesystem: true,
         content: true,
         settings: true,
-        github: false,
+        github: true,
         ai: false,
         publishing: false
       }
     });
     expect((await instance.inject({ method: "GET", url: "/api/version" })).json()).toMatchObject({
       name: "MUNEEB.SYSTEMS GENERATOR",
-      phase: "phase-3-generator-platform"
+      phase: "phase-4-github-repository-sync"
     });
   });
 
@@ -61,10 +66,36 @@ describe("generator API", () => {
     expect((await instance.inject({ method: "GET", url: "/api/system" })).json()).toHaveProperty(
       "repositoryRoot"
     );
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/github/status" })).json()
+    ).toMatchObject({
+      authenticationState: "ANONYMOUS",
+      tokenStatus: "TOKEN NOT CONFIGURED"
+    });
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/github/repositories" })).json()
+    ).toHaveProperty("items");
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/github/sync/status" })).json()
+    ).toHaveProperty("phase");
     expect((await instance.inject({ method: "GET", url: "/api/docs" })).json()).toHaveProperty(
       "openapi",
       "3.1.0"
     );
+  });
+
+  it("validates GitHub repository queries and keeps tokens out of responses", async () => {
+    process.env.GITHUB_TOKEN = "ghp_should_not_escape";
+    const instance = await server();
+    const invalid = await instance.inject({
+      method: "GET",
+      url: "/api/github/repositories?sort=unsafe"
+    });
+    expect(invalid.statusCode).toBe(400);
+
+    const status = await instance.inject({ method: "GET", url: "/api/github/status" });
+    expect(JSON.stringify(status.json())).not.toContain("ghp_should_not_escape");
+    process.env.GITHUB_TOKEN = "";
   });
 
   it("uses the shared error contract for unsupported content types", async () => {

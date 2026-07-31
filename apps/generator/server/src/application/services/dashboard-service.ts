@@ -3,20 +3,23 @@ import type { GeneratorAppConfig } from "../../config/app-config.js";
 import type { ContentStatusService } from "./content-status-service.js";
 import type { LogQueryService } from "./log-query-service.js";
 import type { SettingsService } from "./settings-service.js";
+import type { GitHubService } from "./github-service.js";
 
 export class DashboardService {
   public constructor(
     private readonly config: GeneratorAppConfig,
     private readonly content: ContentStatusService,
     private readonly settings: SettingsService,
-    private readonly logs: LogQueryService
+    private readonly logs: LogQueryService,
+    private readonly github: GitHubService
   ) {}
 
   public async getOverview(): Promise<DashboardOverview> {
-    const [metrics, configuration, recentLogs] = await Promise.all([
+    const [metrics, configuration, recentLogs, githubStatus] = await Promise.all([
       this.content.metrics(),
       this.settings.getSafeConfiguration(),
-      this.logs.getLogs({ limit: 6, order: "newest" }).entries
+      this.logs.getLogs({ limit: 6, order: "newest" }).entries,
+      this.github.getStatus()
     ]);
 
     return {
@@ -27,23 +30,24 @@ export class DashboardService {
         uptimeSeconds: process.uptime(),
         timestamp: new Date().toISOString()
       },
-      services: serviceStatuses(metrics.validationStatus),
+      services: serviceStatuses(metrics.validationStatus, githubStatus.authenticationState),
       metrics,
       configuration,
       recentLogs,
       futureWorkflow: [
-        "FETCH REPOSITORIES",
-        "SELECT REPOSITORIES",
-        "QUEUE PROCESSING",
-        "GENERATE CONTENT",
-        "REVIEW AND EDIT",
-        "PUBLISH STATIC DATA"
+        `FETCH REPOSITORIES: AVAILABLE / ${githubStatus.counts.total} STORED`,
+        `SELECT REPOSITORIES: AVAILABLE / ${githubStatus.counts.selectedForProcessing} SELECTED`,
+        `GITHUB RATE LIMIT: ${githubStatus.rateLimit.remaining}/${githubStatus.rateLimit.limit}`,
+        "QUEUE PROCESSING: FUTURE",
+        "GENERATE CONTENT: FUTURE",
+        "REVIEW AND EDIT: FUTURE",
+        "PUBLISH STATIC DATA: FUTURE"
       ]
     };
   }
 }
 
-function serviceStatuses(contentStatus: "valid" | "invalid"): ServiceStatus[] {
+function serviceStatuses(contentStatus: "valid" | "invalid", githubState: string): ServiceStatus[] {
   return [
     { id: "api", label: "Generator API", status: "ready", required: true, message: "Ready" },
     { id: "filesystem", label: "Filesystem", status: "ready", required: true, message: "Ready" },
@@ -57,9 +61,9 @@ function serviceStatuses(contentStatus: "valid" | "invalid"): ServiceStatus[] {
     {
       id: "github",
       label: "GitHub integration",
-      status: "not_configured",
+      status: githubState === "AUTHENTICATION_FAILED" ? "invalid" : "ready",
       required: false,
-      message: "Not configured"
+      message: githubState
     },
     { id: "ai", label: "Local AI", status: "not_started", required: false, message: "Not started" },
     {

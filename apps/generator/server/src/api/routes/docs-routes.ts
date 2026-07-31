@@ -6,7 +6,7 @@ export function registerDocsRoutes(app: FastifyInstance): void {
     info: {
       title: "MUNEEB.SYSTEMS GENERATOR API",
       version: app.appConfig.version,
-      description: "Local-only Phase 3 generator management API."
+      description: "Local-only Phase 4 generator management API. Do not expose publicly."
     },
     paths: Object.fromEntries(
       [
@@ -18,6 +18,17 @@ export function registerDocsRoutes(app: FastifyInstance): void {
         "/api/content/{type}",
         "/api/settings",
         "/api/logs",
+        "/api/github/status",
+        "/api/github/rate-limit",
+        "/api/github/repositories",
+        "/api/github/repositories/{repositoryId}",
+        "/api/github/sync",
+        "/api/github/sync/full",
+        "/api/github/sync/cancel",
+        "/api/github/sync/status",
+        "/api/github/selections/{repositoryId}",
+        "/api/github/selections/bulk",
+        "/api/github/repositories/{repositoryId}/notes",
         "/api/system",
         "/api/docs"
       ].map((apiPath) => [

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ContentPage } from "../features/content/content-page";
 import { DashboardPage } from "../features/dashboard/dashboard-page";
 import { LogsPage } from "../features/logs/logs-page";
+import { RepositoriesPage } from "../features/repositories/repositories-page";
 import { SettingsPage } from "../features/settings/settings-page";
 import { SystemPage } from "../features/system/system-page";
 import { activeRoutes, type AppRoute } from "./routes";
@@ -32,6 +33,8 @@ export function RouteView({ path }: { path: AppRoute }) {
       return <SettingsPage />;
     case "/logs":
       return <LogsPage />;
+    case "/repositories":
+      return <RepositoriesPage />;
     case "/system":
       return <SystemPage />;
     default:

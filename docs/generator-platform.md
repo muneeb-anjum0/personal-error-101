@@ -2,6 +2,6 @@
 
 `MUNEEB.SYSTEMS GENERATOR` is a private local management app for the static JSON consumed by the public portfolio.
 
-Phase 3 provides Overview, Content, Settings, Logs, and System dashboard routes. It also exposes disabled future navigation for repositories, queue, local AI, and publishing.
+Phase 4 provides Overview, Repositories, Content, Settings, Logs, and System dashboard routes. It exposes disabled future navigation for queue, local AI, and publishing.
 
-Deferred to later phases: GitHub sync, README retrieval, repository queues, AI startup, AI generation, approval workflows, Git commits, Git pushes, and publishing automation.
+Repository discovery can fetch GitHub metadata, README source, language byte counts, rate-limit state, and local change classifications. Deferred to later phases: repository queues, AI startup, AI generation, approval workflows, generated Git commits, Git pushes, and publishing automation.

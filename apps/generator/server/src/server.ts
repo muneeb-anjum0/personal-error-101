@@ -9,6 +9,7 @@ import { registerRequestLogger } from "./api/middleware/request-logger.js";
 import { registerContentRoutes } from "./api/routes/content-routes.js";
 import { registerDashboardRoutes } from "./api/routes/dashboard-routes.js";
 import { registerDocsRoutes } from "./api/routes/docs-routes.js";
+import { registerGitHubRoutes } from "./api/routes/github-routes.js";
 import { registerHealthRoutes } from "./api/routes/health-routes.js";
 import { registerLogsRoutes } from "./api/routes/logs-routes.js";
 import { registerReadinessRoutes } from "./api/routes/readiness-routes.js";
@@ -17,6 +18,7 @@ import { registerSystemRoutes } from "./api/routes/system-routes.js";
 import { registerVersionRoutes } from "./api/routes/version-routes.js";
 import { ContentStatusService } from "./application/services/content-status-service.js";
 import { DashboardService } from "./application/services/dashboard-service.js";
+import { GitHubService } from "./application/services/github-service.js";
 import { LogQueryService } from "./application/services/log-query-service.js";
 import { ReadinessService } from "./application/services/readiness-service.js";
 import { SettingsService } from "./application/services/settings-service.js";
@@ -27,6 +29,7 @@ import { ContentStorageReadiness } from "./infrastructure/filesystem/content-sto
 import { JsonSettingsRepository } from "./infrastructure/filesystem/json-settings-repository.js";
 import { StaticContentInspector } from "./infrastructure/filesystem/static-content-inspector.js";
 import { GitHubReadiness } from "./infrastructure/github/github-readiness.js";
+import { JsonGitHubStateRepository } from "./infrastructure/github/json-github-state-repository.js";
 import { ApplicationLogger } from "./infrastructure/logging/application-logger.js";
 import { EnvironmentInspector } from "./infrastructure/system/environment-inspector.js";
 
@@ -36,6 +39,7 @@ declare module "fastify" {
     applicationLogger: ApplicationLogger;
     contentStatusService: ContentStatusService;
     dashboardService: DashboardService;
+    githubService: GitHubService;
     logQueryService: LogQueryService;
     readinessService: ReadinessService;
     settingsService: SettingsService;
@@ -58,14 +62,27 @@ export async function buildServer() {
   const contentStatusService = new ContentStatusService(contentInspector);
   const settingsService = new SettingsService(new JsonSettingsRepository(appConfig), appConfig);
   const logQueryService = new LogQueryService(applicationLogger);
+  const githubService = new GitHubService(
+    appConfig,
+    new JsonGitHubStateRepository(appConfig),
+    contentStatusService,
+    applicationLogger
+  );
 
   app.decorate("appConfig", appConfig);
   app.decorate("applicationLogger", applicationLogger);
   app.decorate("contentStatusService", contentStatusService);
   app.decorate(
     "dashboardService",
-    new DashboardService(appConfig, contentStatusService, settingsService, logQueryService)
+    new DashboardService(
+      appConfig,
+      contentStatusService,
+      settingsService,
+      logQueryService,
+      githubService
+    )
   );
+  app.decorate("githubService", githubService);
   app.decorate("logQueryService", logQueryService);
   app.decorate("readinessService", createReadinessService(appConfig));
   app.decorate("settingsService", settingsService);
@@ -78,7 +95,7 @@ export async function buildServer() {
   await app.register(cors, {
     origin: appConfig.corsOrigins,
     credentials: false,
-    methods: ["GET", "PUT", "OPTIONS"]
+    methods: ["GET", "PUT", "POST", "OPTIONS"]
   });
 
   registerRequestContext(app);
@@ -92,6 +109,7 @@ export async function buildServer() {
   await app.register(registerContentRoutes);
   await app.register(registerSettingsRoutes);
   await app.register(registerLogsRoutes);
+  await app.register(registerGitHubRoutes);
   await app.register(registerSystemRoutes);
   await app.register(registerDocsRoutes);
 
@@ -105,7 +123,7 @@ export async function buildServer() {
 function createReadinessService(config: GeneratorAppConfig): ReadinessService {
   return new ReadinessService({
     filesystem: new ContentStorageReadiness(config.dataDirectory),
-    github: new GitHubReadiness(config.githubConfigured),
+    github: new GitHubReadiness(),
     ai: new AiReadiness(config.aiConfigured)
   });
 }

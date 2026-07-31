@@ -17,7 +17,7 @@ test("generator readiness endpoint reports placeholder services", async ({ reque
       filesystem: true,
       content: true,
       settings: true,
-      github: false,
+      github: true,
       publishing: false
     }
   });
@@ -30,4 +30,10 @@ test("generator dashboard and content endpoints respond", async ({ request }) =>
   await expect(
     (await request.get("http://127.0.0.1:4000/api/content/status")).json()
   ).resolves.toHaveProperty("files");
+  await expect(
+    (await request.get("http://127.0.0.1:4000/api/github/status")).json()
+  ).resolves.toMatchObject({ authenticationState: "ANONYMOUS" });
+  await expect(
+    (await request.get("http://127.0.0.1:4000/api/github/repositories")).json()
+  ).resolves.toHaveProperty("items");
 });

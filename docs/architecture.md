@@ -12,9 +12,9 @@ Phase 2 keeps that split. Motion is added through focused client islands in `app
 
 Shared animation constants live in `apps/portfolio/src/lib/animation`. Device and animation budget decisions live in `apps/portfolio/src/lib/performance`.
 
-`apps/generator/server` is the private local API. It owns future orchestration for GitHub, local AI, filesystem persistence, queueing, Git operations, and publishing. In Phase 3 it exposes local-only dashboard, content inspection, settings, logs, system, readiness, version, and docs endpoints.
+`apps/generator/server` is the private local API. It owns GitHub discovery, local AI, filesystem persistence, queueing, Git operations, and publishing boundaries. In Phase 4 it exposes local-only dashboard, content inspection, settings, logs, system, readiness, version, docs, GitHub status, repository sync, repository snapshots, selections, and notes endpoints.
 
-`apps/generator/ui` is the private management interface. In Phase 3 it is a routed Vite/React dashboard with Overview, Content, Settings, Logs, and System pages plus disabled future navigation for repositories, queue, local AI, and publishing.
+`apps/generator/ui` is the private management interface. In Phase 4 it is a routed Vite/React dashboard with Overview, Repositories, Content, Settings, Logs, and System pages plus disabled future navigation for queue, local AI, and publishing.
 
 ## Shared Packages
 
@@ -22,4 +22,4 @@ Shared schemas live in `packages/shared-schemas`. Types are inferred in `package
 
 ## Future Boundaries
 
-Future GitHub, AI, queue, process, filesystem, and publishing code should be added under the generator server infrastructure layer behind domain-facing interfaces.
+GitHub code lives under the generator server infrastructure layer behind a domain-facing source interface. Local AI, queue, processing, Git commit automation, and publishing remain later-phase boundaries.
