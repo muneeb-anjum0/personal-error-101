@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { ExperienceEntry, Profile, SkillCategory } from "@muneeb-systems/shared-types";
 import type { VisibleProject } from "@/lib/portfolio-selectors";
+import { useMotionSettings } from "@/components/motion/reduced-motion-provider";
 import { QuickViewContent } from "./quick-view-content";
 
 interface QuickViewDialogProps {
@@ -17,6 +19,9 @@ export function QuickViewDialog(props: QuickViewDialogProps) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const { reducedMotion } = useMotionSettings();
+  const panelInitial = reducedMotion ? { opacity: 0 } : { opacity: 0, rotateY: -7, x: 72 };
+  const panelExit = reducedMotion ? { opacity: 0 } : { opacity: 0, rotateY: -5, x: 46 };
 
   useEffect(() => {
     if (!open) {
@@ -54,30 +59,44 @@ export function QuickViewDialog(props: QuickViewDialogProps) {
       >
         QUICK VIEW
       </button>
-      {open ? (
-        <div className="dialog-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
-          <section
-            aria-labelledby="quick-view-title"
-            aria-modal="true"
-            className="quick-view-dialog"
-            role="dialog"
-            onMouseDown={(event) => event.stopPropagation()}
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            animate={{ opacity: 1 }}
+            className="dialog-backdrop"
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            role="presentation"
+            transition={{ duration: 0.24, ease: [0.2, 0, 0, 1] }}
+            onMouseDown={() => setOpen(false)}
           >
-            <button
-              ref={closeRef}
-              className="dialog-close"
-              type="button"
-              onClick={() => setOpen(false)}
+            <motion.section
+              animate={{ opacity: 1, rotateY: 0, x: 0 }}
+              aria-labelledby="quick-view-title"
+              aria-modal="true"
+              className="quick-view-dialog"
+              exit={panelExit}
+              initial={panelInitial}
+              role="dialog"
+              transition={{ duration: reducedMotion ? 0.12 : 0.38, ease: [0.16, 1, 0.3, 1] }}
+              onMouseDown={(event) => event.stopPropagation()}
             >
-              CLOSE
-            </button>
-            <h2 id="quick-view-title" className="sr-only">
-              Quick View
-            </h2>
-            <QuickViewContent {...props} />
-          </section>
-        </div>
-      ) : null}
+              <button
+                ref={closeRef}
+                className="dialog-close"
+                type="button"
+                onClick={() => setOpen(false)}
+              >
+                CLOSE
+              </button>
+              <h2 id="quick-view-title" className="sr-only">
+                Quick View
+              </h2>
+              <QuickViewContent {...props} />
+            </motion.section>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </>
   );
 }
