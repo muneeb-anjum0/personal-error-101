@@ -21,9 +21,9 @@ export default async function HomePage() {
       <IdentitySection content={content} />
       <CapabilitySection projects={projects} skills={content.skills} />
       <ExperienceSection entries={content.experience} />
-      <ProjectsSection projects={projects} />
+      <ProjectsSection profile={content.profile} projects={projects} />
       <ActivitySection activity={content.activity} />
-      <PhilosophySection />
+      <PhilosophySection profile={content.profile} />
       <ContactSection profile={content.profile} resumeAvailable={resumeAvailable} />
       <script
         type="application/ld+json"

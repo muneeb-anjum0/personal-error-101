@@ -14,8 +14,8 @@ export function Topbar({
         Skip to dashboard content
       </a>
       <div>
-        <span>MUNEEB.SYSTEMS GENERATOR</span>
-        <strong>LOCAL MANAGEMENT DASHBOARD</strong>
+        <span>MUNEEB.SYSTEMS</span>
+        <strong>Admin</strong>
       </div>
       <MobileNavigation activePath={activePath} onNavigate={onNavigate} />
     </header>

@@ -12,9 +12,17 @@ export const linkSchema = z.object({
 
 export const profileSchema = z.object({
   name: z.string().min(1),
+  role: z.string().min(1).optional(),
   headline: z.string().min(1),
   shortBio: z.string().min(1),
   longBio: z.string().min(1),
+  heroTitleLines: z.array(z.string().min(1)).default([]),
+  identityHeading: z.string().min(1).optional(),
+  projectsHeading: z.array(z.string().min(1)).default([]),
+  projectsDescription: z.string().min(1).optional(),
+  philosophyHeading: z.string().min(1).optional(),
+  philosophyStatementLines: z.array(z.string().min(1)).default([]),
+  philosophyPrinciples: z.array(z.string().min(1)).default([]),
   location: z.string().min(1),
   availability: z.string().min(1),
   email: z.string().email(),

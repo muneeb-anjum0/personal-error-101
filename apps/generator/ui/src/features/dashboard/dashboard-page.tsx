@@ -30,11 +30,8 @@ export function DashboardPage() {
     <section className="page-stack">
       <header className="page-header">
         <p className="eyebrow">OVERVIEW</p>
-        <h1>{data.application.name}</h1>
-        <p>
-          Local management foundation for static portfolio content. Future integrations are visible
-          but inactive.
-        </p>
+        <h1>Control center</h1>
+        <p>Sync repositories, queue drafts, review content, and publish when it is ready.</p>
       </header>
       <div className="status-grid">
         {data.services.map((service) => (

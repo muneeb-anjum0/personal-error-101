@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { ExperienceEntry } from "@muneeb-systems/shared-types";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface ExperienceTimelineProps {
   entries: ExperienceEntry[];
@@ -11,6 +12,15 @@ interface ExperienceTimelineProps {
 export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
   const [selectedId, setSelectedId] = useState(entries[0]?.id ?? "");
   const selected = entries.find((entry) => entry.id === selectedId) ?? entries[0];
+
+  if (entries.length === 0) {
+    return (
+      <EmptyState
+        title="NO EXPERIENCE YET."
+        message="Add experience records from the local admin when you are ready."
+      />
+    );
+  }
 
   return (
     <div className="experience-timeline">

@@ -1,22 +1,36 @@
 {
   "name": "Muneeb Anjum",
+  "role": "Full-stack engineer",
   "headline": "Full-stack developer building intelligent, secure, and useful software.",
   "shortBio": "Muneeb Anjum is a full-stack developer focused on backend systems, AI-assisted workflows, and practical product engineering.",
   "longBio": "I build software as connected systems: interfaces, APIs, data flows, automation, and the operational details that make products useful. This portfolio is intentionally powered by static content so the public site remains fast, reliable, and independent from private local tooling.",
+  "heroTitleLines": ["I BUILD", "SYSTEMS THAT", "THINK."],
+  "identityHeading": "I DESIGN HOW SYSTEMS BEHAVE.",
+  "projectsHeading": ["PROJECTS YOU ADD", "WILL LIVE HERE."],
+  "projectsDescription": "Add real projects from the local admin when you are ready.",
+  "philosophyHeading": "CODE IS NOT THE PRODUCT.",
+  "philosophyStatementLines": [
+    "THE SYSTEM,",
+    "THE EXPERIENCE,",
+    "AND THE RESULT",
+    "ARE THE PRODUCT."
+  ],
+  "philosophyPrinciples": [
+    "Build for actual problems",
+    "Understand the entire system",
+    "Automate repetitive work",
+    "Measure before claiming improvement",
+    "Keep learning"
+  ],
   "location": "Islamabad, Pakistan",
   "availability": "Available",
   "email": "muneeb@example.com",
   "githubUrl": "https://github.com/muneeb-anjum0",
   "linkedInUrl": "https://www.linkedin.com/in/edit-this-placeholder",
   "resumePath": "/resume.pdf",
-  "stats": [
-    { "label": "Professional roles", "value": "3" },
-    { "label": "Primary disciplines", "value": "8" },
-    { "label": "Portfolio systems", "value": "5" },
-    { "label": "Content source", "value": "Static JSON" }
-  ],
+  "stats": [],
   "starter": {
     "editable": true,
-    "note": "Starter content for Phase 1. Review and replace exact public details later."
+    "note": "Editable profile content for the public site."
   }
 }

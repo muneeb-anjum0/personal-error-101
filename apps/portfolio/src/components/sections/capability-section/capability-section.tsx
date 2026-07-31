@@ -1,5 +1,6 @@
 import type { SkillCategory } from "@muneeb-systems/shared-types";
 import type { VisibleProject } from "@/lib/portfolio-selectors";
+import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CapabilityMap } from "@/components/skills/capability-map";
 
@@ -14,9 +15,16 @@ export function CapabilitySection({ skills, projects }: CapabilitySectionProps) 
       <SectionHeading
         label="02 / CAPABILITIES"
         heading="A STRUCTURED MAP OF THE ENGINEERING CORE."
-        description="No percentages. Just categories, usage context, and related systems."
+        description="Editable skill categories and related projects."
       />
-      <CapabilityMap skills={skills} projects={projects} />
+      {skills.length > 0 ? (
+        <CapabilityMap skills={skills} projects={projects} />
+      ) : (
+        <EmptyState
+          title="NO SKILLS YET."
+          message="Add skill categories from the local admin when you are ready."
+        />
+      )}
     </section>
   );
 }

@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { useMotionSettings } from "@/components/motion/reduced-motion-provider";
+import { useState } from "react";
 
 const nodes = [
   { id: "ai", label: "AI", x: 75, y: 50 },
@@ -14,56 +12,10 @@ const nodes = [
 ];
 
 export function EngineeringSystem() {
-  const figureRef = useRef<HTMLElement>(null);
   const [activeNode, setActiveNode] = useState<string | null>(null);
-  const { mode, reducedMotion } = useMotionSettings();
-
-  useEffect(() => {
-    const figure = figureRef.current;
-    if (!figure || reducedMotion) {
-      return;
-    }
-
-    const context = gsap.context(() => {
-      gsap.set(".system-lines line", { transformOrigin: "210px 145px", scaleX: 0, opacity: 0.45 });
-      gsap.set(".system-node", { opacity: 0, y: 6 });
-      gsap.set(".system-core", { opacity: 0, scale: 0.96, transformOrigin: "center" });
-      gsap
-        .timeline({ delay: 0.15 })
-        .to(".system-core", { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" })
-        .to(
-          ".system-lines line",
-          { scaleX: 1, opacity: 1, duration: 0.65, ease: "power2.inOut", stagger: 0.05 },
-          "-=0.2"
-        )
-        .to(
-          ".system-node",
-          { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", stagger: 0.05 },
-          "-=0.25"
-        )
-        .fromTo(
-          ".svg-meta",
-          { opacity: 0 },
-          { opacity: 0.55, duration: 0.32, stagger: 0.02 },
-          "-=0.2"
-        );
-
-      if (mode === "full") {
-        gsap.to(".system-pulse", {
-          strokeDashoffset: -120,
-          duration: 5.5,
-          ease: "none",
-          repeat: -1
-        });
-      }
-    }, figure);
-
-    return () => context.revert();
-  }, [mode, reducedMotion]);
 
   return (
     <figure
-      ref={figureRef}
       className={`engineering-system${activeNode ? " system-has-active-node" : ""}`}
       aria-labelledby="engineering-system-title"
     >
@@ -82,11 +34,9 @@ export function EngineeringSystem() {
               y1="145"
               x2={node.x}
               y2={node.y}
+              pathLength="1"
             />
           ))}
-        </g>
-        <g className="system-pulse" aria-hidden="true">
-          <path d="M210 145 L75 50 L205 22 L330 58" />
         </g>
         <g className="system-core">
           <rect x="154" y="111" width="112" height="68" rx="2" />
@@ -97,7 +47,7 @@ export function EngineeringSystem() {
             CORE / 00
           </text>
         </g>
-        {nodes.map((node, index) => (
+        {nodes.map((node) => (
           <g
             key={node.id}
             className={activeNode === node.id ? "system-node is-active" : "system-node"}
@@ -111,9 +61,6 @@ export function EngineeringSystem() {
             <rect x={node.x - 48} y={node.y - 18} width="96" height="36" rx="18" />
             <text x={node.x} y={node.y + 4} textAnchor="middle">
               {node.label}
-            </text>
-            <text x={node.x} y={node.y + 35} textAnchor="middle" className="svg-meta">
-              X{node.x} / Y{node.y} / 0{index + 1}
             </text>
           </g>
         ))}

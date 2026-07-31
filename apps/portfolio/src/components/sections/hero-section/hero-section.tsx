@@ -10,21 +10,23 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ profile, resumeAvailable }: HeroSectionProps) {
+  const firstName = profile.name.split(" ")[0]?.toUpperCase() ?? profile.name.toUpperCase();
+  const heroTitleLines =
+    profile.heroTitleLines.length > 0 ? profile.heroTitleLines : ["I BUILD", "USEFUL", "SYSTEMS."];
+
   return (
     <section id="top" className="hero-section">
       <Reveal className="hero-copy hero-entrance" pattern="stagger">
         <div className="hero-meta">
-          <span>[ FULL-STACK ENGINEER ]</span>
+          <span>[ {profile.role ?? "Engineer"} ]</span>
           <StatusIndicator label="System status" value={profile.availability} />
           <span>{profile.location.toUpperCase()}</span>
         </div>
-        <p className="hero-greeting">HELLO, I&apos;M MUNEEB.</p>
+        <p className="hero-greeting">HELLO, I&apos;M {firstName}.</p>
         <h1>
-          I BUILD
-          <br />
-          SYSTEMS THAT
-          <br />
-          THINK.
+          {heroTitleLines.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
         </h1>
         <p className="hero-support">{profile.headline}</p>
         <div className="hero-actions">

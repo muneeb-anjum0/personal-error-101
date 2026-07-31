@@ -3,22 +3,20 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type { Profile } from "@muneeb-systems/shared-types";
 import { useMotionSettings } from "@/components/motion/reduced-motion-provider";
 import { SectionHeading } from "@/components/ui/section-heading";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const principles = [
-  "Build for actual problems",
-  "Understand the entire system",
-  "Automate repetitive work",
-  "Measure before claiming improvement",
-  "Keep learning"
-];
-
-export function PhilosophySection() {
+export function PhilosophySection({ profile }: { profile: Profile }) {
   const ref = useRef<HTMLElement>(null);
   const { mode, reducedMotion } = useMotionSettings();
+  const statementLines =
+    profile.philosophyStatementLines.length > 0
+      ? profile.philosophyStatementLines
+      : ["SYSTEMS", "SHOULD FEEL", "USEFUL."];
+  const principles = profile.philosophyPrinciples;
 
   useEffect(() => {
     const section = ref.current;
@@ -52,25 +50,29 @@ export function PhilosophySection() {
 
   return (
     <section ref={ref} id="philosophy" className="portfolio-section philosophy-section">
-      <SectionHeading label="06 / PHILOSOPHY" heading="CODE IS NOT THE PRODUCT." />
+      <SectionHeading
+        label="06 / PHILOSOPHY"
+        heading={profile.philosophyHeading ?? "WORK PRINCIPLES."}
+      />
       <div className="philosophy-grid">
         <p>
-          <span>THE SYSTEM,</span>
-          <br />
-          <span>THE EXPERIENCE,</span>
-          <br />
-          <span>AND THE RESULT</span>
-          <br />
-          <span>ARE THE PRODUCT.</span>
-        </p>
-        <ol>
-          {principles.map((principle, index) => (
-            <li key={principle}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {principle}
-            </li>
+          {statementLines.map((line) => (
+            <span key={line}>
+              {line}
+              <br />
+            </span>
           ))}
-        </ol>
+        </p>
+        {principles.length > 0 ? (
+          <ol>
+            {principles.map((principle, index) => (
+              <li key={principle}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                {principle}
+              </li>
+            ))}
+          </ol>
+        ) : null}
       </div>
     </section>
   );

@@ -13,6 +13,15 @@ export function ProjectList({ projects }: { projects: VisibleProject[] }) {
   const [filter, setFilter] = useState("Featured");
   const visible = useMemo(() => filterProjects(projects, filter), [filter, projects]);
 
+  if (projects.length === 0) {
+    return (
+      <EmptyState
+        title="NO PROJECTS YET."
+        message="Add project records from the local admin when you are ready."
+      />
+    );
+  }
+
   return (
     <div className="project-list-wrap">
       <ProjectFilter activeFilter={filter} filters={projectFilters} onChange={setFilter} />

@@ -1,6 +1,8 @@
 :root {
   --background: #ffffff;
   --foreground: #090909;
+  --accent: #15d1ff;
+  --good: #22c55e;
   --muted: rgba(9, 9, 9, 0.62);
   --subtle: rgba(9, 9, 9, 0.42);
   --border: rgba(9, 9, 9, 0.16);
@@ -65,9 +67,9 @@ button:disabled {
   display: grid;
   height: 100vh;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 28px;
+  gap: 18px;
   border-right: 1px solid var(--border);
-  padding: 24px;
+  padding: 18px;
 }
 
 .brand,
@@ -95,13 +97,13 @@ small {
 
 .brand strong,
 .topbar strong {
-  font-size: 1.1rem;
+  font-size: 0.96rem;
 }
 
 .sidebar nav {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 6px;
   min-height: 0;
   overflow-y: auto;
   padding-right: 2px;
@@ -111,12 +113,18 @@ small {
 .mobile-drawer button {
   display: grid;
   gap: 4px;
-  min-height: 44px;
+  min-height: 34px;
   border: 1px solid transparent;
+  border-radius: 6px;
   background: transparent;
   color: var(--foreground);
-  padding: 10px 12px;
+  padding: 8px 10px;
   text-align: left;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
 }
 
 .sidebar button:hover,
@@ -126,6 +134,7 @@ small {
   border-color: var(--foreground);
   background: var(--foreground);
   color: var(--background);
+  transform: translateX(2px);
 }
 
 .sidebar button:disabled,
@@ -141,6 +150,45 @@ small {
   color: var(--muted);
 }
 
+.nav-advanced {
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.nav-advanced summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  list-style: none;
+}
+
+.nav-advanced summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-advanced summary::after {
+  content: " +";
+}
+
+.nav-advanced[open] summary::after {
+  content: " -";
+}
+
+.nav-advanced div {
+  display: grid;
+  gap: 4px;
+  padding-top: 8px;
+}
+
+.nav-advanced button {
+  min-height: 30px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .workspace {
   min-width: 0;
   max-width: 100%;
@@ -151,12 +199,12 @@ small {
   top: 0;
   z-index: 10;
   display: flex;
-  min-height: 72px;
+  min-height: 52px;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.96);
-  padding: 14px clamp(18px, 4vw, 42px);
+  padding: 10px clamp(14px, 3vw, 28px);
 }
 
 .skip-link {
@@ -175,12 +223,19 @@ small {
   display: none;
 }
 
+@media (min-width: 1025px) {
+  .mobile-navigation {
+    display: none !important;
+  }
+}
+
 .mobile-navigation > button,
 .mobile-drawer > button,
 .primary-action,
 .toolbar button {
-  min-height: 44px;
+  min-height: 36px;
   border: 1px solid var(--foreground);
+  border-radius: 6px;
   background: var(--foreground);
   color: var(--background);
   padding: 0 14px;
@@ -208,33 +263,33 @@ small {
 }
 
 .page-container {
-  width: min(1360px, calc(100vw - 320px));
+  width: min(1180px, calc(100vw - 300px));
   margin-inline: auto;
-  padding: clamp(22px, 4vw, 46px);
+  padding: clamp(16px, 3vw, 30px);
 }
 
 .page-stack {
   display: grid;
-  gap: 24px;
+  gap: 16px;
   min-width: 0;
 }
 
 .page-header {
   display: grid;
-  max-width: 900px;
-  gap: 10px;
+  max-width: 720px;
+  gap: 6px;
 }
 
 .page-header h1 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 4.2rem);
-  line-height: 1;
+  font-size: clamp(1.55rem, 3vw, 2.6rem);
+  line-height: 1.04;
 }
 
 .page-header p {
   margin: 0;
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.92rem;
   line-height: 1.5;
 }
 
@@ -242,7 +297,7 @@ small {
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 }
 
 .panel,
@@ -251,13 +306,15 @@ small {
 .settings-form {
   min-width: 0;
   border: 1px solid var(--border);
+  border-radius: 8px;
   background: var(--surface);
-  padding: 18px;
+  padding: 14px;
+  animation: admin-rise 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .panel h2 {
-  margin: 0 0 14px;
-  font-size: 1.1rem;
+  margin: 0 0 10px;
+  font-size: 0.98rem;
 }
 
 .status-pill {
@@ -283,11 +340,11 @@ small {
 
 .metric-card {
   display: grid;
-  gap: 20px;
+  gap: 12px;
 }
 
 .metric-card strong {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
   line-height: 1;
 }
 
@@ -295,7 +352,7 @@ small {
 .content-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
-  gap: 18px;
+  gap: 12px;
 }
 
 .key-value-list {
@@ -355,13 +412,13 @@ small {
 
 .json-viewer,
 .log-entry pre {
-  max-height: 520px;
+  max-height: 420px;
   overflow: auto;
   border: 1px solid var(--border);
   background: #fafafa;
   padding: 14px;
   color: var(--foreground);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -473,12 +530,12 @@ small {
 
 .repo-row {
   display: grid;
-  grid-template-columns: 92px minmax(220px, 1.6fr) 100px 120px 130px 120px 150px 96px;
-  gap: 10px;
+  grid-template-columns: 70px minmax(220px, 1.6fr) 84px 104px 116px 100px 132px 82px;
+  gap: 8px;
   align-items: center;
-  min-width: 1060px;
+  min-width: 930px;
   background: var(--background);
-  padding: 10px;
+  padding: 8px;
 }
 
 .repo-header {
@@ -578,14 +635,14 @@ small {
 
 .json-editor {
   width: 100%;
-  min-height: 520px;
+  min-height: 420px;
   resize: vertical;
   border: 1px solid var(--border-strong);
   background: #fafafa;
   color: var(--foreground);
   padding: 14px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   line-height: 1.5;
 }
 
@@ -676,10 +733,18 @@ small {
 
 .toast {
   border: 1px solid var(--foreground);
+  border-radius: 8px;
   background: var(--background);
   color: var(--foreground);
   padding: 12px;
   text-align: left;
+}
+
+@keyframes admin-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }
 
 @media (max-width: 1024px) {

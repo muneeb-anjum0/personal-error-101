@@ -12,7 +12,7 @@ export function IdentitySection({ content }: IdentitySectionProps) {
     <section id="identity" className="portfolio-section identity-section">
       <SectionHeading
         label="01 / IDENTITY"
-        heading="I DON'T JUST WRITE CODE. I DESIGN HOW SYSTEMS BEHAVE."
+        heading={content.profile.identityHeading ?? "ENGINEERING PROFILE."}
       />
       <Reveal className="identity-grid" pattern="stagger">
         <p className="identity-statement">{content.profile.longBio}</p>
