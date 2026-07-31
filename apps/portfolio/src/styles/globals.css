@@ -31,6 +31,8 @@ html {
   scroll-behavior: smooth;
   overflow-x: hidden;
   scroll-padding-top: 120px;
+  scrollbar-color: var(--foreground) rgba(9, 9, 9, 0.08);
+  scrollbar-width: thin;
 }
 
 body {
@@ -42,8 +44,42 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(9, 9, 9, 0.06);
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid var(--background);
+  border-radius: 999px;
+  background: var(--foreground);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(9, 9, 9, 0.72);
+}
+
 .scroll-locked {
   overflow: hidden;
+}
+
+.site-header,
+main,
+.site-footer {
+  transition:
+    filter var(--motion-normal) var(--ease-standard),
+    opacity var(--motion-normal) var(--ease-standard);
+}
+
+.quick-view-open .site-header,
+.quick-view-open main,
+.quick-view-open .site-footer {
+  filter: blur(12px);
+  opacity: 0.48;
 }
 
 ::selection {

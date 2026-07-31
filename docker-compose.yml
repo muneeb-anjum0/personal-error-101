@@ -41,7 +41,7 @@ services:
       GENERATOR_DATA_DIR: /workspace/data
       GITHUB_USERNAME: ${GITHUB_USERNAME:-muneeb-anjum0}
       GITHUB_INCLUDE_PRIVATE: ${GITHUB_INCLUDE_PRIVATE:-false}
-      LOCAL_AI_MODEL_PATH: ${LOCAL_AI_MODEL_PATH:-D:\Desktop\Model\Qwen3-8B-Q4_K_M.gguf}
+      LOCAL_AI_MODEL_PATH: /models/Qwen3-8B-Q4_K_M.gguf
       LOCAL_AI_BASE_URL: ${LOCAL_AI_BASE_URL:-http://host.docker.internal:8080/v1}
       LOCAL_AI_MODEL: ${LOCAL_AI_MODEL:-Qwen3-8B-Q4_K_M}
       LOCAL_AI_API_KEY: ${LOCAL_AI_API_KEY:-local}
@@ -58,6 +58,7 @@ services:
     volumes:
       - ./data:/workspace/data
       - ./assets:/workspace/assets
+      - D:/Desktop/Model:/models:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:

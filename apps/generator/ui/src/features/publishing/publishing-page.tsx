@@ -69,7 +69,7 @@ export function PublishingPage() {
   }
 
   return (
-    <section className="page-stack">
+    <section className="page-stack publishing-page">
       <header className="page-header">
         <p className="eyebrow">PUBLISH</p>
         <h1>Safe Local Publishing</h1>

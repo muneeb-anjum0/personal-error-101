@@ -6,6 +6,13 @@ import { useApiResource } from "../../hooks/use-api-resource";
 import { generatorApiClient } from "../../services/api-client/api-client";
 
 const defaultType: ContentFileType = "projects";
+const editLinks: Array<{ type: ContentFileType; label: string }> = [
+  { type: "profile", label: "Edit profile" },
+  { type: "projects", label: "Edit projects" },
+  { type: "experience", label: "Edit experience" },
+  { type: "skills", label: "Edit skills" },
+  { type: "activity", label: "Edit activity" }
+];
 
 export function ContentPage() {
   const [selected, setSelected] = useState<ContentFileType>(defaultType);
@@ -27,10 +34,15 @@ export function ContentPage() {
     <section className="page-stack">
       <header className="page-header">
         <p className="eyebrow">CONTENT</p>
-        <h1>Static Content Inspection</h1>
-        <p>
-          Read-only validation and JSON inspection for the files consumed by the public portfolio.
-        </p>
+        <h1>Static content</h1>
+        <p>Inspect public JSON, or open the staged editors to add portfolio records.</p>
+        <div className="toolbar compact-toolbar">
+          {editLinks.map((link) => (
+            <a key={link.type} className="admin-link-button" href={`/content/${link.type}`}>
+              {link.label}
+            </a>
+          ))}
+        </div>
       </header>
       <div className="content-layout">
         <div className="panel file-list">
