@@ -8,9 +8,12 @@ Project foundation: monorepo, contracts, static content validation, minimal publ
 
 Public portfolio interface and design system: monochrome responsive site, static content sections, project filters, project detail routes, Quick View, SEO foundations, and accessibility foundations.
 
+## Phase 2
+
+Motion, interaction, and visual polish: GSAP/ScrollTrigger lifecycle, Lenis smooth scroll, Motion layout transitions, custom cursor gating, animated SVG systems, reduced-motion strategy, and animation validation.
+
 ## Future Phases
 
-- Highly animated public portfolio website
 - Portfolio content management UI
 - GitHub repository synchronization
 - Manual repository selection

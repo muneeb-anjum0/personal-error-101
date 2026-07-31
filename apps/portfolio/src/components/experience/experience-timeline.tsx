@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { ExperienceEntry } from "@muneeb-systems/shared-types";
 
 interface ExperienceTimelineProps {
@@ -29,29 +30,39 @@ export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
         ))}
       </div>
       {selected ? (
-        <article className="experience-detail" role="tabpanel">
-          <p className="technical-label">SELECTED ROLE</p>
-          <h3>
-            {selected.role} / {selected.organization}
-          </h3>
-          <p className="metadata">
-            {selected.startDate} - {selected.endDate ?? "Present"} / {selected.location}
-          </p>
-          <p>{selected.summary}</p>
-          <div className="detail-columns">
-            <DetailBlock
-              title="Challenge"
-              items={[selected.challenge ?? "Challenge details pending."]}
-            />
-            <DetailBlock title="Contributions" items={selected.contributions} />
-            <DetailBlock title="Results" items={selected.results} />
-          </div>
-          <div className="inline-list">
-            {selected.technologies.map((technology) => (
-              <span key={technology}>{technology}</span>
-            ))}
-          </div>
-        </article>
+        <AnimatePresence mode="wait">
+          <motion.article
+            key={selected.id}
+            className="experience-detail"
+            role="tabpanel"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
+          >
+            <p className="technical-label">SELECTED ROLE</p>
+            <h3>
+              {selected.role} / {selected.organization}
+            </h3>
+            <p className="metadata">
+              {selected.startDate} - {selected.endDate ?? "Present"} / {selected.location}
+            </p>
+            <p>{selected.summary}</p>
+            <div className="detail-columns">
+              <DetailBlock
+                title="Challenge"
+                items={[selected.challenge ?? "Challenge details pending."]}
+              />
+              <DetailBlock title="Contributions" items={selected.contributions} />
+              <DetailBlock title="Results" items={selected.results} />
+            </div>
+            <div className="inline-list">
+              {selected.technologies.map((technology) => (
+                <span key={technology}>{technology}</span>
+              ))}
+            </div>
+          </motion.article>
+        </AnimatePresence>
       ) : null}
     </div>
   );

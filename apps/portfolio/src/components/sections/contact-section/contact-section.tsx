@@ -1,5 +1,6 @@
 import type { Profile } from "@muneeb-systems/shared-types";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getContactLinks } from "@/lib/portfolio-selectors";
 
@@ -12,7 +13,7 @@ export function ContactSection({ profile, resumeAvailable }: ContactSectionProps
   return (
     <section id="contact" className="portfolio-section contact-section">
       <SectionHeading label="07 / CONTACT" heading="THE SYSTEM IS READY." />
-      <div className="contact-grid">
+      <Reveal className="contact-grid" pattern="stagger">
         <p>
           LET&apos;S BUILD
           <br />
@@ -39,7 +40,7 @@ export function ContactSection({ profile, resumeAvailable }: ContactSectionProps
             </Button>
           )}
         </div>
-      </div>
+      </Reveal>
       <div className="contact-lines" aria-hidden="true">
         <span />
         <span />

@@ -25,6 +25,7 @@ export function QuickViewDialog(props: QuickViewDialogProps) {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.documentElement.classList.add("scroll-locked");
     closeRef.current?.focus();
 
     function onKeyDown(event: KeyboardEvent) {
@@ -36,6 +37,7 @@ export function QuickViewDialog(props: QuickViewDialogProps) {
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.documentElement.classList.remove("scroll-locked");
       window.removeEventListener("keydown", onKeyDown);
       triggerRef.current?.focus();
     };
@@ -46,6 +48,7 @@ export function QuickViewDialog(props: QuickViewDialogProps) {
       <button
         ref={triggerRef}
         className="nav-quick-view"
+        data-cursor="OPEN"
         type="button"
         onClick={() => setOpen(true)}
       >

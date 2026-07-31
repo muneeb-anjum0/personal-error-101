@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Reveal } from "@/components/motion/reveal";
 
 interface SectionHeadingProps {
   label: string;
@@ -18,14 +19,14 @@ export function SectionHeading({
   action
 }: SectionHeadingProps) {
   return (
-    <header className={`section-heading section-heading-${align}`}>
+    <Reveal as="section" className={`section-heading section-heading-${align}`} pattern="line">
       <p className="section-label">{label}</p>
       <div>
         {eyebrow ? <p className="technical-label">{eyebrow}</p> : null}
-        <h2>{heading}</h2>
+        <h2 className="motion-line">{heading}</h2>
         {description ? <p className="section-description">{description}</p> : null}
       </div>
       {action ? <div className="section-action">{action}</div> : null}
-    </header>
+    </Reveal>
   );
 }

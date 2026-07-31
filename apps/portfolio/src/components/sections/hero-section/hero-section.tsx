@@ -1,5 +1,6 @@
 import type { Profile } from "@muneeb-systems/shared-types";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/motion/reveal";
 import { StatusIndicator } from "@/components/ui/status-indicator";
 import { EngineeringSystem } from "@/components/visuals/engineering-system";
 
@@ -11,7 +12,7 @@ interface HeroSectionProps {
 export function HeroSection({ profile, resumeAvailable }: HeroSectionProps) {
   return (
     <section id="top" className="hero-section">
-      <div className="hero-copy">
+      <Reveal className="hero-copy hero-entrance" pattern="stagger">
         <div className="hero-meta">
           <span>[ FULL-STACK ENGINEER ]</span>
           <StatusIndicator label="System status" value={profile.availability} />
@@ -40,7 +41,7 @@ export function HeroSection({ profile, resumeAvailable }: HeroSectionProps) {
             </Button>
           )}
         </div>
-      </div>
+      </Reveal>
       <EngineeringSystem />
     </section>
   );

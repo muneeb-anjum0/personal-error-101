@@ -19,7 +19,7 @@ export function SiteFooter({ profile }: SiteFooterProps) {
             </a>
           ))}
       </nav>
-      <span>{new Date().getFullYear()} / PHASE 1</span>
+      <span>{new Date().getFullYear()} / PHASE 2</span>
     </footer>
   );
 }

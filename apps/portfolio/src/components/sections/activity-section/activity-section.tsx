@@ -1,4 +1,5 @@
 import type { ActivityItem } from "@muneeb-systems/shared-types";
+import { Reveal } from "@/components/motion/reveal";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { formatDisplayDate, sortActivityNewestFirst } from "@/lib/portfolio-selectors";
@@ -14,7 +15,7 @@ export function ActivitySection({ activity }: { activity: ActivityItem[] }) {
         heading="A STATIC STREAM OF WORK."
       />
       {sorted.length > 0 ? (
-        <div className="activity-stream">
+        <Reveal className="activity-stream" pattern="stagger">
           {sorted.map((item) => (
             <article key={item.id}>
               <time dateTime={item.occurredAt}>{formatDisplayDate(item.occurredAt)}</time>
@@ -27,7 +28,7 @@ export function ActivitySection({ activity }: { activity: ActivityItem[] }) {
               </div>
             </article>
           ))}
-        </div>
+        </Reveal>
       ) : (
         <EmptyState title="NO ACTIVITY LOADED." message="STATIC ACTIVITY DATA IS EMPTY." />
       )}

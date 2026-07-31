@@ -33,6 +33,7 @@ export function GeneratedProjectCover({ project, index }: GeneratedProjectCoverP
       <g className="cover-routes">
         {nodes.slice(1).map((node, nodeIndex) => (
           <line
+            className="cover-route-line"
             key={`${node.x}-${node.y}`}
             x1={nodes[nodeIndex]?.x ?? 0}
             y1={nodes[nodeIndex]?.y ?? 0}

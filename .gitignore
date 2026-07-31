@@ -9,6 +9,7 @@ build/
 coverage/
 playwright-report/
 test-results/
+artifacts/
 *.log
 *.tsbuildinfo
 .DS_Store

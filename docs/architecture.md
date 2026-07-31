@@ -8,6 +8,10 @@ Phase 0 creates a monorepo with strict boundaries between public presentation, p
 
 In Phase 1 the portfolio is composed from server-rendered sections, small client components only for interaction, and shared selectors in `apps/portfolio/src/lib/portfolio-selectors.ts`.
 
+Phase 2 keeps that split. Motion is added through focused client islands in `apps/portfolio/src/components/motion`, `apps/portfolio/src/components/cursor`, and the existing interactive section components. The homepage remains server-rendered; browser APIs are limited to providers, SVG animation, navigation state, filters, dialogs, and timeline selectors.
+
+Shared animation constants live in `apps/portfolio/src/lib/animation`. Device and animation budget decisions live in `apps/portfolio/src/lib/performance`.
+
 `apps/generator/server` is the private local API. It owns future orchestration for GitHub, local AI, filesystem persistence, queueing, Git operations, and publishing.
 
 `apps/generator/ui` is the private management interface. In Phase 0 it only displays API health and placeholder readiness.

@@ -1,4 +1,5 @@
 import type { ContentBundle } from "@muneeb-systems/shared-types";
+import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getIdentityStats } from "@/lib/portfolio-selectors";
 
@@ -13,7 +14,7 @@ export function IdentitySection({ content }: IdentitySectionProps) {
         label="01 / IDENTITY"
         heading="I DON'T JUST WRITE CODE. I DESIGN HOW SYSTEMS BEHAVE."
       />
-      <div className="identity-grid">
+      <Reveal className="identity-grid" pattern="stagger">
         <p className="identity-statement">{content.profile.longBio}</p>
         <dl className="stats-grid">
           {getIdentityStats(content).map((stat) => (
@@ -23,7 +24,7 @@ export function IdentitySection({ content }: IdentitySectionProps) {
             </div>
           ))}
         </dl>
-      </div>
+      </Reveal>
     </section>
   );
 }
