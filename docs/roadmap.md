@@ -4,6 +4,10 @@
 
 Project foundation: monorepo, contracts, static content validation, minimal public site, local API, local UI, Docker, tests, and documentation.
 
+## Phase 1
+
+Public portfolio interface and design system: monochrome responsive site, static content sections, project filters, project detail routes, Quick View, SEO foundations, and accessibility foundations.
+
 ## Future Phases
 
 - Highly animated public portfolio website

@@ -1,9 +1,21 @@
 [
   {
+    "id": "phase-one-interface",
+    "title": "Responsive portfolio interface",
+    "description": "Built the static public interface and design system foundation for MUNEEB.SYSTEMS.",
+    "occurredAt": "2026-07-31",
+    "projectId": "nope-security-orchestration",
+    "repository": "personal-error-101",
+    "source": "manual",
+    "starter": { "editable": true, "note": "Starter activity item." }
+  },
+  {
     "id": "phase-zero-foundation",
     "title": "Portfolio platform foundation",
     "description": "Initialized the monorepo foundation for future portfolio and generator work.",
-    "occurredAt": "2026-07-31",
+    "occurredAt": "2026-07-30",
+    "projectId": "nope-security-orchestration",
+    "repository": "personal-error-101",
     "source": "manual",
     "starter": { "editable": true, "note": "Starter activity item." }
   },
@@ -11,7 +23,9 @@
     "id": "local-ai-planning",
     "title": "Local AI workflow planning",
     "description": "Placeholder activity for future local model integration planning.",
-    "occurredAt": "Editable date",
+    "occurredAt": "2026-07-28",
+    "projectId": "ai-job-intelligence-engine",
+    "repository": "local-ai-workflows",
     "source": "manual",
     "starter": { "editable": true, "note": "Starter activity item." }
   },
@@ -19,7 +33,9 @@
     "id": "portfolio-content-prep",
     "title": "Portfolio content preparation",
     "description": "Placeholder activity for future project and experience content refinement.",
-    "occurredAt": "Editable date",
+    "occurredAt": "2026-07-24",
+    "projectId": "local-ai-interview-game",
+    "repository": "portfolio-content",
     "source": "manual",
     "starter": { "editable": true, "note": "Starter activity item." }
   }

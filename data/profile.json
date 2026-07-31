@@ -1,16 +1,22 @@
 {
   "name": "Muneeb Anjum",
-  "headline": "Software engineer building backend systems, AI workflows, and full-stack products.",
-  "shortBio": "Editable starter bio for the MUNEEB.SYSTEMS portfolio.",
-  "longBio": "Editable starter long bio. Replace this with a precise narrative about Muneeb's engineering work, product taste, and selected projects in a later content phase.",
-  "location": "Editable location",
-  "availability": "Editable availability",
+  "headline": "Full-stack developer building intelligent, secure, and useful software.",
+  "shortBio": "Muneeb Anjum is a full-stack developer focused on backend systems, AI-assisted workflows, and practical product engineering.",
+  "longBio": "I build software as connected systems: interfaces, APIs, data flows, automation, and the operational details that make products useful. This portfolio is intentionally powered by static content so the public site remains fast, reliable, and independent from private local tooling.",
+  "location": "Islamabad, Pakistan",
+  "availability": "Available",
   "email": "muneeb@example.com",
   "githubUrl": "https://github.com/muneeb-anjum0",
   "linkedInUrl": "https://www.linkedin.com/in/edit-this-placeholder",
   "resumePath": "/resume.pdf",
+  "stats": [
+    { "label": "Professional roles", "value": "3" },
+    { "label": "Primary disciplines", "value": "8" },
+    { "label": "Portfolio systems", "value": "5" },
+    { "label": "Content source", "value": "Static JSON" }
+  ],
   "starter": {
     "editable": true,
-    "note": "Starter content for Phase 0. Review and replace exact public details later."
+    "note": "Starter content for Phase 1. Review and replace exact public details later."
   }
 }

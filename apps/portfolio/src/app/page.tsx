@@ -1,30 +1,43 @@
-import { validatePortfolioContent } from "@/lib/content";
+import { PageShell } from "@/components/layout/page-shell";
+import { ActivitySection } from "@/components/sections/activity-section/activity-section";
+import { CapabilitySection } from "@/components/sections/capability-section/capability-section";
+import { ContactSection } from "@/components/sections/contact-section/contact-section";
+import { ExperienceSection } from "@/components/sections/experience-section/experience-section";
+import { HeroSection } from "@/components/sections/hero-section/hero-section";
+import { IdentitySection } from "@/components/sections/identity-section/identity-section";
+import { PhilosophySection } from "@/components/sections/philosophy-section/philosophy-section";
+import { ProjectsSection } from "@/components/sections/projects-section/projects-section";
+import { isResumeAvailable, loadPortfolioContent } from "@/lib/content";
+import { getVisibleProjects, sortProjectsByLatestPush } from "@/lib/portfolio-selectors";
 
 export default async function HomePage() {
-  await validatePortfolioContent();
+  const content = await loadPortfolioContent();
+  const resumeAvailable = await isResumeAvailable(content.profile.resumePath);
+  const projects = sortProjectsByLatestPush(getVisibleProjects(content.projects));
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6">
-      <section className="w-full max-w-xl">
-        <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300">
-          MUNEEB.SYSTEMS
-        </p>
-        <h1 className="mt-5 text-3xl font-semibold text-white">Foundation initialized.</h1>
-        <dl className="mt-8 grid gap-3 text-sm text-zinc-200">
-          <div className="flex items-center justify-between border-b border-white/10 py-3">
-            <dt>Portfolio</dt>
-            <dd className="font-medium text-emerald-300">Ready</dd>
-          </div>
-          <div className="flex items-center justify-between border-b border-white/10 py-3">
-            <dt>Generator API</dt>
-            <dd className="font-medium text-amber-300">Pending connection</dd>
-          </div>
-          <div className="flex items-center justify-between border-b border-white/10 py-3">
-            <dt>Static content</dt>
-            <dd className="font-medium text-emerald-300">Valid</dd>
-          </div>
-        </dl>
-      </section>
-    </main>
+    <PageShell content={content} resumeAvailable={resumeAvailable}>
+      <HeroSection profile={content.profile} resumeAvailable={resumeAvailable} />
+      <IdentitySection content={content} />
+      <CapabilitySection projects={projects} skills={content.skills} />
+      <ExperienceSection entries={content.experience} />
+      <ProjectsSection projects={projects} />
+      <ActivitySection activity={content.activity} />
+      <PhilosophySection />
+      <ContactSection profile={content.profile} resumeAvailable={resumeAvailable} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: content.profile.name,
+            url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+            sameAs: [content.profile.githubUrl, content.profile.linkedInUrl],
+            jobTitle: "Full-stack developer"
+          })
+        }}
+      />
+    </PageShell>
   );
 }

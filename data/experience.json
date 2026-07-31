@@ -6,8 +6,18 @@
     "location": "Editable location",
     "startDate": "Editable start date",
     "endDate": null,
-    "summary": "Editable starter entry for backend engineering work at App In Snap.",
+    "summary": "Backend engineering work focused on API-oriented application foundations.",
     "highlights": ["Worked on backend application foundations and API-oriented development."],
+    "challenge": "Build maintainable backend services with clear API behavior and dependable data handling.",
+    "contributions": [
+      "Implemented backend application features in a .NET-oriented environment.",
+      "Worked across API structure, service logic, and persistence concerns."
+    ],
+    "results": [
+      "Starter content only. Replace with verified outcomes before publishing final copy."
+    ],
+    "technologies": [".NET", "C#", "REST APIs", "SQL"],
+    "relatedProjectIds": [],
     "starter": {
       "editable": true,
       "note": "Do not publish as final copy until dates, scope, and details are reviewed."
@@ -20,10 +30,20 @@
     "location": "Editable location",
     "startDate": "Editable start date",
     "endDate": null,
-    "summary": "Editable starter entry for MERN stack leadership work at Aangan.",
+    "summary": "Full-stack leadership work across React, Node.js, and database-backed product features.",
     "highlights": [
       "Led full-stack implementation work across React, Node.js, and database layers."
     ],
+    "challenge": "Coordinate full-stack product delivery across interface, API, and database layers.",
+    "contributions": [
+      "Led MERN stack implementation work.",
+      "Connected product requirements to frontend and backend delivery."
+    ],
+    "results": [
+      "Starter content only. Replace with verified outcomes before publishing final copy."
+    ],
+    "technologies": ["React", "Node.js", "Express", "MongoDB"],
+    "relatedProjectIds": [],
     "starter": {
       "editable": true,
       "note": "Replace with verified responsibilities and dates in a later content phase."
@@ -36,8 +56,22 @@
     "location": "Remote",
     "startDate": "Editable start date",
     "endDate": null,
-    "summary": "Editable starter entry for independent software engineering and local AI experimentation.",
+    "summary": "Independent software engineering and local AI experimentation across practical product ideas.",
     "highlights": ["Built project prototypes across AI tooling, web applications, and automation."],
+    "challenge": "Explore practical uses of local AI, automation, and product-focused engineering without depending on remote systems.",
+    "contributions": [
+      "Built prototypes across AI workflows, full-stack applications, and developer tooling.",
+      "Designed local-first architecture patterns for experimentation and portfolio generation."
+    ],
+    "results": [
+      "Starter content only. Replace with verified outcomes before publishing final copy."
+    ],
+    "technologies": ["TypeScript", "Python", "Next.js", "Local LLMs"],
+    "relatedProjectIds": [
+      "ai-job-intelligence-engine",
+      "local-ai-interview-game",
+      "nope-security-orchestration"
+    ],
     "starter": {
       "editable": true,
       "note": "Keep this broad until specific projects and outcomes are verified."

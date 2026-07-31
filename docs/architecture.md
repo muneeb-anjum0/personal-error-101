@@ -6,6 +6,8 @@ Phase 0 creates a monorepo with strict boundaries between public presentation, p
 
 `apps/portfolio` is the public deployable frontend. It must remain functional without the generator backend and only reads committed static JSON content.
 
+In Phase 1 the portfolio is composed from server-rendered sections, small client components only for interaction, and shared selectors in `apps/portfolio/src/lib/portfolio-selectors.ts`.
+
 `apps/generator/server` is the private local API. It owns future orchestration for GitHub, local AI, filesystem persistence, queueing, Git operations, and publishing.
 
 `apps/generator/ui` is the private management interface. In Phase 0 it only displays API health and placeholder readiness.
