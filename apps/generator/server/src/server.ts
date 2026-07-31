@@ -30,6 +30,7 @@ import { LogQueryService } from "./application/services/log-query-service.js";
 import { ProcessingQueueService } from "./application/services/processing-queue-service.js";
 import { PreviewService } from "./application/services/preview-service.js";
 import { PublishingBundleService } from "./application/services/publishing-bundle-service.js";
+import { PublishingExecutionService } from "./application/services/publishing-execution-service.js";
 import { ReadinessService } from "./application/services/readiness-service.js";
 import { ReviewService } from "./application/services/review-service.js";
 import { SettingsService } from "./application/services/settings-service.js";
@@ -46,6 +47,7 @@ import { JsonDraftRepository } from "./infrastructure/drafts/json-draft-reposito
 import { JsonProcessingQueueRepository } from "./infrastructure/queue/json-processing-queue-repository.js";
 import { PreviewSessionRepository } from "./infrastructure/preview/preview-session-repository.js";
 import { PublishingBundleRepository } from "./infrastructure/publishing/publishing-bundle-repository.js";
+import { PublishingRunRepository } from "./infrastructure/publishing/publishing-run-repository.js";
 import { JsonReviewRepository } from "./infrastructure/reviews/json-review-repository.js";
 import { StagedContentRepository } from "./infrastructure/staged/staged-content-repository.js";
 import { ApplicationLogger } from "./infrastructure/logging/application-logger.js";
@@ -63,6 +65,7 @@ declare module "fastify" {
     processingQueueService: ProcessingQueueService;
     previewService: PreviewService;
     publishingBundleService: PublishingBundleService;
+    publishingExecutionService: PublishingExecutionService;
     readinessService: ReadinessService;
     reviewService: ReviewService;
     settingsService: SettingsService;
@@ -115,10 +118,19 @@ export async function buildServer() {
     new PreviewSessionRepository(appConfig),
     stagedContentService
   );
+  const publishingBundleRepository = new PublishingBundleRepository(appConfig);
+  const publishingRunRepository = new PublishingRunRepository(appConfig);
   const publishingBundleService = new PublishingBundleService(
-    new PublishingBundleRepository(appConfig),
+    appConfig,
+    publishingBundleRepository,
     reviewService,
     stagedContentService
+  );
+  const publishingExecutionService = new PublishingExecutionService(
+    appConfig,
+    publishingBundleRepository,
+    publishingRunRepository,
+    applicationLogger
   );
   await processingQueueService.recover();
 
@@ -146,6 +158,7 @@ export async function buildServer() {
   app.decorate("processingQueueService", processingQueueService);
   app.decorate("previewService", previewService);
   app.decorate("publishingBundleService", publishingBundleService);
+  app.decorate("publishingExecutionService", publishingExecutionService);
   app.decorate("readinessService", createReadinessService(appConfig));
   app.decorate("reviewService", reviewService);
   app.decorate("settingsService", settingsService);

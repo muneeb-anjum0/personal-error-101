@@ -45,4 +45,15 @@ export class PublishingBundleRepository {
       return null;
     }
   }
+
+  public async getData(id: string): Promise<unknown> {
+    try {
+      const wrapper = JSON.parse(
+        await readFile(path.join(this.config.publishingBundlesDirectory, `${id}.json`), "utf8")
+      ) as { data?: unknown };
+      return wrapper.data ?? null;
+    } catch {
+      return null;
+    }
+  }
 }

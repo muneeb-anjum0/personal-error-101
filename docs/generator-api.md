@@ -10,6 +10,8 @@ AI endpoints: `GET /api/ai/runtime`, `POST /api/ai/check`, `POST /api/ai/start`,
 
 Queue and draft endpoints: `GET /api/queue`, `POST /api/queue/enqueue`, `POST /api/queue/start`, `POST /api/queue/pause`, `POST /api/queue/resume`, `POST /api/queue/jobs/:jobId/cancel`, `POST /api/queue/jobs/:jobId/retry`, `POST /api/queue/retry-failed`, `GET /api/drafts`, and `GET /api/drafts/:draftId`.
 
+Publishing endpoints: `GET /api/publishing/execution/status`, `GET /api/publishing/runs`, `POST /api/publishing/runs`, `POST /api/publishing/runs/:runId/preflight`, `GET /api/publishing/runs/:runId/diff`, `POST /api/publishing/runs/:runId/backup`, `POST /api/publishing/runs/:runId/apply`, `POST /api/publishing/runs/:runId/validate`, `POST /api/publishing/runs/:runId/build`, `GET /api/publishing/runs/:runId/git-diff`, `POST /api/publishing/runs/:runId/commit`, `POST /api/publishing/runs/:runId/push`, `POST /api/publishing/runs/:runId/rollback`, `GET /api/publishing/backups`, `GET /api/publishing/git/readiness`, and `POST /api/github/auth/check`.
+
 Supported content types: `profile`, `projects`, `experience`, `skills`, `activity`, and `generator-state`.
 
 Errors use the shared contract with `code`, `message`, `requestId`, `details`, and `timestamp`.

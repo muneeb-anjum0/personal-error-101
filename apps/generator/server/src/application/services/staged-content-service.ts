@@ -145,7 +145,19 @@ export class StagedContentService {
       this.repository.readEffective("skills"),
       this.repository.readEffective("activity")
     ]);
-    return { profile, projects, experience, skills, activity };
+    return {
+      schemaVersion: 1 as const,
+      profile,
+      projects,
+      experience,
+      skills,
+      activity,
+      metadata: {
+        updatedAt: new Date().toISOString(),
+        updatedBy: "Muneeb Anjum",
+        source: "MANUAL_EDIT" as const
+      }
+    };
   }
 }
 

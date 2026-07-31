@@ -25,3 +25,7 @@ Local generator platform foundation: Fastify management API, routed React dashbo
 - Docker model support
 - Vercel frontend deployment
 - Mobile testing over the local network
+
+# Phase 7 Complete
+
+Safe local publishing now ends at GitHub push. Vercel deployment automation remains intentionally out of scope.

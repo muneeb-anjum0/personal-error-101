@@ -5,3 +5,7 @@
 Phase 5 provides Overview, Repositories, Queue, Local AI, Content, Settings, Logs, and System dashboard routes. Publishing remains disabled for a later phase.
 
 Repository discovery can fetch GitHub metadata, README source, language byte counts, rate-limit state, and local change classifications. Selected repositories can be manually enqueued for sequential local AI draft generation. Deferred to later phases: approval workflows, generated public content commits, Git pushes from generated content, and publishing automation.
+
+# Phase 7 Publishing Platform
+
+Publishing state persists under ignored `data/publishing/`. Direct Windows mode is preferred for Git credential access; Docker mode can build and inspect but may report push authentication unavailable if host credentials are not mounted.

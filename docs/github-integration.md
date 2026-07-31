@@ -7,3 +7,5 @@ The UI displays only `TOKEN CONFIGURED` or `TOKEN NOT CONFIGURED`. The token nev
 Local state lives in `data/github/`: `repositories.json`, `sync-state.json`, `selections.json`, plus backups. Public portfolio JSON is not modified in this phase.
 
 Queue eligibility requires `selectedForProcessing = true`. The queue never auto-selects repositories after sync and never auto-enqueues unselected repositories.
+
+Phase 7 adds `POST /api/github/auth/check` for safe token status inspection. GitHub REST API authentication is separate from Git push authentication; see `docs/github-token-setup.md` and `docs/git-authentication.md`.

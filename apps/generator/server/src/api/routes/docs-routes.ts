@@ -7,7 +7,7 @@ export function registerDocsRoutes(app: FastifyInstance): void {
       title: "MUNEEB.SYSTEMS GENERATOR API",
       version: app.appConfig.version,
       description:
-        "Local-only Phase 6 generator management API with draft review, manual editing, staged content, preview sessions, and approval bundles. Do not expose publicly."
+        "Local-only Phase 7 generator management API with safe publishing runs, public content application, Git review, commit, push, and rollback. Do not expose publicly."
     },
     paths: Object.fromEntries(
       [
@@ -75,6 +75,26 @@ export function registerDocsRoutes(app: FastifyInstance): void {
         "/api/publishing/status",
         "/api/publishing/bundles",
         "/api/publishing/bundles/{bundleId}",
+        "/api/publishing/execution/status",
+        "/api/publishing/runs",
+        "/api/publishing/runs/{runId}",
+        "/api/publishing/runs/{runId}/preflight",
+        "/api/publishing/runs/{runId}/diff",
+        "/api/publishing/runs/{runId}/backup",
+        "/api/publishing/runs/{runId}/apply",
+        "/api/publishing/runs/{runId}/validate",
+        "/api/publishing/runs/{runId}/build",
+        "/api/publishing/runs/{runId}/git-diff",
+        "/api/publishing/runs/{runId}/commit-confirmation",
+        "/api/publishing/runs/{runId}/commit",
+        "/api/publishing/runs/{runId}/push-confirmation",
+        "/api/publishing/runs/{runId}/push",
+        "/api/publishing/runs/{runId}/rollback-confirmation",
+        "/api/publishing/runs/{runId}/rollback",
+        "/api/publishing/backups",
+        "/api/publishing/backups/{backupId}",
+        "/api/publishing/git/readiness",
+        "/api/github/auth/check",
         "/api/system",
         "/api/docs"
       ].map((apiPath) => [

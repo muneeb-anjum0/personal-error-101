@@ -40,7 +40,7 @@ describe("generator API", () => {
     });
     expect((await instance.inject({ method: "GET", url: "/api/version" })).json()).toMatchObject({
       name: "MUNEEB.SYSTEMS GENERATOR",
-      phase: "phase-6-draft-review-content-approval"
+      phase: "phase-7-safe-local-publishing-git-workflow"
     });
   });
 
@@ -99,6 +99,15 @@ describe("generator API", () => {
     expect(
       (await instance.inject({ method: "GET", url: "/api/publishing/status" })).json()
     ).toHaveProperty("readyForManualPublish");
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/publishing/execution/status" })).json()
+    ).toHaveProperty("locked");
+    expect(
+      (await instance.inject({ method: "GET", url: "/api/publishing/git/readiness" })).json()
+    ).toHaveProperty("workingTreeState");
+    expect(
+      (await instance.inject({ method: "POST", url: "/api/github/auth/check" })).json()
+    ).toMatchObject({ statusLabel: "GITHUB TOKEN NOT CONFIGURED" });
     expect((await instance.inject({ method: "GET", url: "/api/docs" })).json()).toHaveProperty(
       "openapi",
       "3.1.0"

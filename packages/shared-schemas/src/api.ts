@@ -1040,6 +1040,266 @@ export const publishingBundleSchema = z.object({
   notice: z.literal("PHASE 6 PREPARATION ONLY. NO GIT COMMIT, PUSH, OR DEPLOYMENT WILL OCCUR.")
 });
 
+export const publishingRunStageSchema = z.enum([
+  "CREATED",
+  "PREFLIGHT_CHECKING",
+  "PREFLIGHT_FAILED",
+  "READY_TO_APPLY",
+  "BACKING_UP",
+  "APPLYING_CONTENT",
+  "CONTENT_APPLIED",
+  "VALIDATING_CONTENT",
+  "VALIDATION_FAILED",
+  "BUILDING_PORTFOLIO",
+  "BUILD_FAILED",
+  "READY_FOR_GIT_REVIEW",
+  "AWAITING_COMMIT_CONFIRMATION",
+  "COMMITTING",
+  "COMMIT_FAILED",
+  "COMMITTED",
+  "AWAITING_PUSH_CONFIRMATION",
+  "PUSHING",
+  "PUSH_FAILED",
+  "PUSHED",
+  "COMPLETED",
+  "ROLLBACK_AVAILABLE",
+  "ROLLING_BACK",
+  "ROLLED_BACK",
+  "FAILED",
+  "CANCELLED"
+]);
+
+export const publishingConfirmationActionSchema = z.enum(["APPLY", "COMMIT", "PUSH", "ROLLBACK"]);
+
+export const gitWorkingTreeClassificationSchema = z.enum([
+  "CLEAN",
+  "ONLY_EXPECTED_GENERATOR_STATE",
+  "UNRELATED_USER_CHANGES",
+  "CONFLICTING_PUBLIC_CONTENT_CHANGES",
+  "UNKNOWN"
+]);
+
+export const publishingCheckSchema = z.object({
+  name: z.string().min(1),
+  status: z.enum(["PASS", "WARN", "FAIL"]),
+  message: z.string().min(1)
+});
+
+export const gitRepositoryStatusSchema = z.object({
+  repositoryValid: z.boolean(),
+  branch: z.string().nullable(),
+  remote: z.string().nullable(),
+  remoteType: z.enum(["HTTPS", "SSH", "OTHER", "UNKNOWN"]),
+  headCommit: z.string().nullable(),
+  workingTreeState: gitWorkingTreeClassificationSchema,
+  changedFiles: z.array(z.string()),
+  conflictingPublicFiles: z.array(z.string()),
+  unrelatedFiles: z.array(z.string()),
+  ahead: z.number().int().nonnegative().nullable(),
+  behind: z.number().int().nonnegative().nullable(),
+  credentialMechanism: z.string().nullable(),
+  githubCliAvailable: z.boolean(),
+  githubCliAuthenticated: z.boolean(),
+  pushDryRunSupported: z.boolean(),
+  warnings: z.array(z.string())
+});
+
+export const gitPushReadinessSchema = gitRepositoryStatusSchema.extend({
+  ready: z.boolean(),
+  blockers: z.array(z.string())
+});
+
+export const githubTokenStatusSchema = z.object({
+  configured: z.boolean(),
+  authenticated: z.boolean(),
+  username: z.string().nullable(),
+  privateRepositoryAccess: z.boolean().nullable(),
+  scopesOrPermissionsSummary: z.array(z.string()),
+  statusLabel: z.enum(["GITHUB TOKEN CONFIGURED", "GITHUB TOKEN NOT CONFIGURED"]),
+  error: z.string().nullable()
+});
+
+export const publicContentBackupSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  publishingRunId: z.string().min(1),
+  bundleId: z.string().min(1),
+  createdAt: z.string().datetime(),
+  gitBranch: z.string().nullable(),
+  baselineCommit: z.string().nullable(),
+  directory: z.string().min(1),
+  fileHashes: z.record(z.string(), z.string()),
+  fileSizes: z.record(z.string(), z.number().int().nonnegative()),
+  validationStatus: z.enum(["VALID", "INVALID"]),
+  restoreEligibility: z.enum(["ELIGIBLE", "BLOCKED", "RESTORED"])
+});
+
+export const publishingConfirmationTokenSchema = z.object({
+  token: z.string().min(1),
+  action: publishingConfirmationActionSchema,
+  publishingRunId: z.string().min(1),
+  bundleHash: z.string().min(1),
+  baselineHash: z.string().min(1),
+  branch: z.string().nullable(),
+  expiresAt: z.string().datetime()
+});
+
+export const publishingPreflightResultSchema = z.object({
+  valid: z.boolean(),
+  checks: z.array(publishingCheckSchema),
+  baselineHash: z.string().min(1),
+  changedFiles: z.array(z.string()),
+  confirmation: publishingConfirmationTokenSchema.nullable()
+});
+
+export const publicContentValidationResultSchema = z.object({
+  valid: z.boolean(),
+  errors: z.array(z.string()),
+  warnings: z.array(z.string()),
+  checkedAt: z.string().datetime()
+});
+
+export const portfolioBuildCommandResultSchema = z.object({
+  command: z.string().min(1),
+  startedAt: z.string().datetime(),
+  endedAt: z.string().datetime(),
+  exitCode: z.number().int(),
+  stdoutSummary: z.string(),
+  stderrSummary: z.string(),
+  logPath: z.string().nullable()
+});
+
+export const portfolioBuildResultSchema = z.object({
+  valid: z.boolean(),
+  commands: z.array(portfolioBuildCommandResultSchema),
+  startedAt: z.string().datetime(),
+  endedAt: z.string().datetime()
+});
+
+export const gitDiffFileSchema = z.object({
+  path: z.string().min(1),
+  status: z.string().min(1),
+  additions: z.number().int().nonnegative(),
+  deletions: z.number().int().nonnegative(),
+  diff: z.string()
+});
+
+export const gitDiffSummarySchema = z.object({
+  filesChanged: z.number().int().nonnegative(),
+  additions: z.number().int().nonnegative(),
+  deletions: z.number().int().nonnegative(),
+  files: z.array(gitDiffFileSchema),
+  truncated: z.boolean()
+});
+
+export const commitRequestSchema = z.object({
+  message: z
+    .string()
+    .min(1)
+    .max(120)
+    .refine(
+      (value) =>
+        [...value].every((character) => {
+          const code = character.codePointAt(0) ?? 0;
+          return code >= 32 && code !== 127 && character !== "\r" && character !== "\n";
+        }),
+      "Commit message must be one line without control characters."
+    ),
+  confirmationToken: z.string().min(1)
+});
+
+export const commitResultSchema = z.object({
+  committed: z.boolean(),
+  commitHash: z.string().nullable(),
+  stagedFiles: z.array(z.string()),
+  message: z.string().min(1),
+  error: z.string().nullable()
+});
+
+export const pushConfirmationSchema = z.object({
+  confirmationToken: z.string().min(1)
+});
+
+export const pushResultSchema = z.object({
+  pushed: z.boolean(),
+  remote: z.string().nullable(),
+  branch: z.string().nullable(),
+  category: z.enum([
+    "SUCCESS",
+    "AUTHENTICATION_FAILED",
+    "NON_FAST_FORWARD",
+    "NETWORK",
+    "TIMEOUT",
+    "UNKNOWN"
+  ]),
+  output: z.string(),
+  error: z.string().nullable()
+});
+
+export const rollbackRequestSchema = z.object({
+  confirmationToken: z.string().min(1)
+});
+
+export const rollbackResultSchema = z.object({
+  rolledBack: z.boolean(),
+  backupId: z.string().nullable(),
+  restoredFiles: z.array(z.string()),
+  error: z.string().nullable()
+});
+
+export const publishingAuditEventSchema = z.object({
+  id: z.string().min(1),
+  publishingRunId: z.string().min(1),
+  category: z.string().min(1),
+  createdAt: z.string().datetime(),
+  message: z.string().min(1),
+  details: z.record(z.string(), z.unknown()).default({})
+});
+
+export const publishingRunSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  bundleId: z.string().min(1),
+  bundleHash: z.string().min(1),
+  baselineCommit: z.string().nullable(),
+  baselineContentHashes: z.record(z.string(), z.string()),
+  proposedContentHashes: z.record(z.string(), z.string()),
+  currentGitBranch: z.string().nullable(),
+  gitRemote: z.string().nullable(),
+  createdAt: z.string().datetime(),
+  startedAt: z.string().datetime().nullable(),
+  updatedAt: z.string().datetime(),
+  completedAt: z.string().datetime().nullable(),
+  currentStage: publishingRunStageSchema,
+  previousStages: z.array(publishingRunStageSchema),
+  validationResults: publicContentValidationResultSchema.nullable(),
+  buildResults: portfolioBuildResultSchema.nullable(),
+  gitDiffSummary: gitDiffSummarySchema.nullable(),
+  commitHash: z.string().nullable(),
+  pushResult: pushResultSchema.nullable(),
+  backupId: z.string().nullable(),
+  rollbackStatus: z.enum(["NONE", "AVAILABLE", "RESTORED", "BLOCKED"]),
+  error: z.string().nullable(),
+  warnings: z.array(z.string()),
+  userConfirmations: z.array(publishingConfirmationTokenSchema),
+  auditEventIds: z.array(z.string())
+});
+
+export const publishingRunsResponseSchema = z.object({
+  items: z.array(publishingRunSchema),
+  total: z.number().int().nonnegative()
+});
+
+export const createPublishingRunRequestSchema = z.object({
+  bundleId: z.string().min(1)
+});
+
+export const publishingExecutionStatusSchema = z.object({
+  activeRunId: z.string().nullable(),
+  locked: z.boolean(),
+  latestRun: publishingRunSchema.nullable()
+});
+
 export const apiHealthResponseSchema = z.object({
   status: z.literal("healthy")
 });

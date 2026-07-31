@@ -24,6 +24,20 @@ import {
   logsResponseSchema,
   previewSessionSchema,
   publishingBundleSchema,
+  commitResultSchema,
+  gitDiffSummarySchema,
+  gitPushReadinessSchema,
+  githubTokenStatusSchema,
+  portfolioBuildResultSchema,
+  publicContentBackupSchema,
+  publicContentValidationResultSchema,
+  publishingConfirmationTokenSchema,
+  publishingExecutionStatusSchema,
+  publishingPreflightResultSchema,
+  publishingRunSchema,
+  publishingRunsResponseSchema,
+  pushResultSchema,
+  rollbackResultSchema,
   reviewApprovalSchema,
   reviewRejectionSchema,
   reviewRevisionSchema,
@@ -43,6 +57,7 @@ import type {
   AiTestGenerationRequest,
   EnqueueRepositoriesRequest,
   GeneratorSettingsUpdate,
+  CommitRequest,
   OpenReviewRequest,
   RejectReviewRequest,
   SaveReviewRevisionRequest,
@@ -77,6 +92,11 @@ const publishingStatusSchema = z.object({
 
 const publishingBundlesResponseSchema = z.object({
   items: z.array(publishingBundleSchema),
+  total: z.number().int().nonnegative()
+});
+
+const publishingBackupsResponseSchema = z.object({
+  items: z.array(publicContentBackupSchema),
   total: z.number().int().nonnegative()
 });
 
@@ -569,6 +589,194 @@ export class GeneratorApiClient {
       publishingBundleSchema,
       signal
     );
+  }
+
+  public publishingExecutionStatus(signal?: AbortSignal) {
+    return this.get("/api/publishing/execution/status", publishingExecutionStatusSchema, signal);
+  }
+
+  public publishingRuns(signal?: AbortSignal) {
+    return this.get("/api/publishing/runs", publishingRunsResponseSchema, signal);
+  }
+
+  public createPublishingRun(bundleId: string, signal?: AbortSignal) {
+    return this.request("/api/publishing/runs", publishingRunSchema, {
+      method: "POST",
+      body: JSON.stringify({ bundleId }),
+      signal
+    });
+  }
+
+  public publishingRun(runId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/publishing/runs/${encodeURIComponent(runId)}`,
+      publishingRunSchema,
+      signal
+    );
+  }
+
+  public runPublishingPreflight(runId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/preflight`,
+      publishingPreflightResultSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public publishingRunDiff(runId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/diff`,
+      gitDiffSummarySchema,
+      signal
+    );
+  }
+
+  public createPublishingBackup(runId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/backup`,
+      publicContentBackupSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public applyPublishingRun(runId: string, confirmationToken: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/apply`,
+      publishingRunSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({ confirmationToken }),
+        signal
+      }
+    );
+  }
+
+  public validatePublishingRun(runId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/validate`,
+      publicContentValidationResultSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public buildPublishingRun(runId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/build`,
+      portfolioBuildResultSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public publishingGitDiff(runId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/git-diff`,
+      gitDiffSummarySchema,
+      signal
+    );
+  }
+
+  public prepareCommitConfirmation(runId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/commit-confirmation`,
+      publishingConfirmationTokenSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public commitPublishingRun(runId: string, request: CommitRequest, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/commit`,
+      commitResultSchema,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+        signal
+      }
+    );
+  }
+
+  public preparePushConfirmation(runId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/push-confirmation`,
+      publishingConfirmationTokenSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public pushPublishingRun(runId: string, confirmationToken: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/push`,
+      pushResultSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({ confirmationToken }),
+        signal
+      }
+    );
+  }
+
+  public prepareRollbackConfirmation(runId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/rollback-confirmation`,
+      publishingConfirmationTokenSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public rollbackPublishingRun(runId: string, confirmationToken: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/publishing/runs/${encodeURIComponent(runId)}/rollback`,
+      rollbackResultSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({ confirmationToken }),
+        signal
+      }
+    );
+  }
+
+  public publishingBackups(signal?: AbortSignal) {
+    return this.get("/api/publishing/backups", publishingBackupsResponseSchema, signal);
+  }
+
+  public gitPushReadiness(signal?: AbortSignal) {
+    return this.get("/api/publishing/git/readiness", gitPushReadinessSchema, signal);
+  }
+
+  public githubAuthCheck(signal?: AbortSignal) {
+    return this.request("/api/github/auth/check", githubTokenStatusSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
   }
 
   private get<T extends z.ZodType>(

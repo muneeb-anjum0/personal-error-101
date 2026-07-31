@@ -51,3 +51,16 @@ test("generator mobile navigation works without horizontal overflow", async ({ p
   );
   expect(overflow).toBe(false);
 });
+
+test("publishing wizard shows token guidance and no Vercel controls", async ({ page }) => {
+  await page.goto("http://127.0.0.1:4173/publish");
+
+  await expect(page.getByRole("heading", { name: "Safe Local Publishing" })).toBeVisible();
+  await expect(page.getByText("NO VERCEL DEPLOYMENT WILL BE PERFORMED")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "GitHub Setup" })).toBeVisible();
+  await expect(page.getByText("GitHub Personal Access Token")).toBeVisible();
+  await expect(page.getByText("GIT PUSH AUTHENTICATION")).toBeVisible();
+  await expect(page.getByRole("button", { name: /CREATE RUN/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /PUSH TO GITHUB/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /DEPLOY/i })).toHaveCount(0);
+});

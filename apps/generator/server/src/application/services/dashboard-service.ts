@@ -73,8 +73,8 @@ export class DashboardService {
         `REVIEW AND EDIT: AVAILABLE / ${reviewState.total} REVIEWS`,
         `PREVIEW PORTFOLIO: AVAILABLE / ${stagedState.conflicts.length} CONFLICTS`,
         `PREPARE PUBLISHING BUNDLE: AVAILABLE / ${publishingState.bundles} BUNDLES`,
-        `GITHUB RATE LIMIT: ${githubStatus.rateLimit.remaining}/${githubStatus.rateLimit.limit}`,
-        "COMMIT AND DEPLOY: FUTURE"
+        "SAFE LOCAL PUBLISHING: AVAILABLE / NO VERCEL DEPLOYMENT",
+        `GITHUB RATE LIMIT: ${githubStatus.rateLimit.remaining}/${githubStatus.rateLimit.limit}`
       ]
     };
   }

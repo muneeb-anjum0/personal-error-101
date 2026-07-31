@@ -9,3 +9,7 @@ Categories: `APPLICATION`, `API`, `FILESYSTEM`, `CONTENT`, `SETTINGS`, `SYSTEM`,
 Phase 5 logs GitHub sync, AI runtime, warm-up, generation, repair, queue transitions, recovery, and private draft persistence. Logs must not include tokens, authorization headers, raw GitHub response bodies, README bodies, prompts, raw AI responses, or private source code.
 
 `GET /api/logs` supports safe filters for level, category, search, limit, before, and order. Limits are capped at 200.
+
+# Phase 7 Publishing Logs
+
+Publishing runs write audit events to ignored `data/publishing/audit-events.jsonl`. Build command logs are stored under ignored `data/publishing/build-logs/` with truncated safe summaries returned through the API.

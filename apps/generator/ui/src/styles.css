@@ -597,6 +597,26 @@ small {
   grid-template-columns: minmax(260px, 0.42fr) minmax(0, 1fr);
 }
 
+.publish-step {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.publish-step > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.publish-step h3 {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

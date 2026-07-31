@@ -23,3 +23,9 @@ Shared schemas live in `packages/shared-schemas`. Types are inferred in `package
 ## Future Boundaries
 
 GitHub, AI, queue, and draft persistence live under the generator server infrastructure/application layers. AI-generated output is private draft data only; review/edit approval, portfolio mutation, Git commit automation, and publishing remain later-phase boundaries.
+
+# Phase 7 Safe Publishing
+
+The generator now separates immutable publishing bundles from publishing runs. Runs own preflight, backups, public-content application, validation, Git review, commit, push, rollback, audit events, and confirmation tokens.
+
+No Vercel deployment automation is part of the generator architecture.

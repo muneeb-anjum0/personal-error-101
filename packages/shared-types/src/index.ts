@@ -79,6 +79,32 @@ import type {
   openReviewRequestSchema,
   previewSessionSchema,
   publishingBundleSchema,
+  commitRequestSchema,
+  commitResultSchema,
+  createPublishingRunRequestSchema,
+  gitDiffFileSchema,
+  gitDiffSummarySchema,
+  gitPushReadinessSchema,
+  gitRepositoryStatusSchema,
+  gitWorkingTreeClassificationSchema,
+  githubTokenStatusSchema,
+  portfolioBuildCommandResultSchema,
+  portfolioBuildResultSchema,
+  publicContentBackupSchema,
+  publicContentValidationResultSchema,
+  publishingAuditEventSchema,
+  publishingCheckSchema,
+  publishingConfirmationActionSchema,
+  publishingConfirmationTokenSchema,
+  publishingExecutionStatusSchema,
+  publishingPreflightResultSchema,
+  publishingRunSchema,
+  publishingRunsResponseSchema,
+  publishingRunStageSchema,
+  pushConfirmationSchema,
+  pushResultSchema,
+  rollbackRequestSchema,
+  rollbackResultSchema,
   rejectionReasonSchema,
   rejectReviewRequestSchema,
   reviewApprovalSchema,
@@ -179,6 +205,32 @@ export type StagedContentStatus = z.infer<typeof stagedContentStatusSchema>;
 export type StagedContentBundle = z.infer<typeof stagedContentBundleSchema>;
 export type PreviewSession = z.infer<typeof previewSessionSchema>;
 export type PublishingBundle = z.infer<typeof publishingBundleSchema>;
+export type PublishingRunStage = z.infer<typeof publishingRunStageSchema>;
+export type PublishingConfirmationAction = z.infer<typeof publishingConfirmationActionSchema>;
+export type GitWorkingTreeClassification = z.infer<typeof gitWorkingTreeClassificationSchema>;
+export type PublishingCheck = z.infer<typeof publishingCheckSchema>;
+export type GitRepositoryStatus = z.infer<typeof gitRepositoryStatusSchema>;
+export type GitPushReadiness = z.infer<typeof gitPushReadinessSchema>;
+export type GitHubTokenStatus = z.infer<typeof githubTokenStatusSchema>;
+export type PublicContentBackup = z.infer<typeof publicContentBackupSchema>;
+export type PublishingConfirmationToken = z.infer<typeof publishingConfirmationTokenSchema>;
+export type PublishingPreflightResult = z.infer<typeof publishingPreflightResultSchema>;
+export type PublicContentValidationResult = z.infer<typeof publicContentValidationResultSchema>;
+export type PortfolioBuildCommandResult = z.infer<typeof portfolioBuildCommandResultSchema>;
+export type PortfolioBuildResult = z.infer<typeof portfolioBuildResultSchema>;
+export type GitDiffFile = z.infer<typeof gitDiffFileSchema>;
+export type GitDiffSummary = z.infer<typeof gitDiffSummarySchema>;
+export type CommitRequest = z.infer<typeof commitRequestSchema>;
+export type CommitResult = z.infer<typeof commitResultSchema>;
+export type PushConfirmation = z.infer<typeof pushConfirmationSchema>;
+export type PushResult = z.infer<typeof pushResultSchema>;
+export type RollbackRequest = z.infer<typeof rollbackRequestSchema>;
+export type RollbackResult = z.infer<typeof rollbackResultSchema>;
+export type PublishingAuditEvent = z.infer<typeof publishingAuditEventSchema>;
+export type PublishingRun = z.infer<typeof publishingRunSchema>;
+export type PublishingRunsResponse = z.infer<typeof publishingRunsResponseSchema>;
+export type CreatePublishingRunRequest = z.infer<typeof createPublishingRunRequestSchema>;
+export type PublishingExecutionStatus = z.infer<typeof publishingExecutionStatusSchema>;
 export type GitHubAuthenticationState = z.infer<typeof githubAuthenticationStateSchema>;
 export type GitHubAuthenticationMode = z.infer<typeof githubAuthenticationModeSchema>;
 export type RepositoryVisibility = z.infer<typeof repositoryVisibilitySchema>;

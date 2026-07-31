@@ -8,4 +8,6 @@ GitHub safeguards: `GITHUB_TOKEN` is server-environment only, never persisted, n
 
 AI safeguards: local AI base URLs are restricted to `127.0.0.1`, `localhost`, and `host.docker.internal`; managed process startup uses argument arrays instead of shell strings; Docker mode marks Windows process management unavailable; README content is treated as untrusted data; raw AI responses and drafts stay under ignored `data/ai/`.
 
+Publishing safeguards: mutation endpoints are local-only, use action-specific confirmation tokens, write only approved public JSON files, create backups before application, run fixed Git command arguments, stage explicit paths only, redact remote credentials, block public-content conflicts, and provide rollback for local uncommitted content. No Vercel API, token, webhook, deployment button, or deployment polling is implemented.
+
 This is not a public-exposure security model. Do not expose the generator API to the internet.

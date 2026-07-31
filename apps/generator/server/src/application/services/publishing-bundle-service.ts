@@ -1,5 +1,8 @@
 import { createHash, randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import type { PublishingBundle } from "@muneeb-systems/shared-types";
+import type { GeneratorAppConfig } from "../../config/app-config.js";
 import type { PublishingBundleRepository } from "../../infrastructure/publishing/publishing-bundle-repository.js";
 import type { ReviewService } from "./review-service.js";
 import type { StagedContentService } from "./staged-content-service.js";
@@ -9,6 +12,7 @@ const notice = "PHASE 6 PREPARATION ONLY. NO GIT COMMIT, PUSH, OR DEPLOYMENT WIL
 
 export class PublishingBundleService {
   public constructor(
+    private readonly config: GeneratorAppConfig,
     private readonly repository: PublishingBundleRepository,
     private readonly reviews: ReviewService,
     private readonly staged: StagedContentService
@@ -41,7 +45,7 @@ export class PublishingBundleService {
       createdAt: new Date().toISOString(),
       status: errors.length ? "INVALID" : "PREPARED",
       approvalIds: approvals.map((approval) => approval.id),
-      baselineHash: hash("public-baseline"),
+      baselineHash: await publicBaselineHash(this.config.dataDirectory),
       bundleHash: hash(data),
       diff: [
         {
@@ -72,4 +76,23 @@ export class PublishingBundleService {
 
 function hash(value: unknown): string {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex");
+}
+
+async function publicBaselineHash(dataDirectory: string): Promise<string> {
+  const files = [
+    "profile.json",
+    "projects.json",
+    "experience.json",
+    "skills.json",
+    "activity.json"
+  ];
+  const values: Array<[string, unknown]> = await Promise.all(
+    files.map(
+      async (file): Promise<[string, unknown]> => [
+        file,
+        JSON.parse(await readFile(path.join(dataDirectory, file), "utf8")) as unknown
+      ]
+    )
+  );
+  return hash(Object.fromEntries(values));
 }

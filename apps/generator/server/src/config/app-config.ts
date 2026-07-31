@@ -48,6 +48,11 @@ export interface GeneratorAppConfig {
   publishingCurrentPath: string;
   publishingDiffDirectory: string;
   publishingBackupDirectory: string;
+  publishingRunsPath: string;
+  publishingRunsDirectory: string;
+  publishingAuditPath: string;
+  publishingBuildLogDirectory: string;
+  publishingConfirmationPath: string;
   aiHostBaseUrl: string;
   aiApiKey: string;
   aiContextSize: number;
@@ -82,7 +87,7 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
     port: environment.GENERATOR_API_PORT,
     corsOrigins: ["http://localhost:4173", "http://127.0.0.1:4173"],
     version: "0.0.0",
-    phase: "phase-6-draft-review-content-approval",
+    phase: "phase-7-safe-local-publishing-git-workflow",
     environment: environment.NODE_ENV,
     repositoryRoot,
     dataDirectory,
@@ -131,6 +136,11 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
     publishingCurrentPath: path.join(dataDirectory, "publishing", "current.json"),
     publishingDiffDirectory: path.join(dataDirectory, "publishing", "diffs"),
     publishingBackupDirectory: path.join(dataDirectory, "publishing", "backups"),
+    publishingRunsPath: path.join(dataDirectory, "publishing", "runs.json"),
+    publishingRunsDirectory: path.join(dataDirectory, "publishing", "runs"),
+    publishingAuditPath: path.join(dataDirectory, "publishing", "audit-events.jsonl"),
+    publishingBuildLogDirectory: path.join(dataDirectory, "publishing", "build-logs"),
+    publishingConfirmationPath: path.join(dataDirectory, "publishing", "confirmations.json"),
     aiHostBaseUrl: environment.LOCAL_AI_HOST_BASE_URL,
     aiApiKey: environment.LOCAL_AI_API_KEY,
     aiContextSize: environment.LOCAL_AI_CONTEXT_SIZE,

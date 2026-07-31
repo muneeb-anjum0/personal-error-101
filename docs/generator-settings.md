@@ -9,3 +9,7 @@ GitHub username and include-private preference are safe settings. `GITHUB_TOKEN`
 Writes validate input, serialize deterministic JSON, write a temporary file, back up the previous settings file, rename the temporary file, and retain up to 10 backups in `data/backups/generator-settings`.
 
 Phase 5 AI configuration is environment-driven: `LOCAL_AI_MODEL_PATH`, `LOCAL_AI_BASE_URL`, `LOCAL_AI_HOST_BASE_URL`, `LOCAL_AI_MODEL`, `LOCAL_AI_API_KEY`, `LOCAL_AI_CONTEXT_SIZE`, `LOCAL_AI_PARALLEL_REQUESTS`, `LOCAL_AI_GPU_LAYERS`, `LOCAL_AI_MAX_VRAM_GB`, `LOCAL_AI_SERVER_PORT`, `LOCAL_AI_SERVER_HOST`, `LOCAL_AI_SERVER_EXECUTABLE`, and `LOCAL_AI_RUNTIME_MODE`.
+
+# Phase 7 Settings
+
+`GITHUB_TOKEN` remains a server-side environment variable. Use `apps/generator/server/.env.local`, a PowerShell session, or Docker Compose environment interpolation. Never store tokens in JSON settings.
