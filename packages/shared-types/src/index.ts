@@ -23,6 +23,21 @@ import type {
   logLevelSchema,
   logQuerySchema,
   logsResponseSchema,
+  aiHealthResultSchema,
+  aiModelInfoSchema,
+  aiRuntimeModeSchema,
+  aiRuntimeStateSchema,
+  aiRuntimeStatusSchema,
+  aiTestGenerationRequestSchema,
+  aiTestGenerationResultSchema,
+  aiWarmUpResultSchema,
+  draftSummarySchema,
+  draftValidationResultSchema,
+  draftsResponseSchema,
+  enqueueRepositoriesRequestSchema,
+  enqueueRepositoriesResponseSchema,
+  generatedProjectDraftSchema,
+  generationUsageSchema,
   discoveredRepositorySchema,
   githubAuthenticationModeSchema,
   githubAuthenticationStateSchema,
@@ -50,7 +65,14 @@ import type {
   repositorySelectionSchema,
   repositoryVisibilitySchema,
   profileSchema,
+  processingCheckpointSchema,
+  processingJobSchema,
+  processingJobStateSchema,
+  processingQueueSchema,
   projectSchema,
+  queueEventSchema,
+  queueMetricsSchema,
+  queueStateSchema,
   safeConfigurationSummarySchema,
   serviceStatusSchema,
   skillCategorySchema,
@@ -87,6 +109,28 @@ export type LogQuery = z.infer<typeof logQuerySchema>;
 export type LogsResponse = z.infer<typeof logsResponseSchema>;
 export type SystemInformation = z.infer<typeof systemInformationSchema>;
 export type DashboardOverview = z.infer<typeof dashboardOverviewSchema>;
+export type AiRuntimeMode = z.infer<typeof aiRuntimeModeSchema>;
+export type AiRuntimeStatus = z.infer<typeof aiRuntimeStatusSchema>;
+export type AiModelInfo = z.infer<typeof aiModelInfoSchema>;
+export type AiHealthResult = z.infer<typeof aiHealthResultSchema>;
+export type AiWarmUpResult = z.infer<typeof aiWarmUpResultSchema>;
+export type GenerationUsage = z.infer<typeof generationUsageSchema>;
+export type AiTestGenerationRequest = z.infer<typeof aiTestGenerationRequestSchema>;
+export type AiTestGenerationResult = z.infer<typeof aiTestGenerationResultSchema>;
+export type AiRuntimeState = z.infer<typeof aiRuntimeStateSchema>;
+export type QueueState = z.infer<typeof queueStateSchema>;
+export type ProcessingJobState = z.infer<typeof processingJobStateSchema>;
+export type ProcessingCheckpoint = z.infer<typeof processingCheckpointSchema>;
+export type GeneratedProjectDraft = z.infer<typeof generatedProjectDraftSchema>;
+export type DraftValidationResult = z.infer<typeof draftValidationResultSchema>;
+export type ProcessingJob = z.infer<typeof processingJobSchema>;
+export type QueueMetrics = z.infer<typeof queueMetricsSchema>;
+export type ProcessingQueue = z.infer<typeof processingQueueSchema>;
+export type QueueEvent = z.infer<typeof queueEventSchema>;
+export type EnqueueRepositoriesRequest = z.infer<typeof enqueueRepositoriesRequestSchema>;
+export type EnqueueRepositoriesResponse = z.infer<typeof enqueueRepositoriesResponseSchema>;
+export type DraftSummary = z.infer<typeof draftSummarySchema>;
+export type DraftsResponse = z.infer<typeof draftsResponseSchema>;
 export type GitHubAuthenticationState = z.infer<typeof githubAuthenticationStateSchema>;
 export type GitHubAuthenticationMode = z.infer<typeof githubAuthenticationModeSchema>;
 export type RepositoryVisibility = z.infer<typeof repositoryVisibilitySchema>;

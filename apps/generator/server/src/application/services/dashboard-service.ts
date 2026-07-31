@@ -4,6 +4,8 @@ import type { ContentStatusService } from "./content-status-service.js";
 import type { LogQueryService } from "./log-query-service.js";
 import type { SettingsService } from "./settings-service.js";
 import type { GitHubService } from "./github-service.js";
+import type { AiRuntimeService } from "./ai-runtime-service.js";
+import type { ProcessingQueueService } from "./processing-queue-service.js";
 
 export class DashboardService {
   public constructor(
@@ -11,16 +13,21 @@ export class DashboardService {
     private readonly content: ContentStatusService,
     private readonly settings: SettingsService,
     private readonly logs: LogQueryService,
-    private readonly github: GitHubService
+    private readonly github: GitHubService,
+    private readonly ai: AiRuntimeService,
+    private readonly queue: ProcessingQueueService
   ) {}
 
   public async getOverview(): Promise<DashboardOverview> {
-    const [metrics, configuration, recentLogs, githubStatus] = await Promise.all([
-      this.content.metrics(),
-      this.settings.getSafeConfiguration(),
-      this.logs.getLogs({ limit: 6, order: "newest" }).entries,
-      this.github.getStatus()
-    ]);
+    const [metrics, configuration, recentLogs, githubStatus, aiState, queueState] =
+      await Promise.all([
+        this.content.metrics(),
+        this.settings.getSafeConfiguration(),
+        this.logs.getLogs({ limit: 6, order: "newest" }).entries,
+        this.github.getStatus(),
+        this.ai.inspect(),
+        this.queue.getQueue()
+      ]);
 
     return {
       application: {
@@ -30,16 +37,22 @@ export class DashboardService {
         uptimeSeconds: process.uptime(),
         timestamp: new Date().toISOString()
       },
-      services: serviceStatuses(metrics.validationStatus, githubStatus.authenticationState),
+      services: serviceStatuses(
+        metrics.validationStatus,
+        githubStatus.authenticationState,
+        aiState.status,
+        queueState.state
+      ),
       metrics,
       configuration,
       recentLogs,
       futureWorkflow: [
         `FETCH REPOSITORIES: AVAILABLE / ${githubStatus.counts.total} STORED`,
         `SELECT REPOSITORIES: AVAILABLE / ${githubStatus.counts.selectedForProcessing} SELECTED`,
+        `AI RUNTIME: ${aiState.status}`,
+        `QUEUE PROCESSING: AVAILABLE / ${queueState.metrics.pending} PENDING / ${queueState.metrics.active} ACTIVE`,
+        `GENERATE CONTENT: AVAILABLE / ${queueState.metrics.completedDrafts} PRIVATE DRAFTS`,
         `GITHUB RATE LIMIT: ${githubStatus.rateLimit.remaining}/${githubStatus.rateLimit.limit}`,
-        "QUEUE PROCESSING: FUTURE",
-        "GENERATE CONTENT: FUTURE",
         "REVIEW AND EDIT: FUTURE",
         "PUBLISH STATIC DATA: FUTURE"
       ]
@@ -47,7 +60,12 @@ export class DashboardService {
   }
 }
 
-function serviceStatuses(contentStatus: "valid" | "invalid", githubState: string): ServiceStatus[] {
+function serviceStatuses(
+  contentStatus: "valid" | "invalid",
+  githubState: string,
+  aiState: string,
+  queueState: string
+): ServiceStatus[] {
   return [
     { id: "api", label: "Generator API", status: "ready", required: true, message: "Ready" },
     { id: "filesystem", label: "Filesystem", status: "ready", required: true, message: "Ready" },
@@ -65,7 +83,24 @@ function serviceStatuses(contentStatus: "valid" | "invalid", githubState: string
       required: false,
       message: githubState
     },
-    { id: "ai", label: "Local AI", status: "not_started", required: false, message: "Not started" },
+    {
+      id: "ai",
+      label: "Local AI",
+      status: aiState.includes("READY")
+        ? "ready"
+        : aiState.includes("FAILED") || aiState.includes("INVALID")
+          ? "invalid"
+          : "not_started",
+      required: false,
+      message: aiState
+    },
+    {
+      id: "queue",
+      label: "Processing queue",
+      status: queueState === "FAILED" ? "invalid" : "ready",
+      required: false,
+      message: queueState
+    },
     {
       id: "publishing",
       label: "Publishing",

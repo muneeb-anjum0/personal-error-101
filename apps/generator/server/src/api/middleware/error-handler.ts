@@ -9,11 +9,13 @@ export function registerErrorHandler(app: FastifyInstance): void {
         ? error
         : error instanceof ZodError
           ? new GeneratorError("VALIDATION_ERROR", "Request validation failed.", 400, error.issues)
-          : new GeneratorError(
-              "INTERNAL_ERROR",
-              "The generator API encountered an internal error.",
-              500
-            );
+          : typeof error.statusCode === "number" && error.statusCode < 500
+            ? new GeneratorError(error.code ?? "REQUEST_ERROR", error.message, error.statusCode)
+            : new GeneratorError(
+                "INTERNAL_ERROR",
+                "The generator API encountered an internal error.",
+                500
+              );
 
     request.log.error({ error, requestId: request.requestId }, generatorError.message);
     void app.applicationLogger.log(

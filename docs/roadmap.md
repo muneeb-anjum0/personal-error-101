@@ -20,8 +20,7 @@ Local generator platform foundation: Fastify management API, routed React dashbo
 
 - Portfolio content management UI
 - GitHub repository synchronization and manual repository selection: completed in Phase 4
-- Local AI model orchestration
-- AI-based project content generation
+- Local AI runtime, model warm-up, persistent queue, crash recovery, and private draft generation: completed in Phase 5
 - Static frontend publishing
 - Docker model support
 - Vercel frontend deployment

@@ -10,6 +10,14 @@ test("generator UI dashboard routes work", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "GitHub repository discovery" })).toBeVisible();
   await expect(page.getByText("PUBLIC REPOSITORIES ONLY /", { exact: false })).toBeVisible();
 
+  await page.getByRole("button", { name: "QUEUE", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Sequential AI processing queue" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "ADD SELECTED" })).toBeVisible();
+
+  await page.getByRole("button", { name: "LOCAL AI" }).click();
+  await expect(page.getByRole("heading", { name: "Local Qwen runtime" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "CHECK ENDPOINT" })).toBeVisible();
+
   await page.getByRole("button", { name: "CONTENT" }).click();
   await expect(page.getByRole("heading", { name: "Static Content Inspection" })).toBeVisible();
   await expect(
@@ -34,6 +42,9 @@ test("generator mobile navigation works without horizontal overflow", async ({ p
   await expect(page.getByRole("dialog", { name: "Generator navigation" })).toBeVisible();
   await page.getByRole("button", { name: "REPOSITORIES" }).click();
   await expect(page.getByRole("heading", { name: "GitHub repository discovery" })).toBeVisible();
+  await page.getByRole("button", { name: "MENU" }).click();
+  await page.getByRole("button", { name: "QUEUE", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Sequential AI processing queue" })).toBeVisible();
 
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth

@@ -22,6 +22,24 @@ export interface GeneratorAppConfig {
   githubToken: string;
   githubRepositoryLimit: number;
   githubConcurrency: number;
+  aiStateDirectory: string;
+  aiRuntimeStatePath: string;
+  aiQueuePath: string;
+  aiQueueEventsPath: string;
+  aiDraftDirectory: string;
+  aiCheckpointDirectory: string;
+  aiBackupDirectory: string;
+  aiLogDirectory: string;
+  aiHostBaseUrl: string;
+  aiApiKey: string;
+  aiContextSize: number;
+  aiParallelRequests: number;
+  aiGpuLayers: number;
+  aiMaxVramGb: number;
+  aiServerPort: number;
+  aiServerHost: string;
+  aiServerExecutable: string;
+  aiRuntimeMode: "external" | "managed";
   portfolioPath: string;
   generatorUiPort: number;
   modelPath: string;
@@ -46,7 +64,7 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
     port: environment.GENERATOR_API_PORT,
     corsOrigins: ["http://localhost:4173", "http://127.0.0.1:4173"],
     version: "0.0.0",
-    phase: "phase-4-github-repository-sync",
+    phase: "phase-5-local-ai-runtime-queue",
     environment: environment.NODE_ENV,
     repositoryRoot,
     dataDirectory,
@@ -69,6 +87,24 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
     githubToken: environment.GITHUB_TOKEN,
     githubRepositoryLimit: boundedNumber(process.env.GITHUB_REPOSITORY_LIMIT, 500, 1, 500),
     githubConcurrency: boundedNumber(process.env.GITHUB_SYNC_CONCURRENCY, 3, 1, 4),
+    aiStateDirectory: path.join(dataDirectory, "ai"),
+    aiRuntimeStatePath: path.join(dataDirectory, "ai", "runtime-state.json"),
+    aiQueuePath: path.join(dataDirectory, "ai", "queue.json"),
+    aiQueueEventsPath: path.join(dataDirectory, "ai", "queue-events.jsonl"),
+    aiDraftDirectory: path.join(dataDirectory, "ai", "drafts"),
+    aiCheckpointDirectory: path.join(dataDirectory, "ai", "checkpoints"),
+    aiBackupDirectory: path.join(dataDirectory, "ai", "backups"),
+    aiLogDirectory: path.join(dataDirectory, "ai", "logs"),
+    aiHostBaseUrl: environment.LOCAL_AI_HOST_BASE_URL,
+    aiApiKey: environment.LOCAL_AI_API_KEY,
+    aiContextSize: environment.LOCAL_AI_CONTEXT_SIZE,
+    aiParallelRequests: environment.LOCAL_AI_PARALLEL_REQUESTS,
+    aiGpuLayers: environment.LOCAL_AI_GPU_LAYERS,
+    aiMaxVramGb: environment.LOCAL_AI_MAX_VRAM_GB,
+    aiServerPort: environment.LOCAL_AI_SERVER_PORT,
+    aiServerHost: environment.LOCAL_AI_SERVER_HOST,
+    aiServerExecutable: environment.LOCAL_AI_SERVER_EXECUTABLE,
+    aiRuntimeMode: environment.LOCAL_AI_RUNTIME_MODE,
     githubConfigured: environment.GITHUB_TOKEN.trim().length > 0,
     aiConfigured: environment.LOCAL_AI_MODEL_PATH.trim().length > 0,
     serverStartedAt: new Date()

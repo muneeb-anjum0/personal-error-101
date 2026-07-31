@@ -17,5 +17,6 @@ Thumbs.db
 data/backups/*
 !data/backups/.gitkeep
 data/generator-settings.json
+data/ai/
 data/github/
 data/logs/

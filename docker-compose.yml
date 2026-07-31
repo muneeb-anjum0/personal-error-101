@@ -32,6 +32,7 @@ services:
       dockerfile: docker/generator-api/Dockerfile
     environment:
       NODE_ENV: production
+      DOCKER_CONTAINER: "true"
       GENERATOR_HOST: 0.0.0.0
       GENERATOR_API_PORT: 4000
       GENERATOR_API_URL: http://localhost:4000
@@ -43,6 +44,14 @@ services:
       LOCAL_AI_BASE_URL: ${LOCAL_AI_BASE_URL:-http://host.docker.internal:8080/v1}
       LOCAL_AI_MODEL: ${LOCAL_AI_MODEL:-Qwen3-8B-Q4_K_M}
       LOCAL_AI_API_KEY: ${LOCAL_AI_API_KEY:-local}
+      LOCAL_AI_CONTEXT_SIZE: ${LOCAL_AI_CONTEXT_SIZE:-8192}
+      LOCAL_AI_PARALLEL_REQUESTS: ${LOCAL_AI_PARALLEL_REQUESTS:-1}
+      LOCAL_AI_GPU_LAYERS: ${LOCAL_AI_GPU_LAYERS:-28}
+      LOCAL_AI_MAX_VRAM_GB: ${LOCAL_AI_MAX_VRAM_GB:-5}
+      LOCAL_AI_SERVER_PORT: ${LOCAL_AI_SERVER_PORT:-8080}
+      LOCAL_AI_SERVER_HOST: ${LOCAL_AI_SERVER_HOST:-127.0.0.1}
+      LOCAL_AI_SERVER_EXECUTABLE: ${LOCAL_AI_SERVER_EXECUTABLE:-}
+      LOCAL_AI_RUNTIME_MODE: ${LOCAL_AI_RUNTIME_MODE:-external}
     ports:
       - "4000:4000"
     volumes:

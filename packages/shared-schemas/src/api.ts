@@ -107,6 +107,15 @@ export const logCategorySchema = z.enum([
   "SYSTEM",
   "SECURITY",
   "GITHUB",
+  "AI_RUNTIME",
+  "AI_PROCESS",
+  "AI_HEALTH",
+  "AI_GENERATION",
+  "AI_VALIDATION",
+  "AI_REPAIR",
+  "QUEUE",
+  "QUEUE_RECOVERY",
+  "DRAFT",
   "FUTURE_AI",
   "FUTURE_PUBLISH"
 ]);
@@ -476,6 +485,278 @@ export const githubBulkSelectionResponseSchema = z.object({
 
 export const githubNotesUpdateSchema = z.object({
   notes: z.string().max(2000)
+});
+
+export const aiRuntimeModeSchema = z.enum(["EXTERNAL_SERVER", "MANAGED_PROCESS"]);
+export const aiRuntimeStatusSchema = z.enum([
+  "UNCONFIGURED",
+  "MODEL_PATH_INVALID",
+  "EXECUTABLE_NOT_CONFIGURED",
+  "EXECUTABLE_INVALID",
+  "STOPPED",
+  "STARTING",
+  "WAITING_FOR_ENDPOINT",
+  "WARMING_UP",
+  "READY",
+  "BUSY",
+  "STOPPING",
+  "FAILED",
+  "EXTERNAL_SERVER_READY",
+  "EXTERNAL_SERVER_UNAVAILABLE",
+  "PORT_IN_USE",
+  "MODEL_MISMATCH"
+]);
+
+export const aiModelInfoSchema = z.object({
+  id: z.string().min(1),
+  ownedBy: z.string().nullable(),
+  contextWindow: z.number().int().positive().nullable()
+});
+
+export const aiHealthResultSchema = z.object({
+  endpointReachable: z.boolean(),
+  modelsEndpointAvailable: z.boolean(),
+  chatEndpointWorking: z.boolean(),
+  configuredModelAvailable: z.boolean(),
+  detectedModelNames: z.array(z.string()),
+  latencyMs: z.number().int().nonnegative().nullable(),
+  httpStatus: z.number().int().positive().nullable(),
+  checkedAt: z.string().datetime(),
+  errorCategory: z.string().nullable(),
+  errorMessage: z.string().nullable()
+});
+
+export const aiWarmUpResultSchema = z.object({
+  success: z.boolean(),
+  startedAt: z.string().datetime(),
+  completedAt: z.string().datetime(),
+  durationMs: z.number().int().nonnegative(),
+  model: z.string().min(1),
+  error: z.string().nullable()
+});
+
+export const generationUsageSchema = z.object({
+  promptTokens: z.number().int().nonnegative().nullable(),
+  completionTokens: z.number().int().nonnegative().nullable(),
+  totalTokens: z.number().int().nonnegative().nullable()
+});
+
+export const aiTestGenerationRequestSchema = z.object({
+  prompt: z.string().min(1).max(1000).default("Return a minimal JSON object confirming readiness."),
+  maxOutputTokens: z.number().int().positive().max(512).default(96)
+});
+
+export const aiTestGenerationResultSchema = z.object({
+  rawText: z.string(),
+  parsedJson: z.unknown().nullable(),
+  latencyMs: z.number().int().nonnegative(),
+  model: z.string().min(1),
+  usage: generationUsageSchema,
+  generatedAt: z.string().datetime()
+});
+
+export const aiRuntimeStateSchema = z.object({
+  schemaVersion: z.literal(1),
+  mode: aiRuntimeModeSchema,
+  status: aiRuntimeStatusSchema,
+  modelName: z.string().min(1),
+  modelPath: z.string().min(1),
+  modelPathExists: z.boolean(),
+  executablePath: z.string().nullable(),
+  executablePathExists: z.boolean(),
+  processManagementAvailable: z.boolean(),
+  baseUrl: z.string().url(),
+  hostBaseUrl: z.string().url(),
+  contextSize: z.number().int().positive(),
+  parallelRequests: z.number().int().positive(),
+  gpuLayers: z.number().int().nonnegative(),
+  maxVramGb: z.number().positive(),
+  processId: z.number().int().positive().nullable(),
+  ownsProcess: z.boolean(),
+  startedAt: z.string().datetime().nullable(),
+  readyAt: z.string().datetime().nullable(),
+  lastHealthCheckAt: z.string().datetime().nullable(),
+  lastWarmUpAt: z.string().datetime().nullable(),
+  lastError: z.string().nullable(),
+  activeRepositoryJob: z.string().nullable(),
+  health: aiHealthResultSchema.nullable(),
+  warmUp: aiWarmUpResultSchema.nullable(),
+  models: z.array(aiModelInfoSchema)
+});
+
+export const queueStateSchema = z.enum([
+  "IDLE",
+  "STARTING",
+  "RUNNING",
+  "PAUSING",
+  "PAUSED",
+  "STOPPING",
+  "RECOVERING",
+  "FAILED"
+]);
+export const processingJobStateSchema = z.enum([
+  "PENDING",
+  "PREPARING_CONTEXT",
+  "WAITING_FOR_AI",
+  "GENERATING",
+  "VALIDATING",
+  "REPAIRING",
+  "PERSISTING",
+  "COMPLETED",
+  "FAILED",
+  "CANCEL_REQUESTED",
+  "CANCELLED",
+  "INTERRUPTED",
+  "SKIPPED"
+]);
+export const processingCheckpointSchema = z.object({
+  id: z.string().min(1),
+  jobId: z.string().min(1),
+  stage: z.enum([
+    "CONTEXT_PREPARED",
+    "PROMPT_PREPARED",
+    "AI_RESPONSE_RECEIVED",
+    "OUTPUT_PARSED",
+    "OUTPUT_VALIDATED",
+    "DRAFT_PERSISTED"
+  ]),
+  createdAt: z.string().datetime(),
+  metadata: z.record(z.string(), z.unknown())
+});
+
+export const generatedProjectDraftSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  repositoryId: z.string().min(1),
+  repositoryFullName: z.string().min(1),
+  repositorySnapshotHash: z.string().min(1),
+  sourceCommitSha: z.string().nullable(),
+  readmeHash: z.string().nullable(),
+  title: z.string().min(1).max(80),
+  subtitle: z.string().max(140),
+  summary: z.string().min(1).max(500),
+  description: z.string().min(1).max(2500),
+  problem: z.string().max(1000),
+  solution: z.string().max(1000),
+  features: z.array(z.string().max(180)).max(12),
+  architecture: z.array(z.string().max(220)).max(12),
+  challenges: z.array(z.string().max(220)).max(12),
+  technologies: z.array(z.string().min(1).max(40)).max(24),
+  categories: z.array(z.string().min(1).max(40)).max(8),
+  tags: z.array(z.string().min(1).max(40)).max(16),
+  impact: z.string().max(1000),
+  limitations: z.array(z.string().max(180)).max(8),
+  missingInformation: z.array(z.string().max(180)).max(8),
+  confidenceNotes: z.array(z.string().max(220)).max(8),
+  validationWarnings: z.array(z.string()),
+  rawResponsePath: z.string().nullable(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime()
+});
+
+export const draftValidationResultSchema = z.object({
+  valid: z.boolean(),
+  warnings: z.array(z.string()),
+  errors: z.array(z.string()),
+  repaired: z.boolean(),
+  attempts: z.number().int().nonnegative()
+});
+
+export const processingJobSchema = z.object({
+  id: z.string().min(1),
+  repositoryId: z.string().min(1),
+  repositoryFullName: z.string().min(1),
+  repositorySnapshotHash: z.string().min(1),
+  repositoryCommitSha: z.string().nullable(),
+  readmeHash: z.string().nullable(),
+  createdAt: z.string().datetime(),
+  startedAt: z.string().datetime().nullable(),
+  updatedAt: z.string().datetime(),
+  completedAt: z.string().datetime().nullable(),
+  attemptCount: z.number().int().nonnegative(),
+  state: processingJobStateSchema,
+  progressMessage: z.string(),
+  error: z.string().nullable(),
+  warnings: z.array(z.string()),
+  draftId: z.string().nullable(),
+  generationMetrics: z
+    .object({
+      durationMs: z.number().int().nonnegative().nullable(),
+      usage: generationUsageSchema
+    })
+    .nullable(),
+  checkpoints: z.array(processingCheckpointSchema)
+});
+
+export const queueMetricsSchema = z.object({
+  selectedRepositories: z.number().int().nonnegative(),
+  eligibleRepositories: z.number().int().nonnegative(),
+  pending: z.number().int().nonnegative(),
+  active: z.number().int().nonnegative(),
+  completed: z.number().int().nonnegative(),
+  failed: z.number().int().nonnegative(),
+  cancelled: z.number().int().nonnegative(),
+  interrupted: z.number().int().nonnegative(),
+  completedDrafts: z.number().int().nonnegative(),
+  averageGenerationDurationMs: z.number().nonnegative().nullable()
+});
+
+export const processingQueueSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  state: queueStateSchema,
+  paused: z.boolean(),
+  workerLock: z
+    .object({
+      ownerId: z.string().min(1),
+      acquiredAt: z.string().datetime(),
+      heartbeatAt: z.string().datetime()
+    })
+    .nullable(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+  recoveredAt: z.string().datetime().nullable(),
+  jobs: z.array(processingJobSchema),
+  metrics: queueMetricsSchema
+});
+
+export const queueEventSchema = z.object({
+  id: z.string().min(1),
+  sequence: z.number().int().positive(),
+  timestamp: z.string().datetime(),
+  queueId: z.string().min(1),
+  jobId: z.string().nullable(),
+  eventType: z.string().min(1),
+  previousState: z.string().nullable(),
+  newState: z.string().nullable(),
+  metadata: z.record(z.string(), z.unknown())
+});
+
+export const enqueueRepositoriesRequestSchema = z.object({
+  repositoryIds: z.array(z.string().min(1)).optional(),
+  mode: z.enum(["SELECTED", "NEW_SELECTED", "CHANGED_SELECTED"]).default("SELECTED"),
+  regenerateCompleted: z.boolean().default(false)
+});
+
+export const enqueueRepositoriesResponseSchema = z.object({
+  enqueued: z.number().int().nonnegative(),
+  skipped: z.number().int().nonnegative(),
+  jobs: z.array(processingJobSchema),
+  reasons: z.array(z.string())
+});
+
+export const draftSummarySchema = z.object({
+  id: z.string().min(1),
+  repositoryId: z.string().min(1),
+  repositoryFullName: z.string().min(1),
+  title: z.string().min(1),
+  createdAt: z.string().datetime(),
+  validationWarnings: z.array(z.string())
+});
+
+export const draftsResponseSchema = z.object({
+  items: z.array(draftSummarySchema),
+  total: z.number().int().nonnegative()
 });
 
 export const apiHealthResponseSchema = z.object({

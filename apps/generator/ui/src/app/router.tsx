@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { ContentPage } from "../features/content/content-page";
 import { DashboardPage } from "../features/dashboard/dashboard-page";
+import { AiPage } from "../features/ai/ai-page";
 import { LogsPage } from "../features/logs/logs-page";
+import { QueuePage } from "../features/queue/queue-page";
 import { RepositoriesPage } from "../features/repositories/repositories-page";
 import { SettingsPage } from "../features/settings/settings-page";
 import { SystemPage } from "../features/system/system-page";
@@ -33,6 +35,10 @@ export function RouteView({ path }: { path: AppRoute }) {
       return <SettingsPage />;
     case "/logs":
       return <LogsPage />;
+    case "/queue":
+      return <QueuePage />;
+    case "/ai":
+      return <AiPage />;
     case "/repositories":
       return <RepositoriesPage />;
     case "/system":

@@ -209,7 +209,7 @@ async function createHarness(source: FakeSource) {
     port: 4000,
     corsOrigins: [],
     version: "0.0.0",
-    phase: "phase-4-github-repository-sync",
+    phase: "phase-5-local-ai-runtime-queue",
     environment: "test",
     repositoryRoot: root,
     dataDirectory,
@@ -222,11 +222,29 @@ async function createHarness(source: FakeSource) {
     githubSelectionsPath: path.join(dataDirectory, "github", "selections.json"),
     githubHistoryDirectory: path.join(dataDirectory, "github", "history"),
     githubBackupDirectory: path.join(dataDirectory, "github", "backups"),
+    aiStateDirectory: path.join(dataDirectory, "ai"),
+    aiRuntimeStatePath: path.join(dataDirectory, "ai", "runtime-state.json"),
+    aiQueuePath: path.join(dataDirectory, "ai", "queue.json"),
+    aiQueueEventsPath: path.join(dataDirectory, "ai", "queue-events.jsonl"),
+    aiDraftDirectory: path.join(dataDirectory, "ai", "drafts"),
+    aiCheckpointDirectory: path.join(dataDirectory, "ai", "checkpoints"),
+    aiBackupDirectory: path.join(dataDirectory, "ai", "backups"),
+    aiLogDirectory: path.join(dataDirectory, "ai", "logs"),
     portfolioPath: path.join(root, "apps", "portfolio"),
     generatorUiPort: 4173,
     modelPath: "model.gguf",
     modelName: "model",
     modelBaseUrl: "http://localhost:8080/v1",
+    aiHostBaseUrl: "http://127.0.0.1:8080/v1",
+    aiApiKey: "local",
+    aiContextSize: 8192,
+    aiParallelRequests: 1,
+    aiGpuLayers: 28,
+    aiMaxVramGb: 5,
+    aiServerPort: 8080,
+    aiServerHost: "127.0.0.1",
+    aiServerExecutable: "",
+    aiRuntimeMode: "external",
     githubUsername: "muneeb-anjum0",
     includePrivateRepositories: false,
     githubToken: "",
@@ -251,7 +269,7 @@ async function createHarness(source: FakeSource) {
 async function waitForSync(service: GitHubService) {
   for (let index = 0; index < 100; index += 1) {
     if (!service.syncStatus().running) {
-      await new Promise((resolve) => setTimeout(resolve, 20));
+      await service.waitForActiveSync();
       return;
     }
     await new Promise((resolve) => setTimeout(resolve, 10));

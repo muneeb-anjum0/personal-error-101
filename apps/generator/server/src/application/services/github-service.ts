@@ -161,6 +161,10 @@ export class GitHubService {
     return this.progressSnapshot();
   }
 
+  public async waitForActiveSync(): Promise<void> {
+    await this.activeSync;
+  }
+
   public async updateSelection(repositoryId: string, input: unknown): Promise<RepositorySelection> {
     const update: GitHubSelectionUpdate = githubSelectionUpdateSchema.parse(input);
     const repositories = await this.state.getRepositories();

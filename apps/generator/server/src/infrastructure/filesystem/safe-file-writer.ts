@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { mkdir, rename, rm, writeFile, copyFile, readdir, unlink } from "node:fs/promises";
 import path from "node:path";
 
@@ -17,11 +18,14 @@ export class SafeFileWriter {
     await mkdir(backupDirectory, { recursive: true });
 
     const serialized = `${JSON.stringify(value, null, 2)}\n`;
-    const tempPath = `${targetPath}.${process.pid}.${Date.now()}.tmp`;
+    const tempPath = `${targetPath}.${process.pid}.${Date.now()}.${randomUUID()}.tmp`;
 
     try {
       await writeFile(tempPath, serialized, "utf8");
       await this.backupExisting(targetPath, backupDirectory, backupPrefix);
+      if (process.platform === "win32") {
+        await rm(targetPath, { force: true });
+      }
       await rename(tempPath, targetPath);
       await this.retainBackups(backupDirectory, backupPrefix, retain);
     } catch (error) {

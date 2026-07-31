@@ -4,4 +4,4 @@ Repository selection is manual and independent from synchronization. Stored fiel
 
 Bulk actions cover visible selection/deselection, owned active selection, new selection, changed selection, deselect all, and clearing inaccessible selections.
 
-Phase 4 does not enqueue AI work, generate project copy, publish content, or write to public portfolio project data.
+Phase 5 can enqueue selected repositories for private AI draft generation. Selection does not start AI processing by itself, and public portfolio project data is still untouched.

@@ -3,7 +3,8 @@ import type { Dispatch, SetStateAction } from "react";
 import type {
   DiscoveredRepository,
   GitHubRepositoryQuery,
-  GitHubSyncProgress
+  GitHubSyncProgress,
+  ProcessingJob
 } from "@muneeb-systems/shared-types";
 import { MetricCard } from "../../components/data-display/metric-card";
 import { ErrorState, LoadingState } from "../../components/feedback/states";
@@ -84,6 +85,7 @@ export function RepositoriesPage() {
     (signal) => generatorApiClient.githubRepositories(queryString, signal),
     [queryString]
   );
+  const queue = useApiResource((signal) => generatorApiClient.queue(signal), []);
   const sync = useApiResource((signal) => generatorApiClient.githubSyncStatus(signal), []);
 
   useEffect(() => {
@@ -92,10 +94,11 @@ export function RepositoriesPage() {
         void sync.refresh();
         void repositories.refresh();
         void status.refresh();
+        void queue.refresh();
       }
     }, 1500);
     return () => window.clearInterval(timer);
-  }, [repositories, status, sync]);
+  }, [queue, repositories, status, sync]);
 
   useEffect(() => {
     localStorage.setItem("github.selection", query.selection);
@@ -128,6 +131,16 @@ export function RepositoriesPage() {
     notify(`${repository.fullName} ${selected ? "selected" : "deselected"}.`);
     await repositories.refresh();
     await status.refresh();
+    await queue.refresh();
+  }
+
+  async function enqueueSelected(mode: "SELECTED" | "NEW_SELECTED" | "CHANGED_SELECTED") {
+    const result = await generatorApiClient.enqueueRepositories({
+      mode,
+      regenerateCompleted: false
+    });
+    notify(`${result.enqueued} repositories queued. ${result.skipped} skipped.`);
+    await queue.refresh();
   }
 
   async function bulk(
@@ -344,6 +357,12 @@ export function RepositoriesPage() {
         <button type="button" onClick={() => void bulk("CLEAR_INACCESSIBLE")}>
           CLEAR INACCESSIBLE
         </button>
+        <button type="button" onClick={() => void enqueueSelected("SELECTED")}>
+          ADD SELECTED TO QUEUE
+        </button>
+        <button type="button" onClick={() => void enqueueSelected("CHANGED_SELECTED")}>
+          ADD CHANGED SELECTED TO QUEUE
+        </button>
       </section>
 
       <RepositoryList
@@ -351,6 +370,7 @@ export function RepositoriesPage() {
         total={repositories.data?.total ?? 0}
         onToggle={toggleSelection}
         onDetails={setSelectedRepository}
+        jobs={queue.data?.jobs ?? []}
       />
 
       {selectedRepository ? (
@@ -375,12 +395,14 @@ function RepositoryList({
   items,
   total,
   onToggle,
-  onDetails
+  onDetails,
+  jobs
 }: {
   items: DiscoveredRepository[];
   total: number;
   onToggle: (repository: DiscoveredRepository, selected: boolean) => Promise<void>;
   onDetails: (repository: DiscoveredRepository) => void;
+  jobs: ProcessingJob[];
 }) {
   if (total === 0) {
     return (
@@ -408,6 +430,7 @@ function RepositoryList({
           <span role="columnheader">Visibility</span>
           <span role="columnheader">Language</span>
           <span role="columnheader">README</span>
+          <span role="columnheader">Queue</span>
           <span role="columnheader">Last pushed</span>
           <span role="columnheader">Sync state</span>
           <span role="columnheader">Actions</span>
@@ -430,6 +453,7 @@ function RepositoryList({
             <span>{repository.visibility}</span>
             <span>{repository.primaryLanguage ?? "NONE"}</span>
             <span>{repository.readme.status}</span>
+            <span>{queueLabel(repository, jobs)}</span>
             <span>{formatDate(repository.pushedAt)}</span>
             <span>{repository.changeSet.state}</span>
             <button type="button" onClick={() => onDetails(repository)}>
@@ -440,6 +464,12 @@ function RepositoryList({
       </div>
     </article>
   );
+}
+
+function queueLabel(repository: DiscoveredRepository, jobs: ProcessingJob[]): string {
+  const job = jobs.find((item) => item.repositoryId === repository.id);
+  if (job) return `${job.state}${job.draftId ? " / DRAFT" : ""}`;
+  return repository.selection.selectedForProcessing ? "SELECTED / NOT QUEUED" : "NOT SELECTED";
 }
 
 function SyncProgress({ status }: { status: GitHubSyncProgress }) {

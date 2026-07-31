@@ -12,9 +12,9 @@ Phase 2 keeps that split. Motion is added through focused client islands in `app
 
 Shared animation constants live in `apps/portfolio/src/lib/animation`. Device and animation budget decisions live in `apps/portfolio/src/lib/performance`.
 
-`apps/generator/server` is the private local API. It owns GitHub discovery, local AI, filesystem persistence, queueing, Git operations, and publishing boundaries. In Phase 4 it exposes local-only dashboard, content inspection, settings, logs, system, readiness, version, docs, GitHub status, repository sync, repository snapshots, selections, and notes endpoints.
+`apps/generator/server` is the private local API. It owns GitHub discovery, local AI, filesystem persistence, queueing, Git operations, and publishing boundaries. In Phase 5 it exposes local-only dashboard, content inspection, settings, logs, system, readiness, version, docs, GitHub status, repository sync, repository snapshots, selections, notes, AI runtime, queue, and draft endpoints.
 
-`apps/generator/ui` is the private management interface. In Phase 4 it is a routed Vite/React dashboard with Overview, Repositories, Content, Settings, Logs, and System pages plus disabled future navigation for queue, local AI, and publishing.
+`apps/generator/ui` is the private management interface. In Phase 5 it is a routed Vite/React dashboard with Overview, Repositories, Queue, Local AI, Content, Settings, Logs, and System pages plus disabled future navigation for publishing.
 
 ## Shared Packages
 
@@ -22,4 +22,4 @@ Shared schemas live in `packages/shared-schemas`. Types are inferred in `package
 
 ## Future Boundaries
 
-GitHub code lives under the generator server infrastructure layer behind a domain-facing source interface. Local AI, queue, processing, Git commit automation, and publishing remain later-phase boundaries.
+GitHub, AI, queue, and draft persistence live under the generator server infrastructure/application layers. AI-generated output is private draft data only; review/edit approval, portfolio mutation, Git commit automation, and publishing remain later-phase boundaries.

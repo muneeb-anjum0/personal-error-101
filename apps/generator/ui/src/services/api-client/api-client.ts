@@ -2,6 +2,8 @@ import {
   apiHealthResponseSchema,
   apiReadinessResponseSchema,
   apiVersionResponseSchema,
+  aiRuntimeStateSchema,
+  aiTestGenerationResultSchema,
   contentDetailResponseSchema,
   contentStatusResponseSchema,
   dashboardOverviewSchema,
@@ -12,6 +14,10 @@ import {
   githubStatusResponseSchema,
   githubSyncProgressSchema,
   githubSyncResponseSchema,
+  processingQueueSchema,
+  enqueueRepositoriesResponseSchema,
+  draftsResponseSchema,
+  generatedProjectDraftSchema,
   discoveredRepositorySchema,
   repositorySelectionSchema,
   logsResponseSchema,
@@ -22,6 +28,8 @@ import type {
   GitHubNotesUpdate,
   GitHubSelectionUpdate,
   GitHubSyncRequest,
+  AiTestGenerationRequest,
+  EnqueueRepositoriesRequest,
   GeneratorSettingsUpdate
 } from "@muneeb-systems/shared-types";
 import type { z } from "zod";
@@ -156,6 +164,130 @@ export class GeneratorApiClient {
       body: JSON.stringify(request),
       signal
     });
+  }
+
+  public aiRuntime(signal?: AbortSignal) {
+    return this.get("/api/ai/runtime", aiRuntimeStateSchema, signal);
+  }
+
+  public checkAi(signal?: AbortSignal) {
+    return this.request("/api/ai/check", aiRuntimeStateSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public startAi(signal?: AbortSignal) {
+    return this.request("/api/ai/start", aiRuntimeStateSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public stopAi(signal?: AbortSignal) {
+    return this.request("/api/ai/stop", aiRuntimeStateSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public warmAi(signal?: AbortSignal) {
+    return this.request("/api/ai/warm-up", aiRuntimeStateSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public testAiGeneration(request: AiTestGenerationRequest, signal?: AbortSignal) {
+    return this.request("/api/ai/test-generation", aiTestGenerationResultSchema, {
+      method: "POST",
+      body: JSON.stringify(request),
+      signal
+    });
+  }
+
+  public queue(signal?: AbortSignal) {
+    return this.get("/api/queue", processingQueueSchema, signal);
+  }
+
+  public enqueueRepositories(request: EnqueueRepositoriesRequest, signal?: AbortSignal) {
+    return this.request("/api/queue/enqueue", enqueueRepositoriesResponseSchema, {
+      method: "POST",
+      body: JSON.stringify(request),
+      signal
+    });
+  }
+
+  public startQueue(signal?: AbortSignal) {
+    return this.request("/api/queue/start", processingQueueSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public pauseQueue(signal?: AbortSignal) {
+    return this.request("/api/queue/pause", processingQueueSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public resumeQueue(signal?: AbortSignal) {
+    return this.request("/api/queue/resume", processingQueueSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public cancelQueueJob(jobId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/queue/jobs/${encodeURIComponent(jobId)}/cancel`,
+      processingQueueSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public retryQueueJob(jobId: string, signal?: AbortSignal) {
+    return this.request(
+      `/api/queue/jobs/${encodeURIComponent(jobId)}/retry`,
+      processingQueueSchema,
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+        signal
+      }
+    );
+  }
+
+  public retryFailedQueue(signal?: AbortSignal) {
+    return this.request("/api/queue/retry-failed", processingQueueSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
+  }
+
+  public drafts(signal?: AbortSignal) {
+    return this.get("/api/drafts", draftsResponseSchema, signal);
+  }
+
+  public draft(draftId: string, signal?: AbortSignal) {
+    return this.get(
+      `/api/drafts/${encodeURIComponent(draftId)}`,
+      generatedProjectDraftSchema,
+      signal
+    );
   }
 
   private get<T extends z.ZodType>(
