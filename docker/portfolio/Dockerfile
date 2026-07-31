@@ -9,9 +9,8 @@ RUN pnpm build:packages
 RUN pnpm --filter @muneeb-systems/portfolio build
 
 FROM node:24-slim AS runner
-WORKDIR /workspace
+WORKDIR /workspace/apps/portfolio
 ENV NODE_ENV=production
-RUN corepack enable
 COPY --from=builder /workspace /workspace
 EXPOSE 3000
-CMD ["pnpm", "--filter", "@muneeb-systems/portfolio", "start"]
+CMD ["node", "node_modules/next/dist/bin/next", "start", "-p", "3000"]

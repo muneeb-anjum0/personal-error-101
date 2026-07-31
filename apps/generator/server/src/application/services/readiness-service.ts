@@ -21,8 +21,11 @@ export class ReadinessService {
       status: "ready",
       services: {
         filesystem,
+        content: filesystem,
+        settings: filesystem,
         github,
-        ai
+        ai,
+        publishing: false
       }
     };
   }

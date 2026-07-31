@@ -6,9 +6,12 @@ export class VersionService {
 
   public getVersion(): ApiVersionResponse {
     return {
-      name: "muneeb-systems-generator",
+      name: "MUNEEB.SYSTEMS GENERATOR",
       version: this.config.version,
-      phase: this.config.phase
+      phase: this.config.phase,
+      environment: this.config.environment,
+      gitCommit: process.env.GIT_COMMIT ?? null,
+      buildTime: process.env.BUILD_TIME ?? null
     };
   }
 }

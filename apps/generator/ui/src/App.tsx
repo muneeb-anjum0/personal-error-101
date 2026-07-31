@@ -1,5 +1,5 @@
-import { GeneratorStatusPanel } from "./features/status/generator-status-panel";
+import { AppShell } from "./app/app-shell";
 
 export function App() {
-  return <GeneratorStatusPanel />;
+  return <AppShell />;
 }

@@ -12,6 +12,10 @@ Public portfolio interface and design system: monochrome responsive site, static
 
 Motion, interaction, and visual polish: GSAP/ScrollTrigger lifecycle, Lenis smooth scroll, Motion layout transitions, custom cursor gating, animated SVG systems, reduced-motion strategy, and animation validation.
 
+## Phase 3
+
+Local generator platform foundation: Fastify management API, routed React dashboard, static content inspection, safe settings persistence, structured logs, system inspection, local-only safeguards, and disabled future workflow surfaces.
+
 ## Future Phases
 
 - Portfolio content management UI

@@ -12,9 +12,9 @@ Phase 2 keeps that split. Motion is added through focused client islands in `app
 
 Shared animation constants live in `apps/portfolio/src/lib/animation`. Device and animation budget decisions live in `apps/portfolio/src/lib/performance`.
 
-`apps/generator/server` is the private local API. It owns future orchestration for GitHub, local AI, filesystem persistence, queueing, Git operations, and publishing.
+`apps/generator/server` is the private local API. It owns future orchestration for GitHub, local AI, filesystem persistence, queueing, Git operations, and publishing. In Phase 3 it exposes local-only dashboard, content inspection, settings, logs, system, readiness, version, and docs endpoints.
 
-`apps/generator/ui` is the private management interface. In Phase 0 it only displays API health and placeholder readiness.
+`apps/generator/ui` is the private management interface. In Phase 3 it is a routed Vite/React dashboard with Overview, Content, Settings, Logs, and System pages plus disabled future navigation for repositories, queue, local AI, and publishing.
 
 ## Shared Packages
 

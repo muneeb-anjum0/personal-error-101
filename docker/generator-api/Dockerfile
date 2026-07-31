@@ -9,9 +9,8 @@ RUN pnpm build:packages
 RUN pnpm --filter @muneeb-systems/generator-server build
 
 FROM node:24-slim AS runner
-WORKDIR /workspace
+WORKDIR /workspace/apps/generator/server
 ENV NODE_ENV=production
-RUN corepack enable
 COPY --from=builder /workspace /workspace
 EXPOSE 4000
-CMD ["pnpm", "--filter", "@muneeb-systems/generator-server", "start"]
+CMD ["node", "dist/src/main.js"]
