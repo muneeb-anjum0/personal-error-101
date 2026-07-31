@@ -1,0 +1,67 @@
+[
+  {
+    "id": "nope-security-orchestration",
+    "name": "NOPE Security Orchestration Platform",
+    "summary": "Editable starter record for a security orchestration platform concept.",
+    "status": "draft",
+    "tags": ["Security", "Automation", "Platform"],
+    "links": [],
+    "featured": true,
+    "starter": {
+      "editable": true,
+      "note": "Starter project record. Verify scope before publishing."
+    }
+  },
+  {
+    "id": "ai-job-intelligence-engine",
+    "name": "AI Job Intelligence Engine",
+    "summary": "Editable starter record for AI-assisted job discovery and analysis.",
+    "status": "draft",
+    "tags": ["AI", "Automation", "Career"],
+    "links": [],
+    "featured": true,
+    "starter": {
+      "editable": true,
+      "note": "Starter project record. Replace with verified details."
+    }
+  },
+  {
+    "id": "smart-electric-power-insights",
+    "name": "Smart Electric Power Insights",
+    "summary": "Editable starter record for an electric power analytics project.",
+    "status": "draft",
+    "tags": ["Analytics", "Energy", "Data"],
+    "links": [],
+    "featured": false,
+    "starter": {
+      "editable": true,
+      "note": "Starter project record. Replace with verified details."
+    }
+  },
+  {
+    "id": "local-ai-interview-game",
+    "name": "Local AI Interview Game",
+    "summary": "Editable starter record for a local AI-powered interview practice game.",
+    "status": "draft",
+    "tags": ["AI", "Game", "Local model"],
+    "links": [],
+    "featured": false,
+    "starter": {
+      "editable": true,
+      "note": "Starter project record. Replace with verified details."
+    }
+  },
+  {
+    "id": "traffic-violation-detection",
+    "name": "Traffic Violation Detection Platform",
+    "summary": "Editable starter record for a traffic violation detection platform.",
+    "status": "draft",
+    "tags": ["Computer vision", "Detection", "Platform"],
+    "links": [],
+    "featured": false,
+    "starter": {
+      "editable": true,
+      "note": "Starter project record. Replace with verified details."
+    }
+  }
+]

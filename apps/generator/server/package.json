@@ -1,0 +1,28 @@
+{
+  "name": "@muneeb-systems/generator-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/src/main.js",
+  "scripts": {
+    "dev": "pnpm --filter @muneeb-systems/shared-config build && pnpm --filter @muneeb-systems/shared-schemas build && tsx watch src/main.ts",
+    "build": "tsc -b tsconfig.json",
+    "start": "node dist/src/main.js",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cors": "11.1.0",
+    "@muneeb-systems/shared-config": "workspace:*",
+    "@muneeb-systems/shared-schemas": "workspace:*",
+    "@muneeb-systems/shared-types": "workspace:*",
+    "fastify": "5.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.2.1",
+    "tsx": "4.20.4",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

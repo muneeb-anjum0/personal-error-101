@@ -1,0 +1,18 @@
+packages:
+  - "apps/*"
+  - "apps/generator/*"
+  - "packages/*"
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - "esbuild"
+  - "sharp"
+minimumReleaseAgeExclude:
+  - "@playwright/test@1.62.1"
+  - fastify@5.11.0
+  - playwright-core@1.62.1
+  - playwright@1.62.1
+  - vite@8.2.0
+allowBuilds:
+  "@tailwindcss/oxide": true
+  esbuild: true
+  sharp: true

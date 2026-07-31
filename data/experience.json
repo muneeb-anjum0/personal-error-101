@@ -1,0 +1,46 @@
+[
+  {
+    "id": "app-in-snap-dotnet-backend",
+    "role": ".NET Backend Developer",
+    "organization": "App In Snap",
+    "location": "Editable location",
+    "startDate": "Editable start date",
+    "endDate": null,
+    "summary": "Editable starter entry for backend engineering work at App In Snap.",
+    "highlights": ["Worked on backend application foundations and API-oriented development."],
+    "starter": {
+      "editable": true,
+      "note": "Do not publish as final copy until dates, scope, and details are reviewed."
+    }
+  },
+  {
+    "id": "aangan-lead-mern",
+    "role": "Lead MERN Stack Developer",
+    "organization": "Aangan",
+    "location": "Editable location",
+    "startDate": "Editable start date",
+    "endDate": null,
+    "summary": "Editable starter entry for MERN stack leadership work at Aangan.",
+    "highlights": [
+      "Led full-stack implementation work across React, Node.js, and database layers."
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Replace with verified responsibilities and dates in a later content phase."
+    }
+  },
+  {
+    "id": "independent-engineering-ai",
+    "role": "Independent Engineering and AI Work",
+    "organization": "Independent",
+    "location": "Remote",
+    "startDate": "Editable start date",
+    "endDate": null,
+    "summary": "Editable starter entry for independent software engineering and local AI experimentation.",
+    "highlights": ["Built project prototypes across AI tooling, web applications, and automation."],
+    "starter": {
+      "editable": true,
+      "note": "Keep this broad until specific projects and outcomes are verified."
+    }
+  }
+]

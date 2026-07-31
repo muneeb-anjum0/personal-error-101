@@ -1,0 +1,30 @@
+{
+  "name": "@muneeb-systems/portfolio",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --workspace-root build:packages && next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "pnpm --workspace-root build:packages && eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@muneeb-systems/content-engine": "workspace:*",
+    "@muneeb-systems/shared-types": "workspace:*",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.13",
+    "@types/node": "24.2.1",
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "tailwindcss": "4.1.13",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

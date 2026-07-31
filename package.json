@@ -1,0 +1,44 @@
+{
+  "name": "muneeb-systems",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Foundation monorepo for the MUNEEB.SYSTEMS portfolio platform.",
+  "packageManager": "pnpm@11.5.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @muneeb-systems/portfolio --filter @muneeb-systems/generator dev",
+    "dev:portfolio": "pnpm --filter @muneeb-systems/portfolio dev",
+    "dev:generator": "pnpm --filter @muneeb-systems/generator dev",
+    "build": "pnpm build:packages && pnpm --filter @muneeb-systems/portfolio build && pnpm --filter @muneeb-systems/generator build",
+    "build:packages": "tsc -b packages/shared-config/tsconfig.json packages/shared-schemas/tsconfig.json packages/shared-types/tsconfig.json packages/content-engine/tsconfig.json",
+    "build:portfolio": "pnpm --filter @muneeb-systems/portfolio build",
+    "build:generator": "pnpm --filter @muneeb-systems/generator build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm build:packages && pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:e2e": "playwright test",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.33.0",
+    "@playwright/test": "1.62.1",
+    "@types/node": "24.2.1",
+    "concurrently": "9.2.0",
+    "eslint": "9.33.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "16.3.0",
+    "prettier": "3.6.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.39.0",
+    "vitest": "4.1.10"
+  }
+}

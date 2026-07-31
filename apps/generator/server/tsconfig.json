@@ -1,0 +1,22 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@muneeb-systems/shared-config": ["../../../packages/shared-config/src/index.ts"],
+      "@muneeb-systems/shared-schemas": ["../../../packages/shared-schemas/src/index.ts"],
+      "@muneeb-systems/shared-types": ["../../../packages/shared-types/src/index.ts"]
+    },
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "vitest.config.ts"],
+  "references": [
+    { "path": "../../../packages/shared-config" },
+    { "path": "../../../packages/shared-schemas" },
+    { "path": "../../../packages/shared-types" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selectedRepositoryIds": [],
+  "lastGitHubSyncAt": null,
+  "lastContentGenerationAt": null,
+  "contentPublishedAt": null,
+  "services": {
+    "githubConfigured": false,
+    "aiConfigured": false,
+    "contentStorageReady": true
+  }
+}

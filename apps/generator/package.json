@@ -1,0 +1,15 @@
+{
+  "name": "@muneeb-systems/generator",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,ui -c cyan,green \"pnpm --filter @muneeb-systems/generator-server dev\" \"pnpm --filter @muneeb-systems/generator-ui dev\"",
+    "build": "pnpm --filter @muneeb-systems/generator-server build && pnpm --filter @muneeb-systems/generator-ui build",
+    "lint": "pnpm --filter @muneeb-systems/generator-server lint && pnpm --filter @muneeb-systems/generator-ui lint",
+    "typecheck": "pnpm --filter @muneeb-systems/generator-server typecheck && pnpm --filter @muneeb-systems/generator-ui typecheck",
+    "test": "pnpm --filter @muneeb-systems/generator-server test && pnpm --filter @muneeb-systems/generator-ui test"
+  },
+  "devDependencies": {
+    "concurrently": "9.2.0"
+  }
+}

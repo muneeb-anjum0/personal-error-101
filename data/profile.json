@@ -1,0 +1,16 @@
+{
+  "name": "Muneeb Anjum",
+  "headline": "Software engineer building backend systems, AI workflows, and full-stack products.",
+  "shortBio": "Editable starter bio for the MUNEEB.SYSTEMS portfolio.",
+  "longBio": "Editable starter long bio. Replace this with a precise narrative about Muneeb's engineering work, product taste, and selected projects in a later content phase.",
+  "location": "Editable location",
+  "availability": "Editable availability",
+  "email": "muneeb@example.com",
+  "githubUrl": "https://github.com/muneeb-anjum0",
+  "linkedInUrl": "https://www.linkedin.com/in/edit-this-placeholder",
+  "resumePath": "/resume.pdf",
+  "starter": {
+    "editable": true,
+    "note": "Starter content for Phase 0. Review and replace exact public details later."
+  }
+}
