@@ -1,5 +1,4 @@
 import { Sidebar } from "../components/layout/sidebar";
-import { Topbar } from "../components/layout/topbar";
 import { ToastProvider } from "../components/feedback/toast-provider";
 import { RouteView, useRouter } from "./router";
 
@@ -11,7 +10,6 @@ export function AppShell() {
       <div className="app-shell">
         <Sidebar activePath={router.path} onNavigate={router.navigate} />
         <div className="workspace">
-          <Topbar activePath={router.path} onNavigate={router.navigate} />
           <main id="main" className="page-container">
             <RouteView path={router.path} />
           </main>

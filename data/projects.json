@@ -1,1 +1,174 @@
-[]
+[
+  {
+    "id": "generated_1239748049",
+    "slug": "drift-1239748049",
+    "name": "Drift",
+    "subtitle": "Detect requirement drift before it turns into silent scope creep",
+    "summary": "Drift is a local-first SaaS workspace that detects requirement drift from client messages and turns scope changes into reviewable project decisions.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "Requirements Management",
+      "Scope Management",
+      "Drift Detection",
+      "AI/ML",
+      "SaaS",
+      "Project Management"
+    ],
+    "technologies": [
+      "TypeScript",
+      "Go",
+      "Python",
+      "React",
+      "FastAPI",
+      "MongoDB",
+      "llama.cpp",
+      "GGUF",
+      "Gin",
+      "CSS",
+      "Dockerfile",
+      "JavaScript",
+      "HTML"
+    ],
+    "tags": [
+      "drift-detection",
+      "requirements-management",
+      "scope-creep",
+      "ai",
+      "llama-cpp",
+      "fastapi",
+      "go",
+      "react",
+      "local-first",
+      "change-management"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/Drift"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-04T16:50:46.475Z",
+    "updatedAt": "2026-08-04T16:50:46.475Z",
+    "pushedAt": "2026-08-04T16:50:46.475Z",
+    "problem": "Scope creep often occurs through small, seemingly harmless requests from clients. Over time, these requests blur the approved baseline, leading to uncontrolled changes and unpaid work.",
+    "solution": "Drift provides a structured workflow to detect and manage requirement drift. It uses a fine-tuned AI model to analyze client inputs against approved requirements, generating clear, reviewable change requests that can be approved, rejected, or revised.",
+    "keyFeatures": [
+      "Workspaces and projects for organizing client work",
+      "Requirement capture with effort, tags, source text, and acceptance criteria",
+      "Baseline snapshots for approved scope",
+      "Local model-backed drift analysis",
+      "Saved analysis history",
+      "Change request drafting from detected drift",
+      "Approval queue with approve, reject, and revision decisions",
+      "Document upload workflow",
+      "Billing page placeholder for SaaS presentation",
+      "Evaluation dashboard for local model quality checks"
+    ],
+    "challenges": [
+      "Maintaining a clear baseline for approved scope",
+      "Accurately detecting and classifying requirement drift",
+      "Ensuring the AI model's outputs are reliable and interpretable",
+      "Integrating the AI runtime with the backend without compromising performance",
+      "Managing and tracking changes in a structured and reviewable manner"
+    ],
+    "technicalHighlights": [],
+    "impact": "Drift helps teams avoid silent scope creep by making requirement changes visible, explainable, and approvable. It improves project delivery by ensuring that changes are tracked and managed systematically.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1300965293",
+    "slug": "nope-1300965293",
+    "name": "NOPE",
+    "subtitle": "Local-first AppSec review workbench",
+    "summary": "A local-first AppSec review workbench for authorized repository and URL scans, with deterministic scanners, evidence-gated findings, reports, drift, and optional local Qwen explanations.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "AppSec",
+      "Code Audit",
+      "Security Scanner",
+      "Local AI",
+      "Local-first",
+      "Repository Intelligence"
+    ],
+    "technologies": [
+      "Python",
+      "TypeScript",
+      "FastAPI",
+      "PostgreSQL",
+      "Redis",
+      "Qdrant",
+      "llama.cpp",
+      "Docker",
+      "Semgrep",
+      "Gitleaks",
+      "Trivy",
+      "ZAP",
+      "Qwen",
+      "CSS",
+      "Dockerfile",
+      "JavaScript",
+      "HCL"
+    ],
+    "tags": [
+      "ai-security",
+      "appsec",
+      "code-audit",
+      "fastapi",
+      "gitleaks",
+      "local-ai",
+      "playwright",
+      "postgres",
+      "qwen",
+      "redis",
+      "sast",
+      "security-scanner",
+      "semgrep",
+      "trivy",
+      "vulnerability-scanner",
+      "zap"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/NOPE"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-04T16:49:20.884Z",
+    "updatedAt": "2026-08-04T16:49:20.884Z",
+    "pushedAt": "2026-08-04T16:49:20.884Z",
+    "problem": "Fast builders often get scanner output but not enough evidence to understand what is real, what was missed, and what still needs a human decision.",
+    "solution": "NOPE runs deterministic scanners, validates findings against evidence, indexes repository context, tracks coverage and drift, generates reports, and uses a local Qwen model to explain or challenge findings.",
+    "keyFeatures": [
+      "Deterministic scanners",
+      "Evidence-gated findings",
+      "Reports and drift tracking",
+      "Local Qwen explanations",
+      "Repository intelligence indexing",
+      "Hybrid RAG context for findings",
+      "Security rule authoring and correlation",
+      "Support for multiple scanners (Semgrep, Gitleaks, Trivy, etc.)"
+    ],
+    "challenges": [
+      "Ensuring scanner output is treated as evidence, not truth",
+      "Managing false positives and false negatives",
+      "Integrating multiple scanners and tools",
+      "Maintaining repository intelligence and RAG context",
+      "Handling large-scale scans and performance"
+    ],
+    "technicalHighlights": [],
+    "impact": "NOPE improves the accuracy and reliability of security scans by providing evidence-based findings, reducing false positives, and enabling better decision-making through detailed reports and AI-assisted review.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  }
+]

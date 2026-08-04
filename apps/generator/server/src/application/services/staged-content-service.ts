@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import type {
   ActivityItem,
   ExperienceEntry,
+  GeneratedProjectDraft,
   Profile,
   Project,
   SkillCategory,
@@ -52,14 +53,14 @@ export class StagedContentService {
 
   public async updateProfile(input: unknown): Promise<Profile> {
     const value = profileSchema.parse(input);
-    await this.repository.write("profile", value);
-    await this.logger.log("INFO", "STAGED_CONTENT", "Profile staged", { hash: hash(value) });
+    await this.repository.writeAndPublish("profile", value);
+    await this.logger.log("INFO", "STAGED_CONTENT", "Profile published", { hash: hash(value) });
     return value;
   }
 
   public async updateSkills(input: unknown): Promise<SkillCategory[]> {
     const value = skillCategorySchema.array().parse(input);
-    await this.repository.write("skills", value);
+    await this.repository.writeAndPublish("skills", value);
     return value;
   }
 
@@ -97,7 +98,7 @@ export class StagedContentService {
 
   public async updateExperience(input: unknown): Promise<ExperienceEntry[]> {
     const value = experienceEntrySchema.array().parse(input);
-    await this.repository.write("experience", value);
+    await this.repository.writeAndPublish("experience", value);
     return value;
   }
 
@@ -118,7 +119,7 @@ export class StagedContentService {
 
   public async updateActivity(input: unknown): Promise<ActivityItem[]> {
     const value = activityItemSchema.array().parse(input);
-    await this.repository.write("activity", value);
+    await this.repository.writeAndPublish("activity", value);
     return value;
   }
 
@@ -159,6 +160,87 @@ export class StagedContentService {
       }
     };
   }
+
+  public async publishExistingEditableContent(): Promise<void> {
+    const profile = profileSchema.parse(await this.repository.readEffective("profile"));
+    const experience = experienceEntrySchema.array().parse(
+      await this.repository.readEffective("experience")
+    );
+    const skills = skillCategorySchema.array().parse(await this.repository.readEffective("skills"));
+    const activity = activityItemSchema.array().parse(await this.repository.readEffective("activity"));
+    await Promise.all([
+      this.repository.writePublic("profile", profile),
+      this.repository.writePublic("experience", experience),
+      this.repository.writePublic("skills", skills),
+      this.repository.writePublic("activity", activity)
+    ]);
+  }
+
+  public async synchronizeGeneratedProjects(drafts: GeneratedProjectDraft[]): Promise<Project[]> {
+    const projects = drafts.map(generatedDraftToProject);
+    await this.repository.writeAndPublish("projects", projects);
+    return projects;
+  }
+
+  public async publishGeneratedProject(draft: GeneratedProjectDraft): Promise<Project> {
+    const projects = projectSchema.array().parse(await this.repository.readEffective("projects"));
+    const project = generatedDraftToProject(draft);
+    const next = [
+      ...projects.filter((item) => item.id !== project.id),
+      project
+    ];
+    await this.repository.writeAndPublish("projects", next);
+    return project;
+  }
+
+  public async removeGeneratedProject(repositoryId: string): Promise<void> {
+    const projects = projectSchema.array().parse(await this.repository.readEffective("projects"));
+    await this.repository.writeAndPublish(
+      "projects",
+      projects.filter((project) => project.id !== generatedProjectId(repositoryId))
+    );
+  }
+}
+
+function generatedDraftToProject(draft: GeneratedProjectDraft): Project {
+  return projectSchema.parse({
+    id: generatedProjectId(draft.repositoryId),
+    slug: slugify(`${draft.title}-${draft.repositoryId}`),
+    name: draft.title,
+    subtitle: draft.subtitle || undefined,
+    summary: draft.summary,
+    status: "active",
+    hidden: false,
+    categories: draft.categories,
+    technologies: draft.technologies,
+    tags: draft.tags,
+    links: [{ label: "GitHub", url: `https://github.com/${draft.repositoryFullName}` }],
+    featured: true,
+    createdAt: draft.createdAt,
+    updatedAt: draft.updatedAt,
+    pushedAt: draft.updatedAt,
+    problem: draft.problem || undefined,
+    solution: draft.solution || undefined,
+    keyFeatures: draft.features,
+    architecture: draft.architecture.join(" ") || undefined,
+    challenges: draft.challenges,
+    technicalHighlights: draft.confidenceNotes,
+    impact: draft.impact || undefined,
+    relatedSkillIds: [],
+    starter: { editable: false, note: "Generated from the linked repository summary." }
+  });
+}
+
+function generatedProjectId(repositoryId: string): string {
+  return `generated_${repositoryId}`;
+}
+
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 120);
 }
 
 function hash(value: unknown): string {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { advancedRoutes, futureRoutes, workflowRoutes, type AppRoute } from "../../app/routes";
+import { futureRoutes, workflowRoutes, type AppRoute } from "../../app/routes";
 
 export function MobileNavigation({
   activePath,
@@ -50,20 +50,6 @@ export function MobileNavigation({
           </button>
           <nav>
             {workflowRoutes.map((route) => (
-              <button
-                key={route.path}
-                aria-current={route.path === activePath ? "page" : undefined}
-                type="button"
-                onClick={() => {
-                  onNavigate(route.path);
-                  setOpen(false);
-                }}
-              >
-                {route.label}
-              </button>
-            ))}
-            <p className="nav-group">ADVANCED</p>
-            {advancedRoutes.map((route) => (
               <button
                 key={route.path}
                 aria-current={route.path === activePath ? "page" : undefined}

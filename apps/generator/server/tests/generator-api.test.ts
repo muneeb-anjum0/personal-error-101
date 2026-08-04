@@ -24,6 +24,11 @@ describe("generator API", () => {
   it("returns health, readiness, and version metadata", async () => {
     const instance = await server();
 
+    expect((await instance.inject({ method: "GET", url: "/" })).json()).toMatchObject({
+      name: "MUNEEB.SYSTEMS GENERATOR API",
+      status: "healthy",
+      documentation: "/api/docs"
+    });
     expect((await instance.inject({ method: "GET", url: "/health" })).json()).toEqual({
       status: "healthy"
     });
@@ -34,13 +39,12 @@ describe("generator API", () => {
         content: true,
         settings: true,
         github: true,
-        ai: false,
-        publishing: false
+        ai: false
       }
     });
     expect((await instance.inject({ method: "GET", url: "/api/version" })).json()).toMatchObject({
       name: "MUNEEB.SYSTEMS GENERATOR",
-      phase: "phase-7-safe-local-publishing-git-workflow"
+      phase: "direct-content-generator"
     });
   });
 
@@ -87,27 +91,9 @@ describe("generator API", () => {
     expect((await instance.inject({ method: "GET", url: "/api/drafts" })).json()).toHaveProperty(
       "items"
     );
-    expect((await instance.inject({ method: "GET", url: "/api/reviews" })).json()).toHaveProperty(
-      "items"
-    );
     expect(
       (await instance.inject({ method: "GET", url: "/api/staged/status" })).json()
     ).toHaveProperty("conflicts");
-    expect(
-      (await instance.inject({ method: "GET", url: "/api/preview/sessions" })).json()
-    ).toHaveProperty("items");
-    expect(
-      (await instance.inject({ method: "GET", url: "/api/publishing/status" })).json()
-    ).toHaveProperty("readyForManualPublish");
-    expect(
-      (await instance.inject({ method: "GET", url: "/api/publishing/execution/status" })).json()
-    ).toHaveProperty("locked");
-    expect(
-      (await instance.inject({ method: "GET", url: "/api/publishing/git/readiness" })).json()
-    ).toHaveProperty("workingTreeState");
-    expect(
-      (await instance.inject({ method: "POST", url: "/api/github/auth/check" })).json()
-    ).toMatchObject({ statusLabel: "GITHUB TOKEN NOT CONFIGURED" });
     expect((await instance.inject({ method: "GET", url: "/api/docs" })).json()).toHaveProperty(
       "openapi",
       "3.1.0"
@@ -157,5 +143,14 @@ describe("generator API", () => {
 
     expect(invalid.statusCode).toBe(400);
     expect(invalid.json()).toMatchObject({ error: { code: "VALIDATION_ERROR" } });
+  });
+
+  it("returns a safe not-found response when deleting an unknown generated summary", async () => {
+    const response = await (
+      await server()
+    ).inject({ method: "DELETE", url: "/api/drafts/draft_missing" });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ error: { code: "DRAFT_NOT_FOUND" } });
   });
 });

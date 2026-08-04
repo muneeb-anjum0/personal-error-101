@@ -1,4 +1,4 @@
-import { advancedRoutes, futureRoutes, workflowRoutes, type AppRoute } from "../../app/routes";
+import { futureRoutes, workflowRoutes, type AppRoute } from "../../app/routes";
 
 export function Sidebar({
   activePath,
@@ -25,21 +25,6 @@ export function Sidebar({
             {route.label}
           </button>
         ))}
-        <details className="nav-advanced">
-          <summary>ADVANCED</summary>
-          <div>
-            {advancedRoutes.map((route) => (
-              <button
-                key={route.path}
-                aria-current={route.path === activePath ? "page" : undefined}
-                type="button"
-                onClick={() => onNavigate(route.path)}
-              >
-                {route.label}
-              </button>
-            ))}
-          </div>
-        </details>
         {futureRoutes.map((route) => (
           <button key={route.path} disabled type="button" title="COMING IN A LATER PHASE">
             <span>{route.label}</span>

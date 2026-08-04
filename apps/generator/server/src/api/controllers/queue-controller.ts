@@ -48,3 +48,8 @@ export async function getDraft(service: ProcessingQueueService, request: Fastify
   }
   return draft;
 }
+
+export function deleteDraft(service: ProcessingQueueService, request: FastifyRequest) {
+  const { draftId } = request.params as { draftId: string };
+  return service.deleteDraft(draftId);
+}

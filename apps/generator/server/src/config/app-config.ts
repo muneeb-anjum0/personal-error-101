@@ -87,7 +87,7 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
     port: environment.GENERATOR_API_PORT,
     corsOrigins: ["http://localhost:4173", "http://127.0.0.1:4173"],
     version: "0.0.0",
-    phase: "phase-7-safe-local-publishing-git-workflow",
+    phase: "direct-content-generator",
     environment: environment.NODE_ENV,
     repositoryRoot,
     dataDirectory,

@@ -2,7 +2,6 @@ import {
   apiHealthResponseSchema,
   apiReadinessResponseSchema,
   apiVersionResponseSchema,
-  draftReviewSchema,
   aiRuntimeStateSchema,
   aiTestGenerationResultSchema,
   contentDetailResponseSchema,
@@ -38,18 +37,10 @@ import {
   publishingRunsResponseSchema,
   pushResultSchema,
   rollbackResultSchema,
-  reviewApprovalSchema,
-  reviewRejectionSchema,
-  reviewRevisionSchema,
-  reviewValidationResultSchema,
-  reviewsResponseSchema,
-  revisionComparisonSchema,
   stagedContentBundleSchema,
-  stagedContentStatusSchema,
   systemInformationSchema
 } from "@muneeb-systems/shared-schemas";
 import type {
-  ApproveReviewRequest,
   GitHubBulkSelectionRequest,
   GitHubNotesUpdate,
   GitHubSelectionUpdate,
@@ -57,20 +48,10 @@ import type {
   AiTestGenerationRequest,
   EnqueueRepositoriesRequest,
   GeneratorSettingsUpdate,
-  CommitRequest,
-  OpenReviewRequest,
-  RejectReviewRequest,
-  SaveReviewRevisionRequest,
-  UpdateReviewMappingRequest,
-  UpdateWorkingCopyRequest
+  CommitRequest
 } from "@muneeb-systems/shared-types";
 import { z } from "zod";
 import { parseApiError } from "./api-error";
-
-const reviewRevisionsResponseSchema = z.object({
-  items: z.array(reviewRevisionSchema),
-  total: z.number().int().nonnegative()
-});
 
 const previewSessionsResponseSchema = z.object({
   items: z.array(previewSessionSchema),
@@ -87,7 +68,7 @@ const publishingStatusSchema = z.object({
   bundles: z.number().int().nonnegative(),
   currentBundleId: z.string().nullable(),
   readyForManualPublish: z.boolean(),
-  notice: z.literal("PHASE 6 PREPARATION ONLY. NO GIT COMMIT, PUSH, OR DEPLOYMENT WILL OCCUR.")
+  notice: z.string()
 });
 
 const publishingBundlesResponseSchema = z.object({
@@ -99,6 +80,7 @@ const publishingBackupsResponseSchema = z.object({
   items: z.array(publicContentBackupSchema),
   total: z.number().int().nonnegative()
 });
+
 
 export class GeneratorApiClient {
   public constructor(private readonly baseUrl: string) {}
@@ -355,132 +337,12 @@ export class GeneratorApiClient {
     );
   }
 
-  public reviews(signal?: AbortSignal) {
-    return this.get("/api/reviews", reviewsResponseSchema, signal);
-  }
-
-  public openReview(request: OpenReviewRequest, signal?: AbortSignal) {
-    return this.request("/api/reviews", draftReviewSchema, {
-      method: "POST",
-      body: JSON.stringify(request),
-      signal
-    });
-  }
-
-  public review(reviewId: string, signal?: AbortSignal) {
-    return this.get(`/api/reviews/${encodeURIComponent(reviewId)}`, draftReviewSchema, signal);
-  }
-
-  public updateReviewWorkingCopy(
-    reviewId: string,
-    request: UpdateWorkingCopyRequest,
-    signal?: AbortSignal
-  ) {
+  public deleteDraft(draftId: string, signal?: AbortSignal) {
     return this.request(
-      `/api/reviews/${encodeURIComponent(reviewId)}/working-copy`,
-      draftReviewSchema,
-      {
-        method: "PUT",
-        body: JSON.stringify(request),
-        signal
-      }
+      `/api/drafts/${encodeURIComponent(draftId)}`,
+      processingQueueSchema,
+      { method: "DELETE", signal }
     );
-  }
-
-  public saveReviewRevision(
-    reviewId: string,
-    request: SaveReviewRevisionRequest,
-    signal?: AbortSignal
-  ) {
-    return this.request(
-      `/api/reviews/${encodeURIComponent(reviewId)}/revisions`,
-      reviewRevisionSchema,
-      {
-        method: "POST",
-        body: JSON.stringify(request),
-        signal
-      }
-    );
-  }
-
-  public reviewRevisions(reviewId: string, signal?: AbortSignal) {
-    return this.get(
-      `/api/reviews/${encodeURIComponent(reviewId)}/revisions`,
-      reviewRevisionsResponseSchema,
-      signal
-    );
-  }
-
-  public compareReview(reviewId: string, signal?: AbortSignal) {
-    return this.get(
-      `/api/reviews/${encodeURIComponent(reviewId)}/compare`,
-      revisionComparisonSchema,
-      signal
-    );
-  }
-
-  public validateReview(reviewId: string, signal?: AbortSignal) {
-    return this.request(
-      `/api/reviews/${encodeURIComponent(reviewId)}/validate`,
-      reviewValidationResultSchema,
-      {
-        method: "POST",
-        body: JSON.stringify({}),
-        signal
-      }
-    );
-  }
-
-  public approveReview(reviewId: string, request: ApproveReviewRequest, signal?: AbortSignal) {
-    return this.request(
-      `/api/reviews/${encodeURIComponent(reviewId)}/approve`,
-      reviewApprovalSchema,
-      {
-        method: "POST",
-        body: JSON.stringify(request),
-        signal
-      }
-    );
-  }
-
-  public rejectReview(reviewId: string, request: RejectReviewRequest, signal?: AbortSignal) {
-    return this.request(
-      `/api/reviews/${encodeURIComponent(reviewId)}/reject`,
-      reviewRejectionSchema,
-      {
-        method: "POST",
-        body: JSON.stringify(request),
-        signal
-      }
-    );
-  }
-
-  public reopenReview(reviewId: string, signal?: AbortSignal) {
-    return this.request(`/api/reviews/${encodeURIComponent(reviewId)}/reopen`, draftReviewSchema, {
-      method: "POST",
-      body: JSON.stringify({}),
-      signal
-    });
-  }
-
-  public updateReviewMapping(
-    reviewId: string,
-    request: UpdateReviewMappingRequest,
-    signal?: AbortSignal
-  ) {
-    return this.request(`/api/reviews/${encodeURIComponent(reviewId)}/mapping`, draftReviewSchema, {
-      method: "PUT",
-      body: JSON.stringify(request),
-      signal
-    });
-  }
-
-  public staged(signal?: AbortSignal) {
-    return this.get("/api/staged", stagedContentBundleSchema, signal);
-  }
-
-  public stagedStatus(signal?: AbortSignal) {
-    return this.get("/api/staged/status", stagedContentStatusSchema, signal);
   }
 
   public stagedContent(type: string, signal?: AbortSignal) {

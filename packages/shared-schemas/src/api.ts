@@ -1311,8 +1311,7 @@ export const apiReadinessResponseSchema = z.object({
     content: z.boolean(),
     settings: z.boolean(),
     github: z.boolean(),
-    ai: z.boolean(),
-    publishing: z.boolean()
+    ai: z.boolean()
   })
 });
 

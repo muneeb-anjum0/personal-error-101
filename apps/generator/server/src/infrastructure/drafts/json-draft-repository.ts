@@ -1,4 +1,4 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { DraftSummary, GeneratedProjectDraft } from "@muneeb-systems/shared-types";
 import { generatedProjectDraftSchema } from "@muneeb-systems/shared-schemas";
@@ -31,6 +31,13 @@ export class JsonDraftRepository {
     } catch {
       return null;
     }
+  }
+
+  public async delete(id: string): Promise<void> {
+    await Promise.all([
+      rm(path.join(this.config.aiDraftDirectory, `${id}.json`), { force: true }),
+      rm(path.join(this.config.aiDraftDirectory, `${id}.raw.txt`), { force: true })
+    ]);
   }
 
   public async list(): Promise<DraftSummary[]> {

@@ -31,6 +31,16 @@ test("header navigation, quick view, and filters work on desktop", async ({ page
   await expect(page.getByRole("heading", { name: "Smart Electric Power Insights" })).toBeVisible();
 });
 
+test("header navigation tracks every destination section", async ({ page }) => {
+  await page.goto("http://127.0.0.1:3000");
+
+  for (const name of ["ABOUT", "EXPERIENCE", "WORK", "PHILOSOPHY", "CONTACT"]) {
+    const link = page.locator(".desktop-nav").getByRole("link", { name, exact: true });
+    await link.click();
+    await expect(link).toHaveAttribute("aria-current", "true");
+  }
+});
+
 test("engineering system supports pointer and keyboard interaction", async ({ page }) => {
   await page.goto("http://127.0.0.1:3000");
 

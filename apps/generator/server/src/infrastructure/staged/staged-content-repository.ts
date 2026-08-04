@@ -59,4 +59,19 @@ export class StagedContentRepository {
       20
     );
   }
+
+  public async writePublic(type: StagedContentType, value: unknown): Promise<void> {
+    await this.writer.writeJsonWithBackup(
+      this.baselinePath(type),
+      value,
+      path.join(this.config.dataDirectory, "backups", "public-content"),
+      type,
+      20
+    );
+  }
+
+  public async writeAndPublish(type: StagedContentType, value: unknown): Promise<void> {
+    await this.write(type, value);
+    await this.writePublic(type, value);
+  }
 }

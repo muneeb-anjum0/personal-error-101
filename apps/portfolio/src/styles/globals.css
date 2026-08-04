@@ -21,6 +21,7 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-mechanical: cubic-bezier(0.65, 0, 0.35, 1);
+  --anchor-offset: 96px;
 }
 
 * {
@@ -30,7 +31,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
-  scroll-padding-top: 120px;
+  scroll-padding-top: var(--anchor-offset);
   scrollbar-color: var(--foreground) rgba(9, 9, 9, 0.08);
   scrollbar-width: thin;
 }
@@ -593,7 +594,6 @@ main {
 .portfolio-section {
   padding-block: var(--section-space);
   border-top: 1px solid var(--border);
-  scroll-margin-top: 120px;
 }
 
 .section-heading {
@@ -1075,6 +1075,75 @@ main {
   animation-range: entry 8% cover 24%;
 }
 
+.case-study-grid .technology-matrix {
+  grid-column: 1 / -1;
+  padding-top: 0;
+  overflow: hidden;
+  border: 1px solid var(--foreground);
+  animation-range: entry 4% cover 18%;
+}
+
+.technology-matrix > header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 18px 20px;
+}
+
+.technology-matrix > header p,
+.technology-matrix > header h2 {
+  margin: 0;
+}
+
+.technology-matrix > header p {
+  margin-bottom: 5px;
+  color: color-mix(in srgb, var(--background) 68%, transparent);
+}
+
+.technology-matrix > header span {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.technology-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--border-medium);
+}
+
+.technology-matrix-grid > div {
+  display: grid;
+  min-height: 82px;
+  align-content: space-between;
+  gap: 14px;
+  background: var(--background);
+  padding: 13px 15px;
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
+.technology-matrix-grid > div:hover {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.technology-matrix-grid small {
+  color: var(--foreground-muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+}
+
+.technology-matrix-grid strong {
+  overflow-wrap: anywhere;
+  font-size: clamp(0.82rem, 1.2vw, 1rem);
+}
+
 .case-study-nav {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1253,6 +1322,7 @@ main {
   :root {
     --container: min(100vw - 36px, 1500px);
     --section-space: 60px;
+    --anchor-offset: 76px;
   }
 
   .site-header {
@@ -1295,6 +1365,10 @@ main {
   .timeline-markers {
     border-left: 1px solid var(--foreground);
     border-top: 0;
+  }
+
+  .technology-matrix-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .timeline-marker {

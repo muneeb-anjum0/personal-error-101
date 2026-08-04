@@ -24,7 +24,7 @@ export function ProjectCaseStudy({ project, previous, next }: ProjectCaseStudyPr
             CREATED {formatDisplayDate(project.createdAt)} / UPDATED{" "}
             {formatDisplayDate(project.pushedAt ?? project.updatedAt)}
           </p>
-          <ProjectActions project={project} />
+          <ProjectActions context="detail" project={project} />
         </div>
         <GeneratedProjectCover index={0} project={project} />
       </header>
@@ -37,7 +37,7 @@ export function ProjectCaseStudy({ project, previous, next }: ProjectCaseStudyPr
         <CaseList title="Engineering challenges" items={project.challenges} />
         <CaseList title="Technical highlights" items={project.technicalHighlights} />
         <CaseBlock title="Impact summary" body={project.impact} />
-        <CaseList title="Technologies" items={project.technologies} />
+        <TechnologyMatrix technologies={project.technologies} />
       </div>
       <nav className="case-study-nav" aria-label="Adjacent projects">
         {previous ? (
@@ -77,6 +77,30 @@ function CaseList({ title, items }: { title: string; items: string[] }) {
           <li key={item}>{item}</li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+function TechnologyMatrix({ technologies }: { technologies: string[] }) {
+  if (technologies.length === 0) return null;
+
+  return (
+    <section className="technology-matrix">
+      <header>
+        <div>
+          <p className="technical-label">SYSTEM COMPONENTS</p>
+          <h2>Technology stack</h2>
+        </div>
+        <span>{String(technologies.length).padStart(2, "0")} TOOLS</span>
+      </header>
+      <div className="technology-matrix-grid">
+        {technologies.map((technology, index) => (
+          <div key={technology}>
+            <small>{String(index + 1).padStart(2, "0")}</small>
+            <strong>{technology}</strong>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

@@ -193,7 +193,9 @@ function usage(
 }
 
 function assertLocalUrl(url: URL): void {
-  if (!["127.0.0.1", "localhost", "host.docker.internal"].includes(url.hostname)) {
+  if (
+    !["127.0.0.1", "localhost", "host.docker.internal", "llama-server"].includes(url.hostname)
+  ) {
     throw new Error("AI base URL must be local unless a development override is explicitly added.");
   }
 }
