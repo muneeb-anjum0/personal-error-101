@@ -5,9 +5,20 @@ const editableStarterSchema = z.object({
   note: z.string().min(1)
 });
 
+const publicWebUrlSchema = z
+  .string()
+  .url()
+  .refine(
+    (value) => {
+      const protocol = new URL(value).protocol;
+      return protocol === "https:" || protocol === "http:";
+    },
+    { message: "URL must use HTTP or HTTPS" }
+  );
+
 export const linkSchema = z.object({
   label: z.string().min(1),
-  url: z.string().url()
+  url: publicWebUrlSchema
 });
 
 export const profileSchema = z.object({
@@ -26,8 +37,8 @@ export const profileSchema = z.object({
   location: z.string().min(1),
   availability: z.string().min(1),
   email: z.string().email(),
-  githubUrl: z.string().url(),
-  linkedInUrl: z.string().url(),
+  githubUrl: publicWebUrlSchema,
+  linkedInUrl: publicWebUrlSchema,
   resumePath: z.string().min(1),
   stats: z
     .array(

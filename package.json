@@ -16,7 +16,7 @@
     "build": "pnpm build:packages && pnpm --filter @muneeb-systems/portfolio build && pnpm --filter @muneeb-systems/generator build",
     "build:packages": "tsc -b packages/shared-config/tsconfig.json packages/shared-schemas/tsconfig.json packages/shared-types/tsconfig.json packages/content-engine/tsconfig.json",
     "build:portfolio": "pnpm --filter @muneeb-systems/portfolio build",
-    "deploy:portfolio:firebase": "PORTFOLIO_STATIC_EXPORT=true NEXT_PUBLIC_SITE_URL=https://muneeb-anjum.web.app pnpm --filter @muneeb-systems/portfolio build && npx --yes firebase-tools@15.25.1 deploy --only hosting --project personal-error-101 --non-interactive",
+    "deploy:portfolio:firebase": "PORTFOLIO_STATIC_EXPORT=true NEXT_PUBLIC_SITE_URL=https://muneeb-anjum.web.app pnpm --filter @muneeb-systems/portfolio build && node scripts/generate-firebase-deploy-config.mjs && npx --yes firebase-tools@15.25.1 deploy --config .firebase.deploy.json --only hosting --project personal-error-101 --non-interactive",
     "build:generator": "pnpm --filter @muneeb-systems/generator build",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm build:packages && pnpm -r typecheck",
