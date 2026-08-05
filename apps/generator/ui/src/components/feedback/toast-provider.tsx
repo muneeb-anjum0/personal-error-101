@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 interface Toast {
   id: string;
@@ -19,6 +19,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const dismiss = useCallback((id: string) => {
+    setToasts((current) => current.filter((item) => item.id !== id));
+  }, []);
+
   const value = useMemo(() => ({ notify }), [notify]);
 
   return (
@@ -26,17 +30,43 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div className="toast-region" aria-live="polite" aria-label="Notifications">
         {toasts.map((toast) => (
-          <button
+          <ToastMessage
             key={toast.id}
-            className="toast"
-            type="button"
-            onClick={() => setToasts((current) => current.filter((item) => item.id !== toast.id))}
-          >
-            {toast.message}
-          </button>
+            toast={toast}
+            onDismiss={dismiss}
+          />
         ))}
       </div>
     </ToastContext.Provider>
+  );
+}
+
+function ToastMessage({
+  toast,
+  onDismiss
+}: {
+  toast: Toast;
+  onDismiss: (id: string) => void;
+}) {
+  const [exiting, setExiting] = useState(false);
+
+  useEffect(() => {
+    const fadeTimer = window.setTimeout(() => setExiting(true), 4000);
+    const dismissTimer = window.setTimeout(() => onDismiss(toast.id), 4450);
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(dismissTimer);
+    };
+  }, [onDismiss, toast.id]);
+
+  return (
+    <button
+      className={`toast${exiting ? " is-exiting" : ""}`}
+      type="button"
+      onClick={() => onDismiss(toast.id)}
+    >
+      {toast.message}
+    </button>
   );
 }
 

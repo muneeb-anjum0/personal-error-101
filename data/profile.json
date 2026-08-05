@@ -3,17 +3,24 @@
   "role": "Full-stack engineer",
   "headline": "Full-stack developer building intelligent, secure, and useful software.",
   "shortBio": "Muneeb Anjum is a full-stack developer focused on backend systems, AI-assisted workflows, and practical product engineering.",
-  "longBio": "I build software as connected systems: interfaces, APIs, data flows, automation, and the operational details that make products useful. This portfolio is intentionally powered by static content so the public site remains fast, reliable, and independent from private local tooling.",
-  "heroTitleLines": ["I BUILD", "SYSTEMS THAT", "THINK."],
+  "longBio": "I build software as connected systems: interfaces, APIs, data flows, automation, and the operational details that make products useful. ",
+  "heroTitleLines": [
+    "I BUILD",
+    "SYSTEMS THAT",
+    "THINK."
+  ],
   "identityHeading": "I DESIGN HOW SYSTEMS BEHAVE.",
-  "projectsHeading": ["PROJECTS YOU ADD", "WILL LIVE HERE."],
+  "projectsHeading": [
+    "MY PROJECTS",
+    "LIVE HERE."
+  ],
   "projectsDescription": "Add real projects from the local admin when you are ready.",
   "philosophyHeading": "CODE IS NOT THE PRODUCT.",
   "philosophyStatementLines": [
     "THE SYSTEM,",
     "THE EXPERIENCE,",
     "AND THE RESULT",
-    "ARE THE PRODUCT."
+    "ARE THE PRODUCTTYY"
   ],
   "philosophyPrinciples": [
     "Build for actual problems",
@@ -24,9 +31,9 @@
   ],
   "location": "Islamabad, Pakistan",
   "availability": "Available",
-  "email": "muneeb@example.com",
+  "email": "muneeb.anjum0@gmail.com",
   "githubUrl": "https://github.com/muneeb-anjum0",
-  "linkedInUrl": "https://www.linkedin.com/in/edit-this-placeholder",
+  "linkedInUrl": "https://www.linkedin.com/in/muneebanjum335",
   "resumePath": "/resume.pdf",
   "stats": [],
   "starter": {

@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import type { DiscoveredRepository } from "@muneeb-systems/shared-types";
 import type { GeneratorAppConfig } from "../src/config/app-config";
 import type { GitHubService } from "../src/application/services/github-service";
+import type { StagedContentService } from "../src/application/services/staged-content-service";
 import { AiRuntimeService } from "../src/application/services/ai-runtime-service";
 import { ProcessingQueueService } from "../src/application/services/processing-queue-service";
 import { buildLlamaArguments } from "../src/infrastructure/ai/llama-command-builder";
@@ -156,11 +157,16 @@ async function queueFixture(repositories: DiscoveredRepository[], outputs = [val
     getRepository: (id: string) =>
       Promise.resolve(repositories.find((item) => item.id === id) ?? repositories[0])
   } as unknown as GitHubService;
+  const content = {
+    publishGeneratedProject: () => Promise.resolve(),
+    removeGeneratedProject: () => Promise.resolve()
+  } as unknown as StagedContentService;
   const service = new ProcessingQueueService(
     new JsonProcessingQueueRepository(config),
     new JsonDraftRepository(config),
     github,
     ai,
+    content,
     logger
   );
   return { config, service };

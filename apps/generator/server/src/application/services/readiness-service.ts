@@ -24,8 +24,7 @@ export class ReadinessService {
         content: filesystem,
         settings: filesystem,
         github,
-        ai,
-        publishing: false
+        ai
       }
     };
   }

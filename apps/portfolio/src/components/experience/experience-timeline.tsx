@@ -66,6 +66,14 @@ export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
               <DetailBlock title="Contributions" items={selected.contributions} />
               <DetailBlock title="Results" items={selected.results} />
             </div>
+            <div className="experience-accordions">
+              <ExperienceAccordion
+                title="Challenge"
+                items={[selected.challenge ?? "Challenge details pending."]}
+              />
+              <ExperienceAccordion title="Contributions" items={selected.contributions} />
+              <ExperienceAccordion title="Results" items={selected.results} />
+            </div>
             <div className="inline-list">
               {selected.technologies.map((technology) => (
                 <span key={technology}>{technology}</span>
@@ -75,6 +83,22 @@ export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
         </AnimatePresence>
       ) : null}
     </div>
+  );
+}
+
+function ExperienceAccordion({ title, items }: { title: string; items: string[] }) {
+  return (
+    <details>
+      <summary>
+        {title}
+        <span aria-hidden="true">+</span>
+      </summary>
+      <ul>
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </details>
   );
 }
 

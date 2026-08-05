@@ -1,35 +1,58 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContentPage } from "../features/content/content-page";
 import { ContentManagementPage } from "../features/content-management/content-management-page";
 import { DashboardPage } from "../features/dashboard/dashboard-page";
-import { DraftsPage } from "../features/drafts/drafts-page";
 import { AiPage } from "../features/ai/ai-page";
 import { LogsPage } from "../features/logs/logs-page";
-import { PreviewPage } from "../features/preview/preview-page";
-import { PublishingPage } from "../features/publishing/publishing-page";
-import { QueuePage } from "../features/queue/queue-page";
 import { RepositoriesPage } from "../features/repositories/repositories-page";
-import { ReviewPage } from "../features/reviews/review-page";
 import { SettingsPage } from "../features/settings/settings-page";
 import { SystemPage } from "../features/system/system-page";
 import { activeRoutes, type AppRoute } from "./routes";
 
 export function useRouter() {
   const [path, setPath] = useState<AppRoute>(normalizePath(window.location.pathname));
+  const [transition, setTransition] = useState<"opening" | "closing" | "idle">("opening");
+  const pathRef = useRef(path);
+  const timers = useRef<number[]>([]);
+
+  function clearTimers() {
+    timers.current.forEach((timer) => window.clearTimeout(timer));
+    timers.current = [];
+  }
+
+  function transitionTo(next: AppRoute, push: boolean) {
+    if (next === pathRef.current) return;
+    clearTimers();
+    setTransition("closing");
+    timers.current.push(
+      window.setTimeout(() => {
+        if (push) window.history.pushState(null, "", next);
+        pathRef.current = next;
+        setPath(next);
+        window.scrollTo({ top: 0 });
+        setTransition("opening");
+        timers.current.push(window.setTimeout(() => setTransition("idle"), 460));
+      }, 190)
+    );
+  }
 
   useEffect(() => {
-    const onPopState = () => setPath(normalizePath(window.location.pathname));
+    const openingTimer = window.setTimeout(() => setTransition("idle"), 460);
+    const onPopState = () => transitionTo(normalizePath(window.location.pathname), false);
     window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    return () => {
+      window.clearTimeout(openingTimer);
+      clearTimers();
+      window.removeEventListener("popstate", onPopState);
+    };
   }, []);
 
   function navigate(next: string) {
     const normalized = normalizePath(next);
-    window.history.pushState(null, "", normalized);
-    setPath(normalized);
+    transitionTo(normalized, true);
   }
 
-  return { path, navigate };
+  return { path, navigate, transition };
 }
 
 export function RouteView({ path }: { path: AppRoute }) {
@@ -38,28 +61,16 @@ export function RouteView({ path }: { path: AppRoute }) {
       return <ContentPage />;
     case "/content/profile":
       return <ContentManagementPage type="profile" />;
-    case "/content/projects":
-      return <ContentManagementPage type="projects" />;
     case "/content/experience":
       return <ContentManagementPage type="experience" />;
     case "/content/skills":
       return <ContentManagementPage type="skills" />;
     case "/content/activity":
       return <ContentManagementPage type="activity" />;
-    case "/drafts":
-      return <DraftsPage />;
-    case "/review":
-      return <ReviewPage />;
-    case "/preview":
-      return <PreviewPage />;
-    case "/publish":
-      return <PublishingPage />;
     case "/settings":
       return <SettingsPage />;
     case "/logs":
       return <LogsPage />;
-    case "/queue":
-      return <QueuePage />;
     case "/ai":
       return <AiPage />;
     case "/repositories":

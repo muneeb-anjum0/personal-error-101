@@ -22,7 +22,7 @@ export function SmoothScrollProvider() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,
-      anchors: { offset: -96 }
+      anchors: true
     });
 
     document.documentElement.classList.add("lenis-active");

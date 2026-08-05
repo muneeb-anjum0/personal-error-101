@@ -1,1 +1,102 @@
-[]
+[
+  {
+    "id": "experience_aangan_full_stack_developer",
+    "role": "Full Stack Developer",
+    "organization": "Aangan",
+    "location": "Islamabad, Pakistan (Hybrid)",
+    "startDate": "2025-05-01",
+    "endDate": "2026-01-01",
+    "summary": "After my internship, I continued as a Full Stack Developer and became more involved in production work. I worked on both the frontend and backend, helped improve the admin panel, optimized performance, fixed production issues, and participated in deploying updates. The role gave me a much better understanding of how real applications are maintained after they go live.",
+    "highlights": [
+      "Promoted from internship into a full-time development role",
+      "Worked across frontend, backend and production deployments",
+      "Improved application performance for real users",
+      "Built features used in the live production platform",
+      "Collaborated on debugging and production releases"
+    ],
+    "challenge": "The biggest challenge was improving performance without changing how the website worked for users. Blog pages were loading slowly because of large images and repeated API requests. I redesigned the fetching flow, introduced browser-side caching, optimized image delivery, and tested changes across different devices to make sure the improvements were consistent.",
+    "contributions": [
+      "Built new pages and production features using React",
+      "Developed backend API functionality with Node.js",
+      "Improved the admin dashboard and blog management workflow",
+      "Integrated Firebase Authentication into user flows",
+      "Reduced unnecessary API requests through client-side caching",
+      "Optimized image loading across media-heavy pages",
+      "Resolved responsive layout issues across multiple devices",
+      "Participated in deployment and production monitoring"
+    ],
+    "results": [
+      "Reduced repeated blog requests by approximately 68%",
+      "Improved average blog page load times by roughly 70%",
+      "Delivered more than 12 production features and improvements",
+      "Resolved over 25 production issues across different browsers and devices",
+      "Improved responsiveness and overall user experience"
+    ],
+    "technologies": [
+      "React",
+      "Node.js",
+      "Express.js",
+      "Firebase Authentication",
+      "MongoDB",
+      "REST APIs",
+      "Redis",
+      "Nginx",
+      "Git",
+      "JavaScript"
+    ],
+    "relatedProjectIds": [],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "experience_app_in_snap_backend_intern",
+    "role": ".NET Backend Developer Intern",
+    "organization": "App In Snap (Private) Limited",
+    "location": "Islamabad, Pakistan (On-site)",
+    "startDate": "2025-06-01",
+    "endDate": "2025-10-01",
+    "summary": "This was my first professional backend role and where I became comfortable working in a production codebase. I spent most of my time building REST APIs, fixing backend issues, improving existing services, and learning how larger applications are structured. It also helped me understand how teams review, test, and release software.",
+    "highlights": [
+      "Worked on a production ASP.NET Core backend",
+      "Built and improved REST API endpoints",
+      "Collaborated with experienced backend engineers",
+      "Learned large-scale backend development practices",
+      "Supported production releases and testing"
+    ],
+    "challenge": "One of the harder parts was understanding a codebase that already had multiple layers and dependencies. Before making changes, I spent time tracing request flow through controllers, services, repositories, and the database so I could fix problems without introducing new ones.",
+    "contributions": [
+      "Developed backend APIs using ASP.NET Core and C#",
+      "Implemented business logic and request validation",
+      "Worked with SQL Server and Redis",
+      "Debugged issues across controllers and services",
+      "Improved API reliability through testing",
+      "Reviewed production bugs before release",
+      "Maintained existing backend modules"
+    ],
+    "results": [
+      "Delivered multiple production backend features",
+      "Resolved more than 40 backend issues during development",
+      "Reduced recurring defects before production releases",
+      "Improved backend maintainability through cleaner service organization",
+      "Helped support thousands of application requests each day"
+    ],
+    "technologies": [
+      "C#",
+      "ASP.NET Core",
+      "SQL Server",
+      "Redis",
+      "REST APIs",
+      "Git",
+      "Visual Studio",
+      "Dependency Injection",
+      "Clean Architecture"
+    ],
+    "relatedProjectIds": [],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  }
+]

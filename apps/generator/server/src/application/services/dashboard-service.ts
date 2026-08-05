@@ -6,8 +6,6 @@ import type { SettingsService } from "./settings-service.js";
 import type { GitHubService } from "./github-service.js";
 import type { AiRuntimeService } from "./ai-runtime-service.js";
 import type { ProcessingQueueService } from "./processing-queue-service.js";
-import type { PublishingBundleService } from "./publishing-bundle-service.js";
-import type { ReviewService } from "./review-service.js";
 import type { StagedContentService } from "./staged-content-service.js";
 
 export class DashboardService {
@@ -19,9 +17,7 @@ export class DashboardService {
     private readonly github: GitHubService,
     private readonly ai: AiRuntimeService,
     private readonly queue: ProcessingQueueService,
-    private readonly reviews: ReviewService,
-    private readonly staged: StagedContentService,
-    private readonly publishing: PublishingBundleService
+    private readonly staged: StagedContentService
   ) {}
 
   public async getOverview(): Promise<DashboardOverview> {
@@ -32,9 +28,7 @@ export class DashboardService {
       githubStatus,
       aiState,
       queueState,
-      reviewState,
-      stagedState,
-      publishingState
+      stagedState
     ] = await Promise.all([
       this.content.metrics(),
       this.settings.getSafeConfiguration(),
@@ -42,9 +36,7 @@ export class DashboardService {
       this.github.getStatus(),
       this.ai.inspect(),
       this.queue.getQueue(),
-      this.reviews.listReviews(),
-      this.staged.status(),
-      this.publishing.status()
+      this.staged.status()
     ]);
 
     return {
@@ -69,11 +61,8 @@ export class DashboardService {
         `SELECT REPOSITORIES: AVAILABLE / ${githubStatus.counts.selectedForProcessing} SELECTED`,
         `AI RUNTIME: ${aiState.status}`,
         `QUEUE PROCESSING: AVAILABLE / ${queueState.metrics.pending} PENDING / ${queueState.metrics.active} ACTIVE`,
-        `GENERATE CONTENT: AVAILABLE / ${queueState.metrics.completedDrafts} PRIVATE DRAFTS`,
-        `REVIEW AND EDIT: AVAILABLE / ${reviewState.total} REVIEWS`,
-        `PREVIEW PORTFOLIO: AVAILABLE / ${stagedState.conflicts.length} CONFLICTS`,
-        `PREPARE PUBLISHING BUNDLE: AVAILABLE / ${publishingState.bundles} BUNDLES`,
-        "SAFE LOCAL PUBLISHING: AVAILABLE / NO VERCEL DEPLOYMENT",
+        `GENERATED PROJECTS: ${queueState.metrics.completedDrafts} LIVE SUMMARIES`,
+        `DIRECT CONTENT: ${stagedState.conflicts.length === 0 ? "READY" : "NEEDS ATTENTION"}`,
         `GITHUB RATE LIMIT: ${githubStatus.rateLimit.remaining}/${githubStatus.rateLimit.limit}`
       ]
     };
@@ -120,13 +109,6 @@ function serviceStatuses(
       status: queueState === "FAILED" ? "invalid" : "ready",
       required: false,
       message: queueState
-    },
-    {
-      id: "publishing",
-      label: "Publishing",
-      status: "unavailable",
-      required: false,
-      message: "Unavailable"
     }
   ];
 }

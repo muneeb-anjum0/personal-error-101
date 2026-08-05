@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface MobileNavigationProps {
-  items: Array<{ label: string; href: string }>;
+  items: Array<{ label: string; href: string; section?: string }>;
 }
 
 export function MobileNavigation({ items }: MobileNavigationProps) {

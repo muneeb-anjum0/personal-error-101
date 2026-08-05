@@ -17,7 +17,7 @@ export function ProjectList({ projects }: { projects: VisibleProject[] }) {
     return (
       <EmptyState
         title="NO PROJECTS YET."
-        message="Add project records from the local admin when you are ready."
+        message="Generate a repository summary in the local admin to publish it here."
       />
     );
   }

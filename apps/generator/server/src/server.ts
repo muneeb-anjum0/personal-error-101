@@ -13,11 +13,8 @@ import { registerDocsRoutes } from "./api/routes/docs-routes.js";
 import { registerGitHubRoutes } from "./api/routes/github-routes.js";
 import { registerHealthRoutes } from "./api/routes/health-routes.js";
 import { registerLogsRoutes } from "./api/routes/logs-routes.js";
-import { registerPreviewRoutes } from "./api/routes/preview-routes.js";
-import { registerPublishingRoutes } from "./api/routes/publishing-routes.js";
 import { registerReadinessRoutes } from "./api/routes/readiness-routes.js";
 import { registerQueueRoutes } from "./api/routes/queue-routes.js";
-import { registerReviewRoutes } from "./api/routes/review-routes.js";
 import { registerSettingsRoutes } from "./api/routes/settings-routes.js";
 import { registerStagedContentRoutes } from "./api/routes/staged-content-routes.js";
 import { registerSystemRoutes } from "./api/routes/system-routes.js";
@@ -28,11 +25,7 @@ import { DashboardService } from "./application/services/dashboard-service.js";
 import { GitHubService } from "./application/services/github-service.js";
 import { LogQueryService } from "./application/services/log-query-service.js";
 import { ProcessingQueueService } from "./application/services/processing-queue-service.js";
-import { PreviewService } from "./application/services/preview-service.js";
-import { PublishingBundleService } from "./application/services/publishing-bundle-service.js";
-import { PublishingExecutionService } from "./application/services/publishing-execution-service.js";
 import { ReadinessService } from "./application/services/readiness-service.js";
-import { ReviewService } from "./application/services/review-service.js";
 import { SettingsService } from "./application/services/settings-service.js";
 import { StagedContentService } from "./application/services/staged-content-service.js";
 import { SystemService } from "./application/services/system-service.js";
@@ -45,10 +38,6 @@ import { GitHubReadiness } from "./infrastructure/github/github-readiness.js";
 import { JsonGitHubStateRepository } from "./infrastructure/github/json-github-state-repository.js";
 import { JsonDraftRepository } from "./infrastructure/drafts/json-draft-repository.js";
 import { JsonProcessingQueueRepository } from "./infrastructure/queue/json-processing-queue-repository.js";
-import { PreviewSessionRepository } from "./infrastructure/preview/preview-session-repository.js";
-import { PublishingBundleRepository } from "./infrastructure/publishing/publishing-bundle-repository.js";
-import { PublishingRunRepository } from "./infrastructure/publishing/publishing-run-repository.js";
-import { JsonReviewRepository } from "./infrastructure/reviews/json-review-repository.js";
 import { StagedContentRepository } from "./infrastructure/staged/staged-content-repository.js";
 import { ApplicationLogger } from "./infrastructure/logging/application-logger.js";
 import { EnvironmentInspector } from "./infrastructure/system/environment-inspector.js";
@@ -63,11 +52,7 @@ declare module "fastify" {
     githubService: GitHubService;
     logQueryService: LogQueryService;
     processingQueueService: ProcessingQueueService;
-    previewService: PreviewService;
-    publishingBundleService: PublishingBundleService;
-    publishingExecutionService: PublishingExecutionService;
     readinessService: ReadinessService;
-    reviewService: ReviewService;
     settingsService: SettingsService;
     stagedContentService: StagedContentService;
     systemService: SystemService;
@@ -106,31 +91,16 @@ export async function buildServer() {
     draftRepository,
     githubService,
     aiRuntimeService,
+    stagedContentService,
     applicationLogger
   );
-  const reviewService = new ReviewService(
-    appConfig,
-    new JsonReviewRepository(appConfig),
-    draftRepository,
-    applicationLogger
+  await stagedContentService.publishExistingEditableContent();
+  const existingDrafts = await draftRepository.list();
+  const generatedProjects = await Promise.all(
+    existingDrafts.map((summary) => draftRepository.get(summary.id))
   );
-  const previewService = new PreviewService(
-    new PreviewSessionRepository(appConfig),
-    stagedContentService
-  );
-  const publishingBundleRepository = new PublishingBundleRepository(appConfig);
-  const publishingRunRepository = new PublishingRunRepository(appConfig);
-  const publishingBundleService = new PublishingBundleService(
-    appConfig,
-    publishingBundleRepository,
-    reviewService,
-    stagedContentService
-  );
-  const publishingExecutionService = new PublishingExecutionService(
-    appConfig,
-    publishingBundleRepository,
-    publishingRunRepository,
-    applicationLogger
+  await stagedContentService.synchronizeGeneratedProjects(
+    generatedProjects.filter((draft) => draft !== null)
   );
   await processingQueueService.recover();
 
@@ -148,19 +118,13 @@ export async function buildServer() {
       githubService,
       aiRuntimeService,
       processingQueueService,
-      reviewService,
-      stagedContentService,
-      publishingBundleService
+      stagedContentService
     )
   );
   app.decorate("githubService", githubService);
   app.decorate("logQueryService", logQueryService);
   app.decorate("processingQueueService", processingQueueService);
-  app.decorate("previewService", previewService);
-  app.decorate("publishingBundleService", publishingBundleService);
-  app.decorate("publishingExecutionService", publishingExecutionService);
   app.decorate("readinessService", createReadinessService(appConfig));
-  app.decorate("reviewService", reviewService);
   app.decorate("settingsService", settingsService);
   app.decorate("stagedContentService", stagedContentService);
   app.decorate(
@@ -172,7 +136,7 @@ export async function buildServer() {
   await app.register(cors, {
     origin: appConfig.corsOrigins,
     credentials: false,
-    methods: ["GET", "PUT", "POST", "OPTIONS"]
+    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"]
   });
 
   registerRequestContext(app);
@@ -189,16 +153,16 @@ export async function buildServer() {
   await app.register(registerLogsRoutes);
   await app.register(registerGitHubRoutes);
   await app.register(registerQueueRoutes);
-  await app.register(registerReviewRoutes);
   await app.register(registerStagedContentRoutes);
-  await app.register(registerPreviewRoutes);
-  await app.register(registerPublishingRoutes);
   await app.register(registerSystemRoutes);
   await app.register(registerDocsRoutes);
 
   await applicationLogger.log("INFO", "APPLICATION", "Generator API initialized", {
     phase: appConfig.phase
   });
+  if (environment.NODE_ENV !== "test") {
+    await aiRuntimeService.checkEndpoint();
+  }
 
   return app;
 }
