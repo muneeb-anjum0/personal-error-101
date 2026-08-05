@@ -2580,10 +2580,6 @@ button.danger-action {
 .content-entry-experience:not(.is-editing) {
   border-left: 3px solid var(--foreground);
 }
-.content-entry-activity:not(.is-editing) {
-  border-bottom: 3px solid var(--foreground);
-}
-
 .content-record-list-experience .content-entry-card:not(.is-editing) {
   min-height: 168px;
   padding: 14px 15px;

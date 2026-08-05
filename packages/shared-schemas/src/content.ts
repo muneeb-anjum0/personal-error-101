@@ -92,18 +92,6 @@ export const projectSchema = z.object({
   starter: editableStarterSchema
 });
 
-export const activityItemSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  description: z.string().min(1),
-  occurredAt: z.string().min(1),
-  projectId: z.string().min(1).optional(),
-  repository: z.string().min(1).optional(),
-  link: linkSchema.optional(),
-  source: z.enum(["manual", "github", "ai", "system"]),
-  starter: editableStarterSchema
-});
-
 export const generatorStateSchema = z.object({
   schemaVersion: z.literal(1),
   selectedRepositoryIds: z.array(z.string().min(1)),
@@ -122,6 +110,5 @@ export const contentBundleSchema = z.object({
   experience: z.array(experienceEntrySchema),
   skills: z.array(skillCategorySchema),
   projects: z.array(projectSchema),
-  activity: z.array(activityItemSchema),
   generatorState: generatorStateSchema
 });

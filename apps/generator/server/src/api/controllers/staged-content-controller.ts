@@ -57,12 +57,3 @@ export function upsertExperience(service: StagedContentService, request: Fastify
 export function updateSkills(service: StagedContentService, request: FastifyRequest) {
   return service.updateSkills(request.body);
 }
-
-export function updateActivity(service: StagedContentService, request: FastifyRequest) {
-  return service.updateActivity(request.body);
-}
-
-export function upsertActivity(service: StagedContentService, request: FastifyRequest) {
-  const { entryId } = request.params as { entryId: string };
-  return service.upsertActivity(entryId, request.body);
-}

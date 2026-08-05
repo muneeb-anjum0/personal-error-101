@@ -65,8 +65,6 @@ export function RouteView({ path }: { path: AppRoute }) {
       return <ContentManagementPage type="experience" />;
     case "/content/skills":
       return <ContentManagementPage type="skills" />;
-    case "/content/activity":
-      return <ContentManagementPage type="activity" />;
     case "/settings":
       return <SettingsPage />;
     case "/logs":

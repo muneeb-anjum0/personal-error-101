@@ -63,9 +63,6 @@ export function DashboardPage() {
           <span>
             <strong>{data.metrics.skillCategories}</strong> Skills
           </span>
-          <span>
-            <strong>{data.metrics.activityEntries}</strong> Activity
-          </span>
         </div>
       </article>
       <section className="overview-explorer">
@@ -107,7 +104,7 @@ export function DashboardPage() {
               <span>01 — 03</span>
               <h2>Explore the workspace</h2>
               <p>
-                Choose a view from the rail to inspect configuration, workflow, or recent activity.
+                Choose a view from the rail to inspect configuration, workflow, or recent events.
               </p>
             </div>
           ) : null}

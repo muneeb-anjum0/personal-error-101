@@ -10,7 +10,6 @@ import type {
   ContentValidationIssue
 } from "@muneeb-systems/shared-types";
 import {
-  activityItemSchema,
   contentFileTypeSchema,
   experienceEntrySchema,
   generatorStateSchema,
@@ -56,13 +55,6 @@ const definitions: FileDefinition[] = [
     label: "Skills",
     fileName: "skills.json",
     schema: skillCategorySchema.array(),
-    recordCount: (value) => (Array.isArray(value) ? value.length : 0)
-  },
-  {
-    type: "activity",
-    label: "Activity",
-    fileName: "activity.json",
-    schema: activityItemSchema.array(),
     recordCount: (value) => (Array.isArray(value) ? value.length : 0)
   },
   {
@@ -119,7 +111,6 @@ export class StaticContentInspector {
     }>;
     const experience = (await this.safeRead("experience")) as unknown[];
     const skills = (await this.safeRead("skills")) as unknown[];
-    const activity = (await this.safeRead("activity")) as unknown[];
 
     return {
       visibleProjects: projects.filter((project) => !project.hidden).length,
@@ -127,7 +118,6 @@ export class StaticContentInspector {
       featuredProjects: projects.filter((project) => project.featured).length,
       experienceEntries: experience.length,
       skillCategories: skills.length,
-      activityEntries: activity.length,
       latestContentModifiedAt: latestModifiedAt(status.files),
       validationStatus: status.status
     };

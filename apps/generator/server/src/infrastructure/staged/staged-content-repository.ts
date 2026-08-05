@@ -3,7 +3,7 @@ import path from "node:path";
 import type { GeneratorAppConfig } from "../../config/app-config.js";
 import { SafeFileWriter } from "../filesystem/safe-file-writer.js";
 
-export type StagedContentType = "profile" | "projects" | "experience" | "skills" | "activity";
+export type StagedContentType = "profile" | "projects" | "experience" | "skills";
 
 export class StagedContentRepository {
   private readonly writer: SafeFileWriter;

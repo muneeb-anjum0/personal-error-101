@@ -1,7 +1,6 @@
 import path from "node:path";
 import type { z } from "zod";
 import {
-  activityItemSchema,
   contentBundleSchema,
   experienceEntrySchema,
   generatorStateSchema,
@@ -22,7 +21,6 @@ const contentFiles = {
   experience: "experience.json",
   skills: "skills.json",
   projects: "projects.json",
-  activity: "activity.json",
   generatorState: "generator-state.json"
 } as const;
 
@@ -35,7 +33,6 @@ export class ContentEngine {
       experience: await this.loadFile(contentFiles.experience, experienceEntrySchema.array()),
       skills: await this.loadFile(contentFiles.skills, skillCategorySchema.array()),
       projects: await this.loadFile(contentFiles.projects, projectSchema.array()),
-      activity: await this.loadFile(contentFiles.activity, activityItemSchema.array()),
       generatorState: await this.loadFile(contentFiles.generatorState, generatorStateSchema)
     };
 

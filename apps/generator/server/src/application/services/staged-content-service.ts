@@ -1,6 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
 import type {
-  ActivityItem,
   ExperienceEntry,
   GeneratedProjectDraft,
   Profile,
@@ -9,7 +8,6 @@ import type {
   StagedContentStatus
 } from "@muneeb-systems/shared-types";
 import {
-  activityItemSchema,
   experienceEntrySchema,
   profileSchema,
   projectSchema,
@@ -28,12 +26,11 @@ export class StagedContentService {
   ) {}
 
   public async status(): Promise<StagedContentStatus> {
-    const [profile, projects, experience, skills, activity] = await Promise.all([
+    const [profile, projects, experience, skills] = await Promise.all([
       this.repository.read("profile"),
       this.repository.read("projects"),
       this.repository.read("experience"),
-      this.repository.read("skills"),
-      this.repository.read("activity")
+      this.repository.read("skills")
     ]);
     return {
       schemaVersion: 1,
@@ -41,7 +38,6 @@ export class StagedContentService {
       projects: Array.isArray(projects) ? projects.length : 0,
       experience: Array.isArray(experience) ? experience.length : 0,
       skills: Array.isArray(skills) ? skills.length : 0,
-      activity: Array.isArray(activity) ? activity.length : 0,
       conflicts: [],
       updatedAt: new Date().toISOString()
     };
@@ -117,34 +113,12 @@ export class StagedContentService {
     return next;
   }
 
-  public async updateActivity(input: unknown): Promise<ActivityItem[]> {
-    const value = activityItemSchema.array().parse(input);
-    await this.repository.writeAndPublish("activity", value);
-    return value;
-  }
-
-  public async upsertActivity(entryId: string, input: unknown): Promise<ActivityItem> {
-    const entries = activityItemSchema
-      .array()
-      .parse(await this.repository.readEffective("activity"));
-    const index = entries.findIndex((entry) => entry.id === entryId);
-    const next = activityItemSchema.parse({
-      ...(entries[index] ?? { id: entryId }),
-      ...objectInput(input)
-    });
-    if (index === -1) entries.push(next);
-    else entries[index] = next;
-    await this.repository.write("activity", entries);
-    return next;
-  }
-
   public async effectiveBundle() {
-    const [profile, projects, experience, skills, activity] = await Promise.all([
+    const [profile, projects, experience, skills] = await Promise.all([
       this.repository.readEffective("profile"),
       this.repository.readEffective("projects"),
       this.repository.readEffective("experience"),
-      this.repository.readEffective("skills"),
-      this.repository.readEffective("activity")
+      this.repository.readEffective("skills")
     ]);
     return {
       schemaVersion: 1 as const,
@@ -152,7 +126,6 @@ export class StagedContentService {
       projects,
       experience,
       skills,
-      activity,
       metadata: {
         updatedAt: new Date().toISOString(),
         updatedBy: "Muneeb Anjum",
@@ -167,12 +140,10 @@ export class StagedContentService {
       await this.repository.readEffective("experience")
     );
     const skills = skillCategorySchema.array().parse(await this.repository.readEffective("skills"));
-    const activity = activityItemSchema.array().parse(await this.repository.readEffective("activity"));
     await Promise.all([
       this.repository.writePublic("profile", profile),
       this.repository.writePublic("experience", experience),
-      this.repository.writePublic("skills", skills),
-      this.repository.writePublic("activity", activity)
+      this.repository.writePublic("skills", skills)
     ]);
   }
 

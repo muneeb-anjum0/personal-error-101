@@ -1,5 +1,4 @@
 import { PageShell } from "@/components/layout/page-shell";
-import { ActivitySection } from "@/components/sections/activity-section/activity-section";
 import { CapabilitySection } from "@/components/sections/capability-section/capability-section";
 import { ContactSection } from "@/components/sections/contact-section/contact-section";
 import { ExperienceSection } from "@/components/sections/experience-section/experience-section";
@@ -22,7 +21,6 @@ export default async function HomePage() {
       <CapabilitySection projects={projects} skills={content.skills} />
       <ExperienceSection entries={content.experience} />
       <ProjectsSection profile={content.profile} projects={projects} />
-      <ActivitySection activity={content.activity} />
       <PhilosophySection profile={content.profile} />
       <ContactSection profile={content.profile} resumeAvailable={resumeAvailable} />
       <script

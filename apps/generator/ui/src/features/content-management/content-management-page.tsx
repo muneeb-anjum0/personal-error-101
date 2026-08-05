@@ -60,14 +60,7 @@ const collectionFields: Record<string, FieldDefinition[]> = {
     { key: "summary", label: "Summary", kind: "textarea" },
     { key: "challenge", label: "Main challenge", kind: "textarea" }
   ],
-  skills: [{ key: "name", label: "Category name" }],
-  activity: [
-    { key: "title", label: "Title" },
-    { key: "description", label: "Description", kind: "textarea" },
-    { key: "occurredAt", label: "Date", kind: "date" },
-    { key: "projectId", label: "Related project ID" },
-    { key: "repository", label: "Repository" }
-  ]
+  skills: [{ key: "name", label: "Category name" }]
 };
 
 const collectionLists: Record<string, Array<readonly [string, string]>> = {
@@ -85,8 +78,7 @@ const collectionLists: Record<string, Array<readonly [string, string]>> = {
     ["results", "Results"],
     ["technologies", "Technologies"]
   ],
-  skills: [["skills", "Skills"]],
-  activity: []
+  skills: [["skills", "Skills"]]
 };
 
 export function ContentManagementPage({
@@ -394,16 +386,6 @@ function CollectionForm({
                       />
                     </>
                   ) : null}
-                  {type === "activity" ? (
-                    <SelectField
-                      label="Source"
-                      value={text(record.source) || "manual"}
-                      options={["manual", "github", "ai", "system"]}
-                      onChange={(next) =>
-                        replace(records, index, { ...record, source: next }, onChange)
-                      }
-                    />
-                  ) : null}
                 </div>
                 <div className="content-field-grid">
                   {(collectionLists[type] ?? []).map(([key, label]) => (
@@ -421,12 +403,6 @@ function CollectionForm({
                   <LinksField
                     links={asRecords(record.links)}
                     onChange={(links) => replace(records, index, { ...record, links }, onChange)}
-                  />
-                ) : null}
-                {type === "activity" ? (
-                  <ActivityLinkField
-                    record={record}
-                    onChange={(next) => replace(records, index, next, onChange)}
                   />
                 ) : null}
                 <footer className="content-editor-footer">
@@ -470,9 +446,6 @@ function RecordPreview({ type, record }: { type: string; record: ContentRecord }
       <p className="content-entry-summary">{recordSummary(type, record)}</p>
       {type === "experience" && text(record.summary) ? (
         <p className="content-preview-copy">{text(record.summary)}</p>
-      ) : null}
-      {type === "activity" && text(record.description) ? (
-        <p className="content-preview-copy">{text(record.description)}</p>
       ) : null}
       {items.length ? (
         <div className="content-preview-tags">
@@ -643,48 +616,6 @@ function LinksField({
   );
 }
 
-function ActivityLinkField({
-  record,
-  onChange
-}: {
-  record: ContentRecord;
-  onChange: (record: ContentRecord) => void;
-}) {
-  const link = asRecord(record.link);
-  return (
-    <section className="content-nested-section">
-      <h4>Optional link</h4>
-      <div className="content-link-row">
-        <input
-          aria-label="Link label"
-          value={text(link.label)}
-          placeholder="View update"
-          onChange={(event) =>
-            onChange({ ...record, link: { ...link, label: event.target.value } })
-          }
-        />
-        <input
-          aria-label="Link URL"
-          type="url"
-          value={text(link.url)}
-          placeholder="https://…"
-          onChange={(event) => onChange({ ...record, link: { ...link, url: event.target.value } })}
-        />
-        <button
-          type="button"
-          onClick={() => {
-            const next = { ...record };
-            delete next.link;
-            onChange(next);
-          }}
-        >
-          CLEAR
-        </button>
-      </div>
-    </section>
-  );
-}
-
 function emptyRecord(type: string): ContentRecord {
   const id = `${singular(type)}_${crypto.randomUUID()}`;
   if (type === "projects")
@@ -721,15 +652,7 @@ function emptyRecord(type: string): ContentRecord {
       relatedProjectIds: [],
       starter
     };
-  if (type === "skills") return { id, name: "", skills: [], starter };
-  return {
-    id,
-    title: "",
-    description: "",
-    occurredAt: new Date().toISOString().slice(0, 10),
-    source: "manual",
-    starter
-  };
+  return { id, name: "", skills: [], starter };
 }
 
 function replace(
@@ -764,9 +687,7 @@ function singular(type: string): string {
     ? "project"
     : type === "skills"
       ? "skill category"
-      : type === "activity"
-        ? "activity"
-        : "experience";
+      : "experience";
 }
 function recordTitle(type: string, record: ContentRecord): string {
   return text(record.name) || text(record.title) || text(record.role) || `New ${singular(type)}`;
@@ -780,10 +701,7 @@ function recordSummary(type: string, record: ContentRecord): string {
     );
   if (type === "skills")
     return `${strings(record.skills).length} ${strings(record.skills).length === 1 ? "skill" : "skills"}`;
-  return (
-    [text(record.occurredAt), text(record.description)].filter(Boolean).join(" · ") ||
-    "Open this card to add the activity details."
-  );
+  return "Open this card to add the details.";
 }
 function dateRange(record: ContentRecord): string {
   return [text(record.startDate), text(record.endDate) || "Present"].filter(Boolean).join(" — ");
@@ -792,18 +710,9 @@ function normalizeContent(type: string, value: unknown): unknown {
   if (type === "profile") return value;
   return asRecords(value).map((record) => {
     const next = { ...record };
-    const optionalFields =
-      type === "experience"
-        ? ["challenge"]
-        : type === "activity"
-          ? ["projectId", "repository"]
-          : [];
+    const optionalFields = type === "experience" ? ["challenge"] : [];
     for (const key of optionalFields) if (!text(next[key]).trim()) delete next[key];
     if (type === "experience" && !text(next.endDate).trim()) next.endDate = null;
-    if (type === "activity") {
-      const link = asRecord(next.link);
-      if (!text(link.label).trim() || !text(link.url).trim()) delete next.link;
-    }
     return next;
   });
 }

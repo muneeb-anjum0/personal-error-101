@@ -1,5 +1,4 @@
 import type {
-  ActivityItem,
   ContentBundle,
   ExperienceEntry,
   Profile,
@@ -68,12 +67,6 @@ export function selectAdjacentProjects(projects: VisibleProject[], slug: string)
     previous: index > 0 ? sorted[index - 1] : undefined,
     next: index >= 0 && index < sorted.length - 1 ? sorted[index + 1] : undefined
   };
-}
-
-export function sortActivityNewestFirst(activity: ActivityItem[]): ActivityItem[] {
-  return [...activity].sort(
-    (first, second) => getDateTime(second.occurredAt) - getDateTime(first.occurredAt)
-  );
 }
 
 export function getCapabilityUsage(skill: SkillCategory, projects: VisibleProject[]) {

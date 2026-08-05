@@ -12,7 +12,7 @@ Queue and draft endpoints: `GET /api/queue`, `POST /api/queue/enqueue`, `POST /a
 
 Publishing endpoints: `GET /api/publishing/execution/status`, `GET /api/publishing/runs`, `POST /api/publishing/runs`, `POST /api/publishing/runs/:runId/preflight`, `GET /api/publishing/runs/:runId/diff`, `POST /api/publishing/runs/:runId/backup`, `POST /api/publishing/runs/:runId/apply`, `POST /api/publishing/runs/:runId/validate`, `POST /api/publishing/runs/:runId/build`, `GET /api/publishing/runs/:runId/git-diff`, `POST /api/publishing/runs/:runId/commit`, `POST /api/publishing/runs/:runId/push`, `POST /api/publishing/runs/:runId/rollback`, `GET /api/publishing/backups`, `GET /api/publishing/git/readiness`, and `POST /api/github/auth/check`.
 
-Supported content types: `profile`, `projects`, `experience`, `skills`, `activity`, and `generator-state`.
+Supported content types: `profile`, `projects`, `experience`, `skills`, and `generator-state`.
 
 Errors use the shared contract with `code`, `message`, `requestId`, `details`, and `timestamp`.
 

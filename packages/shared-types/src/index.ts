@@ -1,6 +1,5 @@
 import type { z } from "zod";
 import type {
-  activityItemSchema,
   apiErrorResponseSchema,
   apiHealthResponseSchema,
   apiReadinessResponseSchema,
@@ -133,7 +132,6 @@ export type Profile = z.infer<typeof profileSchema>;
 export type ExperienceEntry = z.infer<typeof experienceEntrySchema>;
 export type SkillCategory = z.infer<typeof skillCategorySchema>;
 export type Project = z.infer<typeof projectSchema>;
-export type ActivityItem = z.infer<typeof activityItemSchema>;
 export type GeneratorState = z.infer<typeof generatorStateSchema>;
 export type ContentBundle = z.infer<typeof contentBundleSchema>;
 

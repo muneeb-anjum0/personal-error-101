@@ -13,12 +13,7 @@ const templates: Array<{ type: ContentFileType; label: string; description: stri
     label: "Experience",
     description: "Roles, organizations, highlights, and technologies"
   },
-  { type: "skills", label: "Skills", description: "Skill groups and individual capabilities" },
-  {
-    type: "activity",
-    label: "Activities",
-    description: "Updates, launches, milestones, and recent work"
-  }
+  { type: "skills", label: "Skills", description: "Skill groups and individual capabilities" }
 ];
 
 export function ContentPage() {

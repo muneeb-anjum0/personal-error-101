@@ -35,11 +35,9 @@ export function PhilosophySection({ profile }: { profile: Profile }) {
           ease: "power2.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 50%",
-            end: "+=420",
-            scrub: 0.4,
-            pin: ".philosophy-grid",
-            anticipatePin: 1
+            start: "top 72%",
+            end: "bottom 62%",
+            scrub: 0.35
           }
         }
       );

@@ -13,4 +13,4 @@ Workflow:
 7. Review Git status and diff.
 8. Confirm commit and push separately.
 
-Only `data/profile.json`, `data/projects.json`, `data/experience.json`, `data/skills.json`, and `data/activity.json` may be written.
+Only `data/profile.json`, `data/projects.json`, `data/experience.json`, and `data/skills.json` may be written.
