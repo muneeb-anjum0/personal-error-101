@@ -2,74 +2,76 @@
 
 import { useState } from "react";
 
-const nodes = [
-  { id: "ai", label: "AI", x: 75, y: 50 },
-  { id: "security", label: "SECURITY", x: 330, y: 58 },
-  { id: "backend", label: "BACKEND", x: 80, y: 205 },
-  { id: "products", label: "PRODUCTS", x: 330, y: 205 },
-  { id: "systems", label: "SYSTEMS", x: 205, y: 22 },
-  { id: "research", label: "RESEARCH", x: 205, y: 242 }
+const stages = [
+  { id: "understand", index: "01", label: "UNDERSTAND", detail: "CONTEXT + CONSTRAINTS" },
+  { id: "engineer", index: "02", label: "ENGINEER", detail: "DESIGN + BUILD" },
+  { id: "deliver", index: "03", label: "DELIVER", detail: "RELIABLE SYSTEM" }
 ];
 
 export function EngineeringSystem() {
-  const [activeNode, setActiveNode] = useState<string | null>(null);
+  const [activeStage, setActiveStage] = useState<string | null>(null);
+  const active = stages.find((stage) => stage.id === activeStage);
 
   return (
-    <figure
-      className={`engineering-system${activeNode ? " system-has-active-node" : ""}`}
-      aria-labelledby="engineering-system-title"
-    >
-      <svg viewBox="0 0 420 290" role="img" focusable="false">
+    <figure className="engineering-system" aria-labelledby="engineering-system-title">
+      <svg viewBox="0 0 520 280" role="img" focusable="false">
         <title id="engineering-system-title">
-          Engineering system diagram connecting engineer to AI, security, backend, products,
-          systems, and research.
+          A three-stage engineering flow from understanding a problem to delivering a reliable
+          system.
         </title>
-        <g className="system-lines">
-          {nodes.map((node) => (
-            <line
-              key={node.id}
-              className={activeNode === node.id ? "is-active" : undefined}
-              data-node={node.id}
-              x1="210"
-              y1="145"
-              x2={node.x}
-              y2={node.y}
-              pathLength="1"
-            />
-          ))}
-        </g>
-        <g className="system-core">
-          <rect x="154" y="111" width="112" height="68" rx="2" />
-          <text x="210" y="141" textAnchor="middle">
-            ENGINEER
-          </text>
-          <text x="210" y="161" textAnchor="middle" className="svg-meta">
-            CORE / 00
-          </text>
-        </g>
-        {nodes.map((node) => (
-          <g
-            key={node.id}
-            className={activeNode === node.id ? "system-node is-active" : "system-node"}
-            tabIndex={0}
-            aria-label={`${node.label} node`}
-            onBlur={() => setActiveNode(null)}
-            onFocus={() => setActiveNode(node.id)}
-            onMouseEnter={() => setActiveNode(node.id)}
-            onMouseLeave={() => setActiveNode(null)}
-          >
-            <rect x={node.x - 48} y={node.y - 18} width="96" height="36" rx="18" />
-            <text x={node.x} y={node.y + 4} textAnchor="middle">
-              {node.label}
-            </text>
-          </g>
-        ))}
+
+        <text x="18" y="25" className="system-kicker">
+          ENGINEERING SYSTEM / 01
+        </text>
+        <text x="502" y="25" textAnchor="end" className="svg-meta">
+          INPUT → OUTPUT
+        </text>
+
+        <line className="system-rail" x1="56" y1="132" x2="464" y2="132" />
+        <line className="system-rail system-rail-progress" x1="56" y1="132" x2="464" y2="132" />
+
+        {stages.map((stage, index) => {
+          const x = 92 + index * 168;
+          const isActive = activeStage === stage.id;
+          return (
+            <g
+              key={stage.id}
+              className={`system-stage${isActive ? " is-active" : ""}`}
+              tabIndex={0}
+              aria-label={`${stage.label}: ${stage.detail}`}
+              onBlur={() => setActiveStage(null)}
+              onFocus={() => setActiveStage(stage.id)}
+              onMouseEnter={() => setActiveStage(stage.id)}
+              onMouseLeave={() => setActiveStage(null)}
+            >
+              <circle cx={x} cy="132" r="7" />
+              <rect x={x - 62} y="72" width="124" height="42" rx="2" />
+              <text x={x - 50} y="89" className="svg-meta">
+                {stage.index}
+              </text>
+              <text x={x - 50} y="104">
+                {stage.label}
+              </text>
+              <line x1={x} y1="114" x2={x} y2="125" />
+              <text x={x} y="166" textAnchor="middle" className="system-stage-detail">
+                {stage.detail}
+              </text>
+            </g>
+          );
+        })}
+
+        <rect className="system-result" x="18" y="210" width="484" height="48" rx="2" />
+        <text x="34" y="230" className="svg-meta">
+          RESULT
+        </text>
+        <text x="34" y="247" className="system-result-copy">
+          SOFTWARE THAT IS USEFUL, SECURE, AND BUILT TO LAST.
+        </text>
+        <text x="486" y="240" textAnchor="end" className="system-result-mark">
+          ↗
+        </text>
       </svg>
-      <figcaption>
-        {activeNode
-          ? `${nodes.find((node) => node.id === activeNode)?.label} LINK ACTIVE`
-          : "Engineering map online with motion-safe system links."}
-      </figcaption>
+      <figcaption>{active ? active.detail : "From real constraints to dependable software."}</figcaption>
     </figure>
   );
 }

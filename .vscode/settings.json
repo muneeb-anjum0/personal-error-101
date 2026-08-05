@@ -1,0 +1,26 @@
+{
+  "explorer.excludeGitIgnore": true,
+  "files.exclude": {
+    "**/.firebase": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/out": true,
+    "playwright-report": true,
+    "test-results": true,
+    "data/ai": true,
+    "data/github": true,
+    "data/logs": true,
+    "data/review": true,
+    "data/staged": true
+  },
+  "search.exclude": {
+    "**/.firebase": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/out": true,
+    "playwright-report": true,
+    "test-results": true
+  }
+}

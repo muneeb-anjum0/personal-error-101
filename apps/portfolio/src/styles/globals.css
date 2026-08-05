@@ -232,45 +232,89 @@ a {
 }
 
 .mobile-menu {
-  display: grid;
-  min-height: 100dvh;
-  max-height: 100dvh;
-  align-content: start;
-  gap: 42px;
-  overflow: auto;
-  padding: 22px;
-  background: var(--background);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: max(76px, calc(env(safe-area-inset-top) + 66px)) 12px 12px;
+  background: rgba(9, 9, 9, 0.16);
+  backdrop-filter: blur(10px);
   animation: menu-enter var(--motion-normal) var(--ease-entrance) both;
 }
 
-.mobile-menu nav {
-  display: grid;
-  gap: 22px;
+.mobile-menu-panel {
+  width: min(100%, 410px);
+  overflow: hidden;
+  border: 1px solid var(--foreground);
+  background: var(--background);
+  box-shadow: 0 18px 55px rgba(9, 9, 9, 0.13);
 }
 
-.mobile-menu nav a {
+.mobile-menu-panel > header {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid var(--border-medium);
-  padding-block: 18px;
-  font-size: clamp(2rem, 12vw, 5rem);
+  padding-left: 14px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.mobile-menu-panel .mobile-menu-close {
+  min-height: 48px;
+  border-width: 0 0 0 1px;
+}
+
+.mobile-menu-panel nav {
+  display: grid;
+}
+
+.mobile-menu-panel nav a {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid var(--border-medium);
+  padding: 13px 14px;
+  font-size: clamp(1.05rem, 5.2vw, 1.35rem);
   font-weight: 750;
-  line-height: 0.95;
+  line-height: 1;
   letter-spacing: 0;
   animation: menu-item-enter var(--motion-slow) var(--ease-entrance) both;
 }
 
-.mobile-menu nav a:nth-child(2) {
+.mobile-menu-panel nav a:last-child {
+  border-bottom: 0;
+}
+
+.mobile-menu-panel nav a:hover,
+.mobile-menu-panel nav a:focus-visible {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.mobile-menu-panel nav a small {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.mobile-menu-panel nav a:nth-child(2) {
   animation-delay: 45ms;
 }
 
-.mobile-menu nav a:nth-child(3) {
+.mobile-menu-panel nav a:nth-child(3) {
   animation-delay: 90ms;
 }
 
-.mobile-menu nav a:nth-child(4) {
+.mobile-menu-panel nav a:nth-child(4) {
   animation-delay: 135ms;
 }
 
-.mobile-menu nav a:nth-child(5) {
+.mobile-menu-panel nav a:nth-child(5) {
   animation-delay: 180ms;
 }
 
@@ -556,6 +600,67 @@ main {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
+}
+
+.engineering-system .system-kicker,
+.engineering-system .system-stage-detail,
+.engineering-system .system-result-copy {
+  font-size: 9px;
+}
+
+.engineering-system .system-rail {
+  stroke: var(--border-medium);
+}
+
+.engineering-system .system-rail-progress {
+  stroke: var(--foreground);
+  stroke-dasharray: 0.12 0.06;
+  animation: system-flow 9s linear infinite;
+}
+
+.engineering-system .system-stage {
+  cursor: default;
+}
+
+.engineering-system .system-stage circle {
+  fill: var(--background);
+  stroke: var(--foreground);
+  transition: fill var(--motion-fast) var(--ease-standard);
+}
+
+.engineering-system .system-stage rect {
+  transition:
+    fill var(--motion-fast) var(--ease-standard),
+    stroke var(--motion-fast) var(--ease-standard);
+}
+
+.engineering-system .system-stage.is-active rect,
+.engineering-system .system-stage:focus rect {
+  fill: var(--foreground);
+}
+
+.engineering-system .system-stage.is-active circle,
+.engineering-system .system-stage:focus circle {
+  fill: var(--foreground);
+}
+
+.engineering-system .system-stage.is-active text:not(.system-stage-detail),
+.engineering-system .system-stage:focus text:not(.system-stage-detail) {
+  fill: var(--background);
+}
+
+.engineering-system .system-result {
+  fill: var(--foreground);
+}
+
+.engineering-system .system-result-copy,
+.engineering-system .system-result-mark,
+.engineering-system .system-result + text {
+  fill: var(--background);
+}
+
+.engineering-system .system-result-mark {
+  font-size: 18px;
 }
 
 .engineering-system figcaption {
@@ -1261,9 +1366,7 @@ main {
 }
 
 .custom-cursor {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
+  display: contents;
   pointer-events: none;
 }
 
@@ -1272,7 +1375,9 @@ main {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 1000;
   border-radius: 999px;
+  mix-blend-mode: difference;
   translate: -50% -50%;
   pointer-events: none;
 }
@@ -1280,7 +1385,7 @@ main {
 .cursor-point {
   width: 5px;
   height: 5px;
-  background: var(--foreground);
+  background: #ffffff;
 }
 
 .cursor-ring {
@@ -1288,8 +1393,8 @@ main {
   width: 28px;
   height: 28px;
   place-items: center;
-  border: 1px solid var(--foreground);
-  color: var(--foreground);
+  border: 1px solid #ffffff;
+  color: #ffffff;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.52rem;
   letter-spacing: 0.08em;
@@ -1303,8 +1408,8 @@ main {
 .cursor-ring:not(.cursor-default) {
   width: 54px;
   height: 54px;
-  background: var(--foreground);
-  color: var(--background);
+  background: #ffffff;
+  color: #000000;
 }
 
 @keyframes menu-enter {
@@ -1324,6 +1429,12 @@ main {
 @keyframes cover-route-draw {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+@keyframes system-flow {
+  to {
+    stroke-dashoffset: -1;
   }
 }
 
