@@ -10,6 +10,6 @@
     "test": "pnpm --filter @muneeb-systems/generator-server test && pnpm --filter @muneeb-systems/generator-ui test"
   },
   "devDependencies": {
-    "concurrently": "9.2.0"
+    "concurrently": "10.0.4"
   }
 }
