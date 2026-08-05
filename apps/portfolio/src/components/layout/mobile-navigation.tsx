@@ -74,22 +74,30 @@ export function MobileNavigation({ items }: MobileNavigationProps) {
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation"
+              onClick={() => setOpen(false)}
             >
-              <button
-                ref={closeRef}
-                className="mobile-menu-close"
-                type="button"
-                onClick={() => setOpen(false)}
-              >
-                CLOSE
-              </button>
-              <nav aria-label="Mobile">
-                {items.map((item) => (
-                  <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
-                    {item.label}
-                  </a>
-                ))}
-              </nav>
+              <div className="mobile-menu-panel" onClick={(event) => event.stopPropagation()}>
+                <header>
+                  <span>NAVIGATION</span>
+                  <button
+                    ref={closeRef}
+                    className="mobile-menu-close"
+                    type="button"
+                    onClick={() => setOpen(false)}
+                  >
+                    CLOSE
+                  </button>
+                </header>
+                <nav aria-label="Mobile">
+                  {items.map((item, index) => (
+                    <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
+                      <small>{String(index + 1).padStart(2, "0")}</small>
+                      <span>{item.label}</span>
+                      <span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </nav>
+              </div>
             </div>,
             document.body
           )
