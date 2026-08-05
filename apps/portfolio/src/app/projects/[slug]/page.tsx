@@ -9,6 +9,7 @@ import {
   selectProjectBySlug,
   sortProjectsByLatestPush
 } from "@/lib/portfolio-selectors";
+import { serializeJsonLd } from "@/lib/serialize-json-ld";
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -58,7 +59,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: serializeJsonLd({
             "@context": "https://schema.org",
             "@type": "SoftwareSourceCode",
             name: project.name,
