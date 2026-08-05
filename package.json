@@ -30,7 +30,7 @@
     "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
-    "@eslint/js": "9.33.0",
+    "@eslint/js": "9.39.5",
     "@playwright/test": "1.62.1",
     "@types/node": "24.2.1",
     "concurrently": "9.2.0",
