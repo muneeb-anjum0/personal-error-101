@@ -1899,37 +1899,15 @@ button.danger-action {
 }
 
 .sidebar .brand {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 11px;
-  align-items: center;
+  display: block;
   border-bottom: 1px solid var(--border);
   padding-bottom: 18px;
 }
 
-.brand-mark {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  border: 1px solid var(--foreground);
-  border-radius: 10px;
-  background: var(--foreground);
-  color: var(--background);
-  font-size: 1rem;
-  font-weight: 850;
-}
-
-.sidebar .brand > span:last-child {
-  display: grid;
-  gap: 3px;
-}
-
-.sidebar .brand small {
-  font-size: 0.56rem;
-}
 .sidebar .brand strong {
-  font-size: 0.76rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
 }
 
 .sidebar nav {

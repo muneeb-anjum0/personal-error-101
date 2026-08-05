@@ -21,8 +21,11 @@ export function ProjectPanel({ project, index }: ProjectPanelProps) {
         <p>{project.summary}</p>
         <div className="inline-list">
           {project.technologies.map((technology) => (
-            <span key={technology}>{technology}</span>
+            <span className="project-technology" key={technology}>{technology}</span>
           ))}
+          {project.technologies.length > 5 ? (
+            <span className="project-technology-more">+{project.technologies.length - 5}</span>
+          ) : null}
         </div>
         <ProjectActions project={project} />
       </div>

@@ -10,11 +10,7 @@ export function Sidebar({
   return (
     <aside className="sidebar">
       <div className="brand">
-        <span className="brand-mark">M</span>
-        <span>
-          <small>MUNEEB.SYSTEMS</small>
-          <strong>CONTROL ROOM</strong>
-        </span>
+        <strong>MUNEEB.SYSTEMS</strong>
       </div>
       <nav aria-label="Generator navigation">
         <p className="nav-group">
