@@ -4,6 +4,8 @@
 node_modules/
 .pnpm-store/
 .next/
+out/
+.firebase/
 dist/
 build/
 coverage/

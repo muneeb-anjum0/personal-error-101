@@ -14,8 +14,6 @@ interface ProjectPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamic = "force-dynamic";
-
 export async function generateStaticParams() {
   const content = await loadPortfolioContent();
   return getVisibleProjects(content.projects).map((project) => ({ slug: project.slug }));

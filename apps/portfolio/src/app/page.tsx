@@ -10,8 +10,6 @@ import { ProjectsSection } from "@/components/sections/projects-section/projects
 import { isResumeAvailable, loadPortfolioContent } from "@/lib/content";
 import { getVisibleProjects, sortProjectsByLatestPush } from "@/lib/portfolio-selectors";
 
-export const dynamic = "force-dynamic";
-
 export default async function HomePage() {
   const content = await loadPortfolioContent();
   const resumeAvailable = await isResumeAvailable(content.profile.resumePath);

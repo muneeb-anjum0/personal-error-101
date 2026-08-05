@@ -89,7 +89,7 @@ services:
       LOCAL_AI_RUNTIME_MODE: ${LOCAL_AI_RUNTIME_MODE:-external}
     user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
     ports:
-      - "4000:4000"
+      - "127.0.0.1:4000:4000"
     depends_on:
       llama-server:
         condition: service_healthy
@@ -120,7 +120,7 @@ services:
       GENERATOR_UI_PORT: 4173
       VITE_GENERATOR_API_URL: http://localhost:4000
     ports:
-      - "4173:4173"
+      - "127.0.0.1:4173:4173"
     depends_on:
       generator-api:
         condition: service_healthy
