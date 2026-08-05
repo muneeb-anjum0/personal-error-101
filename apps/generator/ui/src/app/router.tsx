@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContentPage } from "../features/content/content-page";
 import { ContentManagementPage } from "../features/content-management/content-management-page";
 import { DashboardPage } from "../features/dashboard/dashboard-page";
@@ -11,20 +11,48 @@ import { activeRoutes, type AppRoute } from "./routes";
 
 export function useRouter() {
   const [path, setPath] = useState<AppRoute>(normalizePath(window.location.pathname));
+  const [transition, setTransition] = useState<"opening" | "closing" | "idle">("opening");
+  const pathRef = useRef(path);
+  const timers = useRef<number[]>([]);
+
+  function clearTimers() {
+    timers.current.forEach((timer) => window.clearTimeout(timer));
+    timers.current = [];
+  }
+
+  function transitionTo(next: AppRoute, push: boolean) {
+    if (next === pathRef.current) return;
+    clearTimers();
+    setTransition("closing");
+    timers.current.push(
+      window.setTimeout(() => {
+        if (push) window.history.pushState(null, "", next);
+        pathRef.current = next;
+        setPath(next);
+        window.scrollTo({ top: 0 });
+        setTransition("opening");
+        timers.current.push(window.setTimeout(() => setTransition("idle"), 460));
+      }, 190)
+    );
+  }
 
   useEffect(() => {
-    const onPopState = () => setPath(normalizePath(window.location.pathname));
+    const openingTimer = window.setTimeout(() => setTransition("idle"), 460);
+    const onPopState = () => transitionTo(normalizePath(window.location.pathname), false);
     window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    return () => {
+      window.clearTimeout(openingTimer);
+      clearTimers();
+      window.removeEventListener("popstate", onPopState);
+    };
   }, []);
 
   function navigate(next: string) {
     const normalized = normalizePath(next);
-    window.history.pushState(null, "", normalized);
-    setPath(normalized);
+    transitionTo(normalized, true);
   }
 
-  return { path, navigate };
+  return { path, navigate, transition };
 }
 
 export function RouteView({ path }: { path: AppRoute }) {

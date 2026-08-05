@@ -195,9 +195,14 @@ function RepositoryList({
         </label>
       </div>
       <div className="simple-repo-list" role="list" aria-label="GitHub repositories">
-        {items.map((repository) => (
-          <label className="simple-repo-row" key={repository.id}>
+        {items.map((repository, index) => (
+          <label
+            className={`simple-repo-row${repository.selection.selectedForProcessing ? " is-selected" : ""}`}
+            key={repository.id}
+          >
+            <span className="repo-index">{String(index + 1).padStart(2, "0")}</span>
             <input
+              className="repo-checkbox"
               type="checkbox"
               checked={repository.selection.selectedForProcessing}
               onChange={(event) => void onToggle(repository, event.target.checked)}
@@ -206,9 +211,15 @@ function RepositoryList({
               <strong>{repository.fullName}</strong>
               <small>{repository.description ?? "No description yet"}</small>
             </span>
-            <span>{repository.primaryLanguage ?? "—"}</span>
-            <span>{repository.changeSet.state}</span>
-            <span>{queueLabel(repository, jobs)}</span>
+            <span className="repo-fact">
+              <small>Language</small>
+              {repository.primaryLanguage ?? "—"}
+            </span>
+            <span className="repo-fact">
+              <small>Snapshot</small>
+              {repository.changeSet.state}
+            </span>
+            <span className="repo-queue-state">{queueLabel(repository, jobs)}</span>
           </label>
         ))}
       </div>
@@ -218,7 +229,7 @@ function RepositoryList({
 
 function queueLabel(repository: DiscoveredRepository, jobs: ProcessingJob[]): string {
   const job = jobs.find((item) => item.repositoryId === repository.id);
-  if (job) return job.draftId ? "DRAFT READY" : job.state;
+  if (job) return job.draftId ? "SUMMARY READY" : job.state;
   return repository.selection.selectedForProcessing ? "READY" : "NOT SELECTED";
 }
 

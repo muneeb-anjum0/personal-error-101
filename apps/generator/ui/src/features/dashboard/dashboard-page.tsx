@@ -1,4 +1,4 @@
-import { KeyValueList } from "../../components/data-display/key-value-list";
+import { useState } from "react";
 import { ErrorState, LoadingState } from "../../components/feedback/states";
 import { StatusIndicator } from "../../components/status/status-indicator";
 import { useApiResource } from "../../hooks/use-api-resource";
@@ -68,66 +68,134 @@ export function DashboardPage() {
           </span>
         </div>
       </article>
-      <section className={`horizontal-disclosure${detailView ? " is-open" : ""}`}>
+      <section className="overview-explorer">
         <nav aria-label="Overview details">
           <button
             type="button"
             aria-pressed={detailView === "configuration"}
             onClick={() => setDetailView(detailView === "configuration" ? null : "configuration")}
           >
-            Configuration <span>{data.configuration.fields.length}</span>
+            <span>
+              <small>01</small> Configuration
+            </span>
+            <strong>{data.configuration.fields.length}</strong>
           </button>
           <button
             type="button"
             aria-pressed={detailView === "workflow"}
             onClick={() => setDetailView(detailView === "workflow" ? null : "workflow")}
           >
-            Workflow <span>{data.futureWorkflow.length}</span>
+            <span>
+              <small>02</small> Workflow
+            </span>
+            <strong>{data.futureWorkflow.length}</strong>
           </button>
           <button
             type="button"
             aria-pressed={detailView === "events"}
             onClick={() => setDetailView(detailView === "events" ? null : "events")}
           >
-            Recent events <span>{data.recentLogs.length}</span>
+            <span>
+              <small>03</small> Recent events
+            </span>
+            <strong>{data.recentLogs.length}</strong>
           </button>
         </nav>
-        {detailView ? (
-          <article className="panel horizontal-disclosure-panel">
-            {detailView === "configuration" ? (
-              <KeyValueList
-                items={data.configuration.fields.map((field) => ({
-                  label: `${field.label} / ${field.source}`,
-                  value: field.secret ? "REDACTED" : field.value
-                }))}
-              />
-            ) : null}
-            {detailView === "workflow" ? (
-              <>
-                <ol className="pipeline">
-                  {data.futureWorkflow.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
-                <p className="muted">
-                  Changes stay local and update the portfolio directly.
-                </p>
-              </>
-            ) : null}
-            {detailView === "events" ? (
-              <div className="log-list compact">
-                {data.recentLogs.map((entry) => (
-                  <p key={entry.id}>
-                    <span>{entry.timestamp}</span> {entry.level} / {entry.category} /{" "}
-                    {entry.message}
-                  </p>
-                ))}
-              </div>
-            ) : null}
-          </article>
-        ) : null}
+        <article className="overview-detail" key={detailView ?? "empty"}>
+          {!detailView ? (
+            <div className="overview-detail-empty">
+              <span>01 — 03</span>
+              <h2>Explore the workspace</h2>
+              <p>
+                Choose a view from the rail to inspect configuration, workflow, or recent activity.
+              </p>
+            </div>
+          ) : null}
+          {detailView ? (
+            <>
+              {detailView === "configuration" ? (
+                <>
+                  <OverviewDetailHeader
+                    index="01"
+                    title="Runtime configuration"
+                    copy="A readable snapshot of where this workspace gets its active settings."
+                  />
+                  <div className="configuration-grid">
+                    {data.configuration.fields.map((field) => (
+                      <div key={field.key}>
+                        <small>{field.source}</small>
+                        <strong>{field.label}</strong>
+                        <span>{field.secret ? "Protected value" : field.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : null}
+              {detailView === "workflow" ? (
+                <>
+                  <OverviewDetailHeader
+                    index="02"
+                    title="Generation workflow"
+                    copy="The short path from a selected repository to a live portfolio case study."
+                  />
+                  <ol className="overview-pipeline">
+                    {data.futureWorkflow.map((step) => (
+                      <li key={step}>
+                        <span>
+                          {String(data.futureWorkflow.indexOf(step) + 1).padStart(2, "0")}
+                        </span>
+                        <p>{step}</p>
+                      </li>
+                    ))}
+                  </ol>
+                </>
+              ) : null}
+              {detailView === "events" ? (
+                <>
+                  <OverviewDetailHeader
+                    index="03"
+                    title="Recent local events"
+                    copy="A compact timeline of what the generator has done in this session."
+                  />
+                  <div className="overview-event-list">
+                    {data.recentLogs.map((entry) => (
+                      <article key={entry.id}>
+                        <span>{entry.level}</span>
+                        <div>
+                          <strong>{entry.message}</strong>
+                          <small>
+                            {entry.category} · {new Date(entry.timestamp).toLocaleString()}
+                          </small>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </>
+              ) : null}
+            </>
+          ) : null}
+        </article>
       </section>
     </section>
   );
 }
-import { useState } from "react";
+
+function OverviewDetailHeader({
+  index,
+  title,
+  copy
+}: {
+  index: string;
+  title: string;
+  copy: string;
+}) {
+  return (
+    <header className="overview-detail-header">
+      <span>{index}</span>
+      <div>
+        <h2>{title}</h2>
+        <p>{copy}</p>
+      </div>
+    </header>
+  );
+}

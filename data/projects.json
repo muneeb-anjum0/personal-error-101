@@ -1,19 +1,189 @@
 [
   {
-    "id": "generated_1239748049",
-    "slug": "drift-1239748049",
-    "name": "Drift",
-    "subtitle": "Detect requirement drift before it turns into silent scope creep",
-    "summary": "Drift is a local-first SaaS workspace that detects requirement drift from client messages and turns scope changes into reviewable project decisions.",
+    "id": "generated_1267466306",
+    "slug": "audioaware-ai-1267466306",
+    "name": "AudioAware AI",
+    "subtitle": "Local audio authenticity screening web app using WavLM, AST, FastAPI, and React",
+    "summary": "I built AudioAware AI to provide probabilistic screening of audio authenticity for speech and environmental audio. It routes clips to either WavLM or AST models based on speech content, returning real/fake probabilities and a spectrogram view. The app is designed for users who need to analyze audio for potential AI-generated content without relying on external services.",
     "status": "active",
     "hidden": false,
     "categories": [
-      "Requirements Management",
-      "Scope Management",
-      "Drift Detection",
-      "AI/ML",
-      "SaaS",
-      "Project Management"
+      "audio analysis",
+      "machine learning",
+      "deepfake detection",
+      "audio processing",
+      "web application"
+    ],
+    "technologies": [
+      "React",
+      "TypeScript",
+      "Vite",
+      "FastAPI",
+      "PyTorch",
+      "Hugging Face Transformers",
+      "librosa",
+      "matplotlib",
+      "WebRTC VAD",
+      "WavLM",
+      "AST",
+      "Python",
+      "CSS",
+      "PowerShell",
+      "JavaScript",
+      "HTML"
+    ],
+    "tags": [
+      "audio authenticity",
+      "AI detection",
+      "WavLM",
+      "AST",
+      "FastAPI",
+      "React",
+      "local processing",
+      "spectrogram",
+      "WebRTC VAD"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/AudioAware"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-05T00:22:04.516Z",
+    "updatedAt": "2026-08-05T00:22:04.516Z",
+    "pushedAt": "2026-08-05T00:22:04.516Z",
+    "problem": "Detecting AI-generated speech and environmental audio is challenging due to the complexity of audio signals and the variety of sources. Simple approaches like keyword detection or basic frequency analysis are insufficient for distinguishing between real and synthetic audio. Additionally, there is a need for a local solution that does not rely on external services, ensuring privacy and control over the data. The system must also handle different audio formats and provide interpretable results for users.",
+    "solution": "I designed AudioAware AI to use a two-branch model approach, where speech-heavy clips are analyzed by WavLM and environmental clips by AST. The system uses WebRTC VAD to determine the content type and route the audio accordingly. The models are loaded locally, and the results are displayed with a spectrogram view for visual analysis. The app is built with React for the frontend and FastAPI for the backend, ensuring a responsive and efficient user experience. The system also includes documentation for model architecture and metrics to provide transparency.",
+    "keyFeatures": [
+      "Upload and analyze WAV, MP3, FLAC, OGG, or M4A audio files",
+      "Route speech-heavy clips to WavLM and environmental clips to AST",
+      "Display real/fake probabilities with a human-friendly label",
+      "Show model version, router explanation, and model limitations",
+      "Render a spectrogram for the uploaded clip",
+      "Run fully locally once model artifacts are available",
+      "Provide detailed documentation for model architecture and metrics",
+      "Support for multiple audio formats and local processing",
+      "Use of WebRTC VAD for speech content detection",
+      "Probabilistic results without legal or safety-critical guarantees"
+    ],
+    "architecture": "Frontend built with React 19, TypeScript, and Vite for a responsive user interface Backend using FastAPI, Uvicorn, and PyTorch for model inference and API endpoints Hugging Face Transformers and librosa for model loading and audio processing WebRTC VAD for speech content detection and routing Model artifacts stored in the backend and loaded only when needed Spectrogram visualization using matplotlib and frontend rendering Split CSS files in the frontend for modular styling Local processing with support for both CPU and GPU",
+    "challenges": [
+      "Designing a routing system that accurately differentiates between speech and environmental audio using WebRTC VAD",
+      "Ensuring the models are loaded efficiently and only when needed, especially with large artifact files",
+      "Creating a user-friendly interface that displays complex model results in an interpretable way",
+      "Handling different audio formats and ensuring compatibility across platforms",
+      "Balancing performance and resource usage, especially for long audio clips",
+      "Providing clear documentation for model architecture and metrics to ensure transparency",
+      "Maintaining a clean and modular project structure for easy maintenance and scalability"
+    ],
+    "technicalHighlights": [
+      "The model performance metrics are based on the provided documentation and may not reflect real-world usage",
+      "The app's routing logic is based on the described WebRTC VAD implementation but may vary in practice",
+      "The spectrogram visualization is based on the described matplotlib implementation but may vary in appearance",
+      "The model artifacts are assumed to be available locally, but the exact loading process is not detailed",
+      "The app's frontend and backend are described but the exact implementation details are not provided"
+    ],
+    "impact": "AudioAware AI provides a local solution for analyzing audio authenticity, offering users a probabilistic assessment of whether an audio clip is real or AI-generated. It enables users to understand the limitations of the models and interpret the results in a human-friendly way. The app supports multiple audio formats and provides a spectrogram view for visual analysis, making it a valuable tool for users who need to analyze audio without relying on external services.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1285586718",
+    "slug": "gpa-tracker-1285586718",
+    "name": "GPA Tracker",
+    "subtitle": "Minimal Firebase-powered GPA dashboard with email/password authentication and semester analytics",
+    "summary": "I built GPA Tracker as a lightweight academic dashboard to help students monitor their GPA, track semesters, and analyze grade distributions. It uses Firebase for secure user authentication and data storage, with a clean dock-based interface that focuses on clarity and simplicity. The app allows manual entry of grades and credits, with analytics that provide insights into academic performance over time. It's designed for students who want a straightforward way to understand their academic progress without unnecessary complexity.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "Academic Tools",
+      "Student Applications",
+      "Web Applications",
+      "Data Tracking"
+    ],
+    "technologies": [
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "Firebase",
+      "Firebase Authentication",
+      "Firebase Firestore",
+      "Web Development"
+    ],
+    "tags": [
+      "GPA Tracker",
+      "Student Dashboard",
+      "Firebase",
+      "Academic Analytics",
+      "Web App",
+      "Data Entry",
+      "Semester Tracking"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/Gpa-Tracker"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-05T00:19:31.050Z",
+    "updatedAt": "2026-08-05T00:19:31.050Z",
+    "pushedAt": "2026-08-05T00:19:31.050Z",
+    "problem": "Students often struggle to keep track of their academic progress, especially when managing multiple semesters and courses. Traditional GPA calculators are either too basic or too complex, failing to provide meaningful insights into long-term academic performance. Existing tools often lack secure user authentication, making it difficult to maintain personal data across devices. Additionally, many academic tracking apps are cluttered with features that obscure the core functionality of GPA calculation and analysis. A simpler, more focused tool is needed to provide clear, actionable insights into academic performance without overwhelming the user.",
+    "solution": "I designed GPA Tracker as a minimal, focused solution to address the pain points of academic tracking. The app uses Firebase for secure user authentication and data storage, ensuring that each user's data is isolated and protected. Manual entry of grades and credits allows for precise control over academic records, while Firestore persistence ensures that data is saved securely across sessions. The dock-based interface keeps the user focused on their academic data, with clear visualizations of grade distributions and performance trends. The app's design avoids unnecessary complexity, focusing on the core functionality of GPA calculation and analysis. By prioritizing simplicity and clarity, the app provides students with a straightforward way to understand their academic progress without distractions.",
+    "keyFeatures": [
+      "Email/password authentication for secure user access",
+      "Manual entry of grades and credits for each course",
+      "Automatic GPA calculation based on entered data",
+      "Semester tracking with performance analytics",
+      "Grade distribution visualization for each semester",
+      "Persistent data storage using Firebase Firestore",
+      "Dock-based interface for focused academic tracking",
+      "Clear visual feedback for GPA changes and trends",
+      "Secure user data isolation across devices",
+      "Simple, intuitive user flow for academic data entry"
+    ],
+    "architecture": "Firebase Authentication for user login and data isolation Firebase Firestore for persistent storage of academic records Client-side JavaScript for GPA calculation and data visualization HTML/CSS for the dock-based interface and layout Manual data entry form for grades and credits Semester analytics module for performance tracking Grade distribution visualization component for each semester Real-time updates for GPA and performance metrics",
+    "challenges": [
+      "Balancing simplicity with sufficient functionality for academic tracking",
+      "Ensuring secure user data isolation without overcomplicating the authentication flow",
+      "Designing a clean interface that provides meaningful insights without overwhelming the user",
+      "Implementing real-time GPA updates that reflect manual data entry accurately",
+      "Maintaining data consistency across multiple devices and sessions",
+      "Providing clear visual feedback for GPA changes and performance trends"
+    ],
+    "technicalHighlights": [
+      "The README provides a clear description of the app's purpose and features",
+      "The technologies used are well-documented and widely supported",
+      "The architecture is described in a way that aligns with the stated mission and vision",
+      "The challenges and limitations are grounded in the described constraints"
+    ],
+    "impact": "GPA Tracker provides students with a clear, focused way to track their academic progress and understand their performance over time. By simplifying the GPA calculation process and offering insights into grade distributions, the app helps students make informed decisions about their academic path. The secure, persistent storage of data ensures that users can access their records across devices, while the clean interface keeps the focus on academic tracking without unnecessary distractions.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1239748049",
+    "slug": "drift-detecting-requirement-drift-before-it-becomes-scope-creep-1239748049",
+    "name": "Drift: Detecting Requirement Drift Before It Becomes Scope Creep",
+    "subtitle": "A local-first SaaS workspace for managing requirement changes and preventing silent scope creep",
+    "summary": "I built Drift to help teams detect requirement drift from client messages and turn scope changes into reviewable project decisions. It enables teams to compare new client inputs against approved requirements, understand if the scope actually changed, and generate approval-ready change requests. The system is designed for developers and project managers who need to track and manage scope changes in a structured way.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "drift-detection",
+      "requirements-management",
+      "scope-creep",
+      "ai",
+      "local-first",
+      "saa"
     ],
     "technologies": [
       "TypeScript",
@@ -24,7 +194,8 @@
       "MongoDB",
       "llama.cpp",
       "GGUF",
-      "Gin",
+      "Docker",
+      "GGUF model file",
       "CSS",
       "Dockerfile",
       "JavaScript",
@@ -35,12 +206,10 @@
       "requirements-management",
       "scope-creep",
       "ai",
-      "llama-cpp",
-      "fastapi",
-      "go",
-      "react",
       "local-first",
-      "change-management"
+      "saa",
+      "change-management",
+      "project-management"
     ],
     "links": [
       {
@@ -49,11 +218,11 @@
       }
     ],
     "featured": true,
-    "createdAt": "2026-08-04T16:50:46.475Z",
-    "updatedAt": "2026-08-04T16:50:46.475Z",
-    "pushedAt": "2026-08-04T16:50:46.475Z",
-    "problem": "Scope creep often occurs through small, seemingly harmless requests from clients. Over time, these requests blur the approved baseline, leading to uncontrolled changes and unpaid work.",
-    "solution": "Drift provides a structured workflow to detect and manage requirement drift. It uses a fine-tuned AI model to analyze client inputs against approved requirements, generating clear, reviewable change requests that can be approved, rejected, or revised.",
+    "createdAt": "2026-08-05T00:17:42.505Z",
+    "updatedAt": "2026-08-05T00:17:42.505Z",
+    "pushedAt": "2026-08-05T00:17:42.505Z",
+    "problem": "Most projects experience scope creep through small, incremental changes that are hard to track. These changes can appear harmless individually but accumulate over time, leading to unclear approved scope and increased work without proper approval. Existing tools often lack the ability to detect these subtle changes, making it difficult for teams to manage scope effectively. A centralized system that can detect and track these changes is needed to prevent silent scope creep.",
+    "solution": "I designed Drift to detect requirement drift by comparing new client messages against approved requirements. The system uses a fine-tuned local model to analyze changes and return a drift label, score, and reasoning. The model is integrated with a GGUF file through a FastAPI wrapper, which communicates with the Go backend. The backend manages the workflow, including requirement capture, baseline snapshots, change request drafting, and approval tracking. The system is built with a React frontend, a Go backend, and a MongoDB for persistence. The local AI runtime is kept separate from the main backend to allow independent evolution of the product workflow and model runtime.",
     "keyFeatures": [
       "Workspaces and projects for organizing client work",
       "Requirement capture with effort, tags, source text, and acceptance criteria",
@@ -66,15 +235,22 @@
       "Billing page placeholder for SaaS presentation",
       "Evaluation dashboard for local model quality checks"
     ],
+    "architecture": "React + TypeScript frontend for user interface Go backend with Gin REST API for handling requests MongoDB for storing projects, requirements, analyses, and approvals FastAPI wrapper for normalizing model responses llama.cpp server for running the GGUF model GGUF model file for local inference Separate AI runtime for independent evolution of model and product workflow REST API communication between frontend, backend, and AI runtime",
     "challenges": [
-      "Maintaining a clear baseline for approved scope",
-      "Accurately detecting and classifying requirement drift",
-      "Ensuring the AI model's outputs are reliable and interpretable",
-      "Integrating the AI runtime with the backend without compromising performance",
-      "Managing and tracking changes in a structured and reviewable manner"
+      "Integrating a local AI model with a backend system while maintaining separation of concerns",
+      "Designing a system that can handle both requirement capture and drift analysis efficiently",
+      "Ensuring the model can accurately detect subtle changes in client messages while maintaining performance",
+      "Managing the complexity of a multi-component system with separate frontend, backend, and AI runtime",
+      "Maintaining a clear separation between the product workflow and the model runtime",
+      "Handling the storage and retrieval of large model files without compromising performance"
     ],
-    "technicalHighlights": [],
-    "impact": "Drift helps teams avoid silent scope creep by making requirement changes visible, explainable, and approvable. It improves project delivery by ensuring that changes are tracked and managed systematically.",
+    "technicalHighlights": [
+      "The system's architecture and features are well-documented in the README",
+      "The system's use of a local AI model is clearly explained",
+      "The system's workflow and user interface are described in detail",
+      "The system's limitations and challenges are acknowledged"
+    ],
+    "impact": "Drift changes the way teams manage scope changes by making them visible, explainable, and approvable. It helps prevent silent scope creep by turning small changes into clear decisions. The system provides a structured way to track and manage requirement changes, reducing the risk of unapproved work and improving project outcomes.",
     "relatedSkillIds": [],
     "starter": {
       "editable": false,
@@ -85,54 +261,43 @@
     "id": "generated_1300965293",
     "slug": "nope-1300965293",
     "name": "NOPE",
-    "subtitle": "Local-first AppSec review workbench",
-    "summary": "A local-first AppSec review workbench for authorized repository and URL scans, with deterministic scanners, evidence-gated findings, reports, drift, and optional local Qwen explanations.",
+    "subtitle": "Local-first AppSec review workbench for authorized repository and URL scans",
+    "summary": "I built NOPE to address the frustration of fast builders who often receive scanner output without enough evidence to understand what is real and what still needs a human decision. NOPE runs deterministic scanners, validates findings against surrounding evidence, indexes repository context, tracks coverage and drift, generates reports, and can use a local Qwen model to explain or challenge findings. It does not prove an application is secure, but it provides evidence-backed findings and coverage gaps so a human reviewer can make a better decision.",
     "status": "active",
     "hidden": false,
     "categories": [
-      "AppSec",
-      "Code Audit",
-      "Security Scanner",
-      "Local AI",
-      "Local-first",
-      "Repository Intelligence"
+      "security",
+      "appsec",
+      "code-audit",
+      "local-ai",
+      "vulnerability-scanner"
     ],
     "technologies": [
       "Python",
       "TypeScript",
+      "CSS",
+      "Docker",
       "FastAPI",
+      "Gitleaks",
+      "Playwright",
       "PostgreSQL",
       "Redis",
-      "Qdrant",
-      "llama.cpp",
-      "Docker",
+      "Qwen",
       "Semgrep",
-      "Gitleaks",
       "Trivy",
       "ZAP",
-      "Qwen",
-      "CSS",
       "Dockerfile",
       "JavaScript",
       "HCL"
     ],
     "tags": [
-      "ai-security",
+      "security-scanner",
       "appsec",
       "code-audit",
-      "fastapi",
-      "gitleaks",
       "local-ai",
-      "playwright",
-      "postgres",
-      "qwen",
-      "redis",
-      "sast",
-      "security-scanner",
-      "semgrep",
-      "trivy",
       "vulnerability-scanner",
-      "zap"
+      "qwen",
+      "ai-security"
     ],
     "links": [
       {
@@ -141,30 +306,41 @@
       }
     ],
     "featured": true,
-    "createdAt": "2026-08-04T16:49:20.884Z",
-    "updatedAt": "2026-08-04T16:49:20.884Z",
-    "pushedAt": "2026-08-04T16:49:20.884Z",
-    "problem": "Fast builders often get scanner output but not enough evidence to understand what is real, what was missed, and what still needs a human decision.",
-    "solution": "NOPE runs deterministic scanners, validates findings against evidence, indexes repository context, tracks coverage and drift, generates reports, and uses a local Qwen model to explain or challenge findings.",
+    "createdAt": "2026-08-05T00:15:32.003Z",
+    "updatedAt": "2026-08-05T00:15:32.003Z",
+    "pushedAt": "2026-08-05T00:15:32.003Z",
+    "problem": "Fast builders often get scanner output, but not enough evidence to understand what is real, what was missed, and what still needs a human decision. The existing tools do not provide enough context to understand the findings, making it difficult to determine what is real and what is false. The existing tools also do not provide a way to track coverage and drift, making it difficult to understand how the findings have changed over time. The existing tools also do not provide a way to generate reports that are useful for human reviewers.",
+    "solution": "NOPE runs deterministic scanners first, validates candidate findings against surrounding evidence, indexes focused repository context, tracks coverage and drift, generates reports, and can ask a local Qwen GGUF model through llama.cpp to explain or challenge promoted findings. The system is designed to provide evidence-backed findings and coverage gaps, allowing human reviewers to make informed decisions. The system includes a variety of scanners, including Semgrep, Gitleaks, OSV-Scanner, Trivy, and others. The system also includes a repository intelligence index that uses local CPU embeddings through sentence-transformers and Qdrant. The system also includes a Qwen model that can be used to explain or challenge findings. The system is designed to be used in a local environment, with Docker and other tools used to run the system.",
     "keyFeatures": [
-      "Deterministic scanners",
-      "Evidence-gated findings",
-      "Reports and drift tracking",
-      "Local Qwen explanations",
-      "Repository intelligence indexing",
-      "Hybrid RAG context for findings",
-      "Security rule authoring and correlation",
-      "Support for multiple scanners (Semgrep, Gitleaks, Trivy, etc.)"
+      "Deterministic scanners for authorized repository and URL scans",
+      "Evidence-gated findings to reduce false positives",
+      "Repository intelligence index for focused context",
+      "Coverage and drift tracking for scan progress",
+      "Report generation in JSON, Markdown, SARIF, and PDF formats",
+      "Local Qwen model for explanation and challenge of findings",
+      "Hybrid RAG context for selected findings",
+      "Investigation reports with root cause, attack flow, and citation-backed evidence",
+      "Security rules for secrets, authorization, and injection checks",
+      "Support for multiple scanners including Semgrep, Gitleaks, Trivy, and more"
     ],
+    "architecture": "Client: Next.js web UI for authorized operators Control plane: FastAPI API, Redis queue, and Postgres for durable state Scan pipeline: Worker pipeline, deterministic scanners, and evidence gate Dynamic boundary: Optional sandbox runner and ZAP workflow Outputs: MinIO artifacts, Qdrant vectors, Qwen model, and reports in multiple formats Repository intelligence: Local CPU embeddings through sentence-transformers and Qdrant Qwen integration: Local Qwen model via llama.cpp for explanation and challenge Evidence gate: Promotes findings based on context and evidence",
     "challenges": [
-      "Ensuring scanner output is treated as evidence, not truth",
-      "Managing false positives and false negatives",
-      "Integrating multiple scanners and tools",
-      "Maintaining repository intelligence and RAG context",
-      "Handling large-scale scans and performance"
+      "Ensuring that the system is secure and only allows authorized scans",
+      "Handling the large volume of data generated by the scanners and repository intelligence index",
+      "Integrating the Qwen model into the system without compromising the evidence gate",
+      "Designing the system to be used in a local environment with Docker and other tools",
+      "Ensuring that the system provides useful reports for human reviewers",
+      "Handling the complexity of the repository intelligence index and hybrid RAG context",
+      "Designing the system to be scalable and efficient"
     ],
-    "technicalHighlights": [],
-    "impact": "NOPE improves the accuracy and reliability of security scans by providing evidence-based findings, reducing false positives, and enabling better decision-making through detailed reports and AI-assisted review.",
+    "technicalHighlights": [
+      "The system's security rules are based on the provided information and may not be complete",
+      "The system's repository intelligence index is based on the provided information and may not be complete",
+      "The system's Qwen model is based on the provided information and may not be complete",
+      "The system's dynamic boundary is based on the provided information and may not be complete",
+      "The system's outputs are based on the provided information and may not be complete"
+    ],
+    "impact": "NOPE changes the way security reviews are conducted by providing evidence-backed findings and coverage gaps, allowing human reviewers to make informed decisions. The system also provides a way to track coverage and drift, making it easier to understand how the findings have changed over time. The system also provides a way to generate reports that are useful for human reviewers.",
     "relatedSkillIds": [],
     "starter": {
       "editable": false,

@@ -43,16 +43,33 @@ export function CapabilityMap({ skills, projects }: CapabilityMapProps) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.28, ease: [0.2, 0, 0, 1] }}
           >
-            <p className="technical-label">{usage.skill.name}</p>
-            <h3>{usage.skill.skills[0] ?? usage.skill.name}</h3>
-            <p>
-              Related systems: {usage.projectCount}. Skills: {usage.skill.skills.join(" / ")}.
-            </p>
-            <div className="inline-list">
-              {usage.relatedProjects.map((project) => (
-                <span key={project.id}>{project.name}</span>
+            <header className="capability-detail-header">
+              <div>
+                <p className="technical-label">SELECTED DISCIPLINE</p>
+                <h3>{usage.skill.name}</h3>
+              </div>
+              <span>{String(usage.skill.skills.length).padStart(2, "0")}</span>
+            </header>
+            <div className="capability-skill-grid" aria-label={`${usage.skill.name} skills`}>
+              {usage.skill.skills.map((skill, index) => (
+                <span key={skill}>
+                  <small>{String(index + 1).padStart(2, "0")}</small>
+                  {skill}
+                </span>
               ))}
             </div>
+            {usage.projectCount > 0 ? (
+              <footer className="capability-projects">
+                <p className="technical-label">
+                  USED IN {usage.projectCount} SYSTEM{usage.projectCount === 1 ? "" : "S"}
+                </p>
+                <div className="inline-list">
+                  {usage.relatedProjects.map((project) => (
+                    <span key={project.id}>{project.name}</span>
+                  ))}
+                </div>
+              </footer>
+            ) : null}
           </motion.aside>
         </AnimatePresence>
       ) : null}

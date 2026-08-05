@@ -1,1 +1,220 @@
-[]
+[
+  {
+    "id": "skills_programming_languages",
+    "name": "Programming Languages",
+    "skills": [
+      "Go",
+      "Python",
+      "C#",
+      "JavaScript",
+      "TypeScript",
+      "SQL",
+      "HTML5",
+      "CSS3"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_frontend_development",
+    "name": "Frontend Development",
+    "skills": [
+      "React",
+      "Next.js",
+      "Vite",
+      "Responsive Web Design",
+      "REST API Integration",
+      "JavaScript (ES6+)",
+      "TypeScript",
+      "HTML5",
+      "CSS3",
+      "DOM Manipulation"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_backend_development",
+    "name": "Backend Development",
+    "skills": [
+      "ASP.NET Core",
+      "Node.js",
+      "Express.js",
+      "FastAPI",
+      "Gin",
+      "REST API Development",
+      "Authentication",
+      "Authorization",
+      "Input Validation",
+      "Dependency Injection",
+      "Middleware",
+      "Role-Based Access Control (RBAC)"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_ai_ml",
+    "name": "Artificial Intelligence & Machine Learning",
+    "skills": [
+      "PyTorch",
+      "Hugging Face Transformers",
+      "Qwen",
+      "LoRA Fine-tuning",
+      "GGUF",
+      "llama.cpp",
+      "Local LLM Inference",
+      "Prompt Engineering",
+      "AI Evaluation",
+      "Model Deployment",
+      "Audio Classification",
+      "Natural Language Processing (NLP)"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_application_security",
+    "name": "Application Security",
+    "skills": [
+      "Semgrep",
+      "Gitleaks",
+      "Trivy",
+      "OSV-Scanner",
+      "Dependency Scanning",
+      "Secret Detection",
+      "Static Application Security Testing (SAST)",
+      "Security Reporting",
+      "Repository Security Analysis"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_databases_storage",
+    "name": "Databases & Storage",
+    "skills": [
+      "MongoDB",
+      "PostgreSQL",
+      "SQL Server",
+      "Redis",
+      "Firebase Firestore"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_devops_infrastructure",
+    "name": "DevOps & Infrastructure",
+    "skills": [
+      "Docker",
+      "Docker Compose",
+      "Linux",
+      "Nginx",
+      "Git",
+      "GitHub",
+      "CI/CD",
+      "Local AI Runtime",
+      "Deployment"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_cloud_authentication",
+    "name": "Cloud & Authentication",
+    "skills": [
+      "Firebase Authentication",
+      "Firebase",
+      "JWT Authentication",
+      "Protected Routes",
+      "Session Management"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_testing_debugging",
+    "name": "Testing & Debugging",
+    "skills": [
+      "Pytest",
+      "API Testing",
+      "Backend Debugging",
+      "Frontend Debugging",
+      "Performance Optimization",
+      "Bug Fixing",
+      "Production Troubleshooting"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_performance_optimization",
+    "name": "Performance Optimization",
+    "skills": [
+      "Client-side Caching",
+      "Image Optimization",
+      "Lazy Loading",
+      "API Optimization",
+      "Performance Profiling",
+      "Browser Performance"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_software_engineering",
+    "name": "Software Engineering",
+    "skills": [
+      "Object-Oriented Programming (OOP)",
+      "Software Development Life Cycle (SDLC)",
+      "System Design",
+      "Clean Architecture",
+      "Version Control",
+      "Code Review",
+      "Requirement Analysis",
+      "Technical Documentation"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  },
+  {
+    "id": "skills_ai_projects_research",
+    "name": "AI Projects & Research",
+    "skills": [
+      "Requirement Drift Detection",
+      "Application Security Automation",
+      "Audio Deepfake Detection",
+      "Speech Classification",
+      "Environmental Audio Classification",
+      "Offline AI Systems",
+      "Local AI Applications"
+    ],
+    "starter": {
+      "editable": true,
+      "note": "Added through the portfolio content editor."
+    }
+  }
+]

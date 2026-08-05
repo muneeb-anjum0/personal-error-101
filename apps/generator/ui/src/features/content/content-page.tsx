@@ -3,10 +3,22 @@ import type { ContentFileType } from "@muneeb-systems/shared-types";
 import { ContentManagementPage } from "../content-management/content-management-page";
 
 const templates: Array<{ type: ContentFileType; label: string; description: string }> = [
-  { type: "profile", label: "Profile", description: "Identity, biography, contact, and homepage copy" },
-  { type: "experience", label: "Experience", description: "Roles, organizations, highlights, and technologies" },
+  {
+    type: "profile",
+    label: "Profile",
+    description: "Identity, biography, contact, and homepage copy"
+  },
+  {
+    type: "experience",
+    label: "Experience",
+    description: "Roles, organizations, highlights, and technologies"
+  },
   { type: "skills", label: "Skills", description: "Skill groups and individual capabilities" },
-  { type: "activity", label: "Activities", description: "Updates, launches, milestones, and recent work" }
+  {
+    type: "activity",
+    label: "Activities",
+    description: "Updates, launches, milestones, and recent work"
+  }
 ];
 
 export function ContentPage() {
@@ -19,20 +31,25 @@ export function ContentPage() {
         <h1>Portfolio content</h1>
         <p>Choose a template, fill in the fields, and save. No JSON editing required.</p>
       </header>
-      <nav className="content-template-tabs" aria-label="Content templates">
-        {templates.map((template) => (
-          <button
-            key={template.type}
-            type="button"
-            aria-pressed={selected === template.type}
-            onClick={() => setSelected(template.type)}
-          >
-            <strong>{template.label}</strong>
-            <small>{template.description}</small>
-          </button>
-        ))}
-      </nav>
-      <ContentManagementPage key={selected} type={selected} embedded />
+      <div className="content-studio">
+        <nav className="content-template-tabs" aria-label="Content templates">
+          {templates.map((template, index) => (
+            <button
+              key={template.type}
+              type="button"
+              aria-pressed={selected === template.type}
+              onClick={() => setSelected(template.type)}
+            >
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span>
+                <strong>{template.label}</strong>
+                <small>{template.description}</small>
+              </span>
+            </button>
+          ))}
+        </nav>
+        <ContentManagementPage key={selected} type={selected} embedded />
+      </div>
     </section>
   );
 }

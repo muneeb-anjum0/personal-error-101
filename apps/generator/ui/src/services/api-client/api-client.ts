@@ -81,7 +81,6 @@ const publishingBackupsResponseSchema = z.object({
   total: z.number().int().nonnegative()
 });
 
-
 export class GeneratorApiClient {
   public constructor(private readonly baseUrl: string) {}
 
@@ -338,11 +337,10 @@ export class GeneratorApiClient {
   }
 
   public deleteDraft(draftId: string, signal?: AbortSignal) {
-    return this.request(
-      `/api/drafts/${encodeURIComponent(draftId)}`,
-      processingQueueSchema,
-      { method: "DELETE", signal }
-    );
+    return this.request(`/api/drafts/${encodeURIComponent(draftId)}`, processingQueueSchema, {
+      method: "DELETE",
+      signal
+    });
   }
 
   public stagedContent(type: string, signal?: AbortSignal) {
@@ -659,13 +657,14 @@ export class GeneratorApiClient {
     init.signal?.addEventListener("abort", () => controller.abort(), { once: true });
 
     try {
+      const headers = new Headers(init.headers);
+      if (init.body !== undefined && !headers.has("content-type")) {
+        headers.set("content-type", "application/json");
+      }
       const response = await fetch(`${this.baseUrl}${path}`, {
         ...init,
         signal: controller.signal,
-        headers: {
-          "content-type": "application/json",
-          ...(init.headers ?? {})
-        }
+        headers
       });
       const body = await safeJson(response);
       if (!response.ok) {
@@ -677,7 +676,6 @@ export class GeneratorApiClient {
     }
   }
 }
-
 async function safeJson(response: Response): Promise<unknown> {
   const text = await response.text();
   if (!text) {
@@ -690,6 +688,21 @@ async function safeJson(response: Response): Promise<unknown> {
   }
 }
 
-export const generatorApiClient = new GeneratorApiClient(
-  import.meta.env.VITE_GENERATOR_API_URL ?? "http://127.0.0.1:4000"
-);
+function resolveApiBaseUrl(): string {
+  const configured = import.meta.env.VITE_GENERATOR_API_URL;
+  const currentHost = window.location.hostname;
+  if (configured) {
+    const url = new URL(configured);
+    if (
+      ["localhost", "127.0.0.1"].includes(url.hostname) &&
+      !["localhost", "127.0.0.1"].includes(currentHost)
+    ) {
+      url.hostname = currentHost;
+      return url.origin;
+    }
+    return url.origin;
+  }
+  return `${window.location.protocol}//${currentHost}:4000`;
+}
+
+export const generatorApiClient = new GeneratorApiClient(resolveApiBaseUrl());

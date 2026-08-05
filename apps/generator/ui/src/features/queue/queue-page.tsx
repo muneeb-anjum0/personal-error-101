@@ -9,7 +9,7 @@ export function QueuePage({ embedded = false }: { embedded?: boolean }) {
   const queue = useApiResource((signal) => generatorApiClient.queue(signal), []);
   const ai = useApiResource((signal) => generatorApiClient.aiRuntime(signal), []);
   const [activeFilter, setActiveFilter] = useState("ALL");
-  const [expandedDraftId, setExpandedDraftId] = useState<string | null>(null);
+  const [activeDraftId, setActiveDraftId] = useState<string | null>(null);
   const { notify } = useToast();
 
   useEffect(() => {
@@ -26,6 +26,17 @@ export function QueuePage({ embedded = false }: { embedded?: boolean }) {
     await action();
     notify(label);
     await refreshAll();
+  }
+
+  async function deleteSummary(draftId: string) {
+    try {
+      await generatorApiClient.deleteDraft(draftId);
+      notify("Generated summary deleted. This repository can now be generated again.");
+      if (activeDraftId === draftId) setActiveDraftId(null);
+      await refreshAll();
+    } catch (error) {
+      notify(error instanceof Error ? error.message : "Could not delete generated summary.");
+    }
   }
 
   if (queue.loading && !queue.data) return <LoadingState label="Loading processing queue" />;
@@ -210,80 +221,68 @@ export function QueuePage({ embedded = false }: { embedded?: boolean }) {
                 job={job}
                 onRefresh={refreshAll}
                 compact={embedded}
-                expanded={Boolean(job.draftId && expandedDraftId === job.draftId)}
-                onToggle={() =>
-                  job.draftId
-                    ? setExpandedDraftId((current) =>
-                        current === job.draftId ? null : job.draftId
-                      )
-                    : undefined
-                }
+                onToggle={() => (job.draftId ? setActiveDraftId(job.draftId) : undefined)}
+                onDelete={deleteSummary}
               />
-              {job.draftId && expandedDraftId === job.draftId ? (
-                <DraftPreview
-                  draftId={job.draftId}
-                  repositoryName={job.repositoryFullName}
-                  onDeleted={async () => {
-                    setExpandedDraftId(null);
-                    await refreshAll();
-                  }}
-                />
-              ) : null}
             </div>
           ))}
           {jobs.length === 0 ? <p className="muted">No jobs in this view.</p> : null}
         </div>
       </article>
+      {activeDraftId ? (
+        <DraftPreview draftId={activeDraftId} onClose={() => setActiveDraftId(null)} />
+      ) : null}
     </section>
   );
 }
 
-function DraftPreview({
-  draftId,
-  repositoryName,
-  onDeleted
-}: {
-  draftId: string;
-  repositoryName: string;
-  onDeleted: () => Promise<void>;
-}) {
+function DraftPreview({ draftId, onClose }: { draftId: string; onClose: () => void }) {
   const resource = useApiResource((signal) => generatorApiClient.draft(draftId, signal), [draftId]);
-  if (!resource.data) {
-    return (
-      <article className="generated-draft draft-loading">Loading {repositoryName} summary…</article>
-    );
-  }
-  return <FullDraft draft={resource.data} onDeleted={onDeleted} />;
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
+  return (
+    <div
+      className="summary-modal-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <section
+        className="summary-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Generated project summary"
+      >
+        <button
+          className="summary-modal-close"
+          type="button"
+          aria-label="Close summary"
+          onClick={onClose}
+        >
+          ×
+        </button>
+        {!resource.data ? (
+          <div className="summary-modal-loading">Loading summary…</div>
+        ) : (
+          <FullDraft draft={resource.data} />
+        )}
+      </section>
+    </div>
+  );
 }
 
-function FullDraft({
-  draft,
-  onDeleted
-}: {
-  draft: GeneratedProjectDraft;
-  onDeleted: () => Promise<void>;
-}) {
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const { notify } = useToast();
-
-  async function deleteSummary() {
-    if (!confirmingDelete) {
-      setConfirmingDelete(true);
-      return;
-    }
-    setDeleting(true);
-    try {
-      await generatorApiClient.deleteDraft(draft.id);
-      notify("Generated summary deleted. This repository can now be generated again.");
-      await onDeleted();
-    } catch (error) {
-      notify(error instanceof Error ? error.message : "Could not delete generated summary.");
-      setDeleting(false);
-      setConfirmingDelete(false);
-    }
-  }
-
+function FullDraft({ draft }: { draft: GeneratedProjectDraft }) {
   return (
     <article className="generated-draft job-draft-expansion">
       <header>
@@ -312,29 +311,6 @@ function FullDraft({
         </div>
         <p className="muted">Source: {draft.repositoryFullName}</p>
       </footer>
-      <div className="draft-final-actions">
-        <div>
-          <strong>This summary is final</strong>
-          <p className="muted">Delete it first if you want to generate a replacement.</p>
-        </div>
-        {confirmingDelete ? (
-          <button type="button" onClick={() => setConfirmingDelete(false)} disabled={deleting}>
-            KEEP SUMMARY
-          </button>
-        ) : null}
-        <button
-          className="danger-action"
-          type="button"
-          disabled={deleting}
-          onClick={() => void deleteSummary()}
-        >
-          {deleting
-            ? "DELETING"
-            : confirmingDelete
-              ? "CONFIRM DELETE"
-              : "DELETE SUMMARY"}
-        </button>
-      </div>
     </article>
   );
 }
@@ -369,30 +345,69 @@ function JobRow({
   job,
   onRefresh,
   compact = false,
-  expanded = false,
-  onToggle
+  onToggle,
+  onDelete
 }: {
   job: ProcessingJob;
   onRefresh: () => Promise<void>;
   compact?: boolean;
-  expanded?: boolean;
   onToggle: () => void;
+  onDelete: (draftId: string) => Promise<void>;
 }) {
   const expandable = job.state === "COMPLETED" && Boolean(job.draftId);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  async function removeSummary() {
+    if (!job.draftId) return;
+    if (!confirmingDelete) {
+      setConfirmingDelete(true);
+      return;
+    }
+    setDeleting(true);
+    try {
+      await onDelete(job.draftId);
+    } finally {
+      setDeleting(false);
+      setConfirmingDelete(false);
+    }
+  }
   return (
-    <article className="log-entry">
+    <article className={`log-entry job-card job-state-${job.state.toLowerCase()}`}>
       <button
         className="job-summary-button"
         type="button"
-        aria-expanded={expandable ? expanded : undefined}
+        aria-haspopup={expandable ? "dialog" : undefined}
         disabled={!expandable}
         onClick={onToggle}
       >
-        <span>{job.state}</span>
-        <span>{job.repositoryFullName}</span>
-        <span>{job.progressMessage.replaceAll("Draft", "Summary").replaceAll("draft", "summary")}</span>
-        <span>{job.draftId ? (expanded ? "Close summary" : "Open summary") : "Summary pending"}</span>
+        <span className="job-state-label">{job.state}</span>
+        <span className="job-repository">
+          <strong>{job.repositoryFullName}</strong>
+          <small>
+            {job.progressMessage.replaceAll("Draft", "Summary").replaceAll("draft", "summary")}
+          </small>
+        </span>
+        <span className="job-open-label">
+          {job.draftId ? "VIEW SUMMARY ↗" : "SUMMARY PENDING"}
+        </span>
       </button>
+      {job.draftId ? (
+        <div className="job-delete-actions">
+          {confirmingDelete ? (
+            <button type="button" disabled={deleting} onClick={() => setConfirmingDelete(false)}>
+              KEEP
+            </button>
+          ) : null}
+          <button
+            className="danger-text-button"
+            type="button"
+            disabled={deleting}
+            onClick={() => void removeSummary()}
+          >
+            {deleting ? "DELETING…" : confirmingDelete ? "CONFIRM DELETE" : "DELETE"}
+          </button>
+        </div>
+      ) : null}
       {!compact ? (
         <div className="button-row">
           <button

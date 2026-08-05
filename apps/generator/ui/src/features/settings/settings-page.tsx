@@ -5,15 +5,9 @@ import { useToast } from "../../components/feedback/toast-provider";
 import { useApiResource } from "../../hooks/use-api-resource";
 import { generatorApiClient } from "../../services/api-client/api-client";
 import { toFriendlyError } from "../../services/api-client/api-error";
-import { AiPage } from "../ai/ai-page";
-import { LogsPage } from "../logs/logs-page";
 import { SystemPage } from "../system/system-page";
 
-type SettingsSection =
-  | "preferences"
-  | "ai"
-  | "logs"
-  | "system";
+type SettingsSection = "preferences" | "system";
 
 const sections: Array<{ id: SettingsSection; label: string; description: string }> = [
   {
@@ -21,8 +15,6 @@ const sections: Array<{ id: SettingsSection; label: string; description: string 
     label: "General",
     description: "GitHub account and repository access"
   },
-  { id: "ai", label: "Local AI", description: "Runtime health, model controls, and diagnostics" },
-  { id: "logs", label: "Local logs", description: "Application events and diagnostics" },
   {
     id: "system",
     label: "System information",
@@ -65,14 +57,25 @@ export function SettingsPage() {
   }
 
   return (
-    <section className="page-stack">
+    <section className="page-stack settings-page">
       <header className="page-header">
         <p className="eyebrow">SETTINGS</p>
         <h1>Settings</h1>
         <p>Manage the local generator without exposing secrets or content-editing controls.</p>
       </header>
+      <div className="settings-intro-strip" aria-label="Settings behavior">
+        <span>
+          <strong>02</strong> control groups
+        </span>
+        <span>
+          <strong>01</strong> open at a time
+        </span>
+        <span>
+          <strong>LOCAL</strong> configuration
+        </span>
+      </div>
       <div className="settings-accordion">
-        {sections.map((section) => {
+        {sections.map((section, index) => {
           const open = openSection === section.id;
           return (
             <section
@@ -85,19 +88,21 @@ export function SettingsPage() {
                 aria-controls={`settings-panel-${section.id}`}
                 onClick={() => setOpenSection(open ? null : section.id)}
               >
+                <span className="settings-section-index">{String(index + 1).padStart(2, "0")}</span>
                 <span>
                   <strong>{section.label}</strong>
                   <small>{section.description}</small>
                 </span>
-                <span aria-hidden="true">{open ? "−" : "+"}</span>
+                <span className="settings-section-state">
+                  <small>{open ? "OPEN" : "CLOSED"}</small>
+                  <b aria-hidden="true">{open ? "−" : "+"}</b>
+                </span>
               </button>
               {open ? (
                 <div id={`settings-panel-${section.id}`} className="settings-accordion-panel">
                   {section.id === "preferences" ? (
                     <PreferencesForm form={form} saving={saving} setForm={setForm} onSave={save} />
                   ) : null}
-                  {section.id === "ai" ? <AiPage /> : null}
-                  {section.id === "logs" ? <LogsPage /> : null}
                   {section.id === "system" ? <SystemPage /> : null}
                 </div>
               ) : null}

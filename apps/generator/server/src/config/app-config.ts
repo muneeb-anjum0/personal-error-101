@@ -4,7 +4,7 @@ import path from "node:path";
 export interface GeneratorAppConfig {
   host: string;
   port: number;
-  corsOrigins: string[];
+  corsOrigins: Array<string | RegExp>;
   version: string;
   phase: string;
   environment: string;
@@ -85,7 +85,11 @@ export function createAppConfig(environment: GeneratorEnvironment): GeneratorApp
   return {
     host: environment.GENERATOR_HOST,
     port: environment.GENERATOR_API_PORT,
-    corsOrigins: ["http://localhost:4173", "http://127.0.0.1:4173"],
+    corsOrigins: [
+      "http://localhost:4173",
+      "http://127.0.0.1:4173",
+      /^http:\/\/(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}):4173$/
+    ],
     version: "0.0.0",
     phase: "direct-content-generator",
     environment: environment.NODE_ENV,
