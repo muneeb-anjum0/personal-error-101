@@ -52,8 +52,6 @@ export function registerDocsRoutes(app: FastifyInstance): void {
         "/api/staged/experience",
         "/api/staged/experience/{entryId}",
         "/api/staged/skills",
-        "/api/staged/activity",
-        "/api/staged/activity/{entryId}",
         "/api/system",
         "/api/docs"
       ].map((apiPath) => [

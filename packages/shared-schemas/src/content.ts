@@ -5,9 +5,20 @@ const editableStarterSchema = z.object({
   note: z.string().min(1)
 });
 
+const publicWebUrlSchema = z
+  .string()
+  .url()
+  .refine(
+    (value) => {
+      const protocol = new URL(value).protocol;
+      return protocol === "https:" || protocol === "http:";
+    },
+    { message: "URL must use HTTP or HTTPS" }
+  );
+
 export const linkSchema = z.object({
   label: z.string().min(1),
-  url: z.string().url()
+  url: publicWebUrlSchema
 });
 
 export const profileSchema = z.object({
@@ -26,8 +37,8 @@ export const profileSchema = z.object({
   location: z.string().min(1),
   availability: z.string().min(1),
   email: z.string().email(),
-  githubUrl: z.string().url(),
-  linkedInUrl: z.string().url(),
+  githubUrl: publicWebUrlSchema,
+  linkedInUrl: publicWebUrlSchema,
   resumePath: z.string().min(1),
   stats: z
     .array(
@@ -92,18 +103,6 @@ export const projectSchema = z.object({
   starter: editableStarterSchema
 });
 
-export const activityItemSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  description: z.string().min(1),
-  occurredAt: z.string().min(1),
-  projectId: z.string().min(1).optional(),
-  repository: z.string().min(1).optional(),
-  link: linkSchema.optional(),
-  source: z.enum(["manual", "github", "ai", "system"]),
-  starter: editableStarterSchema
-});
-
 export const generatorStateSchema = z.object({
   schemaVersion: z.literal(1),
   selectedRepositoryIds: z.array(z.string().min(1)),
@@ -122,6 +121,5 @@ export const contentBundleSchema = z.object({
   experience: z.array(experienceEntrySchema),
   skills: z.array(skillCategorySchema),
   projects: z.array(projectSchema),
-  activity: z.array(activityItemSchema),
   generatorState: generatorStateSchema
 });

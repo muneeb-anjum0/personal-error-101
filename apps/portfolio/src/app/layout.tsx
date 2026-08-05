@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { SecurityViolationMonitor } from "@/components/security/security-violation-monitor";
 import "@/styles/globals.css";
 
 const geistSans = Geist({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <SecurityViolationMonitor />
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>

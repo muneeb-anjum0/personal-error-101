@@ -10,7 +10,6 @@ export const advancedRoutes = [
   { path: "/content/profile", label: "PROFILE" },
   { path: "/content/experience", label: "EXPERIENCE" },
   { path: "/content/skills", label: "SKILLS" },
-  { path: "/content/activity", label: "ACTIVITY" },
   { path: "/logs", label: "LOGS" },
   { path: "/system", label: "SYSTEM" }
 ] as const;

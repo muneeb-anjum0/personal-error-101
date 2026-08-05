@@ -22,7 +22,6 @@ export const contentFileTypeSchema = z.enum([
   "projects",
   "experience",
   "skills",
-  "activity",
   "generator-state"
 ]);
 
@@ -92,7 +91,6 @@ export const contentMetricsSchema = z.object({
   featuredProjects: z.number().int().nonnegative(),
   experienceEntries: z.number().int().nonnegative(),
   skillCategories: z.number().int().nonnegative(),
-  activityEntries: z.number().int().nonnegative(),
   latestContentModifiedAt: z.string().datetime().nullable(),
   validationStatus: z.enum(["valid", "invalid"])
 });
@@ -994,7 +992,6 @@ export const stagedContentStatusSchema = z.object({
   projects: z.number().int().nonnegative(),
   experience: z.number().int().nonnegative(),
   skills: z.number().int().nonnegative(),
-  activity: z.number().int().nonnegative(),
   conflicts: z.array(z.string()),
   updatedAt: z.string().datetime().nullable()
 });
@@ -1005,7 +1002,6 @@ export const stagedContentBundleSchema = z.object({
   projects: z.array(z.unknown()),
   experience: z.array(z.unknown()),
   skills: z.array(z.unknown()),
-  activity: z.array(z.unknown()),
   metadata: z.object({
     updatedAt: z.string().datetime(),
     updatedBy: z.string().min(1),

@@ -54,7 +54,7 @@ export function Sidebar({
 }
 
 function routeDescription(path: string): string {
-  if (path === "/") return "Status and activity";
+  if (path === "/") return "Status and controls";
   if (path === "/repositories") return "Sync and generate";
   if (path === "/content") return "Portfolio editor";
   return "Runtime controls";
