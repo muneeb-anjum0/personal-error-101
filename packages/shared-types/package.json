@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@muneeb-systems/shared-schemas": "workspace:*",
-    "zod": "4.1.5"
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "typescript": "5.9.3",
