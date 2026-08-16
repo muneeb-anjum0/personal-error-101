@@ -15,9 +15,17 @@ interface ProjectPageProps {
   params: Promise<{ slug: string }>;
 }
 
+const EMPTY_PROJECTS_BUILD_SLUG = "_no-generated-projects";
+
 export async function generateStaticParams() {
   const content = await loadPortfolioContent();
-  return getVisibleProjects(content.projects).map((project) => ({ slug: project.slug }));
+  const projects = getVisibleProjects(content.projects);
+
+  // Next.js static export requires at least one parameter for a dynamic route.
+  // The sentinel renders through notFound() and keeps an empty portfolio deployable.
+  return projects.length > 0
+    ? projects.map((project) => ({ slug: project.slug }))
+    : [{ slug: EMPTY_PROJECTS_BUILD_SLUG }];
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
