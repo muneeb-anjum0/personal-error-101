@@ -151,6 +151,10 @@ export class AiRuntimeService {
     return this.client;
   }
 
+  public activeProgress() {
+    return this.client.inspectActiveProgress();
+  }
+
   private baseState(modelPathExists: boolean, executablePathExists: boolean): AiRuntimeState {
     const mode = this.mode();
     return {

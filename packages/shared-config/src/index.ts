@@ -15,7 +15,7 @@ export const generatorEnvironmentSchema = z.object({
   LOCAL_AI_API_KEY: z.string().optional().default("local"),
   LOCAL_AI_CONTEXT_SIZE: z.coerce.number().int().positive().default(8192),
   LOCAL_AI_PARALLEL_REQUESTS: z.coerce.number().int().positive().max(1).default(1),
-  LOCAL_AI_GPU_LAYERS: z.coerce.number().int().nonnegative().default(28),
+  LOCAL_AI_GPU_LAYERS: z.coerce.number().int().nonnegative().default(0),
   LOCAL_AI_MAX_VRAM_GB: z.coerce.number().positive().default(5),
   LOCAL_AI_SERVER_PORT: z.coerce.number().int().positive().default(8080),
   LOCAL_AI_SERVER_HOST: z.string().min(1).default("127.0.0.1"),

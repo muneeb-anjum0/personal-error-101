@@ -22,6 +22,41 @@ afterEach(async () => {
 });
 
 describe("local AI runtime", () => {
+  it("assembles streamed chat completions used by slow CPU-only inference", async () => {
+    const stream = [
+      'data: {"model":"Qwen3-8B-Q4_K_M","choices":[{"delta":{"content":"{\\"title\\":"}}]}\n\n',
+      'data: {"choices":[{"delta":{"content":"\\"Human summary\\"}"}}]}\n\n',
+      'data: {"choices":[],"usage":{"prompt_tokens":12,"completion_tokens":4,"total_tokens":16}}\n\n',
+      "data: [DONE]\n\n"
+    ];
+    const client = new OpenAiCompatibleClient(
+      "http://localhost:8080/v1",
+      "local",
+      async () =>
+        new Response(
+          new ReadableStream({
+            start(controller) {
+              for (const chunk of stream) controller.enqueue(new TextEncoder().encode(chunk));
+              controller.close();
+            }
+          }),
+          { status: 200, headers: { "content-type": "text/event-stream" } }
+        )
+    );
+
+    await expect(
+      client.generate({
+        model: "Qwen3-8B-Q4_K_M",
+        messages: [{ role: "user", content: "Describe it." }],
+        maxOutputTokens: 100
+      })
+    ).resolves.toMatchObject({
+      rawText: '{"title":"Human summary"}',
+      parsedJson: { title: "Human summary" },
+      usage: { promptTokens: 12, completionTokens: 4, totalTokens: 16 }
+    });
+  });
+
   it("builds llama.cpp arguments without shell string concatenation", async () => {
     const config = await testConfig();
 
@@ -84,6 +119,29 @@ describe("processing queue", () => {
     );
     expect(second.enqueued).toBe(0);
     expect(second.reasons.join("\n")).toContain("already queued");
+  });
+
+  it("removes unfinished jobs when their repositories are no longer selected", async () => {
+    const repositories = [repository("101", { selectedForProcessing: true })];
+    const { service } = await queueFixture(repositories);
+
+    await service.enqueue({ mode: "SELECTED" });
+    repositories[0] = repository("101", { selectedForProcessing: false });
+
+    await expect(service.getQueue()).resolves.toMatchObject({
+      state: "IDLE",
+      paused: false,
+      jobs: [],
+      metrics: { pending: 0, interrupted: 0 }
+    });
+  });
+
+  it("refuses to start when no selected repository is waiting", async () => {
+    const { service } = await queueFixture([repository("101", { selectedForProcessing: false })]);
+
+    await expect(service.start()).rejects.toThrow(
+      "Select at least one repository before starting the queue."
+    );
   });
 
   it("processes one job, repairs invalid JSON once, persists queue events and private draft artifacts", async () => {
@@ -212,6 +270,8 @@ async function testConfig(): Promise<GeneratorAppConfig> {
     stagedDirectory: path.join(dataDirectory, "staged"),
     stagedMetadataPath: path.join(dataDirectory, "staged", "metadata.json"),
     stagedBackupDirectory: path.join(dataDirectory, "staged", "backups"),
+    portfolioDeploymentStatePath: path.join(dataDirectory, "deployment", "state.json"),
+    portfolioDeploymentLogPath: path.join(dataDirectory, "deployment", "latest.log"),
     previewDirectory: path.join(dataDirectory, "preview"),
     previewSessionsDirectory: path.join(dataDirectory, "preview", "sessions"),
     previewCurrentPath: path.join(dataDirectory, "preview", "current.json"),

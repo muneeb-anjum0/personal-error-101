@@ -240,6 +240,8 @@ async function createHarness(source: FakeSource) {
     stagedDirectory: path.join(dataDirectory, "staged"),
     stagedMetadataPath: path.join(dataDirectory, "staged", "metadata.json"),
     stagedBackupDirectory: path.join(dataDirectory, "staged", "backups"),
+    portfolioDeploymentStatePath: path.join(dataDirectory, "deployment", "state.json"),
+    portfolioDeploymentLogPath: path.join(dataDirectory, "deployment", "latest.log"),
     previewDirectory: path.join(dataDirectory, "preview"),
     previewSessionsDirectory: path.join(dataDirectory, "preview", "sessions"),
     previewCurrentPath: path.join(dataDirectory, "preview", "current.json"),

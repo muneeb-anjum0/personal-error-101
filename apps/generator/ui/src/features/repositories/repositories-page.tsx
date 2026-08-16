@@ -56,7 +56,20 @@ export function RepositoriesPage() {
     await generatorApiClient.updateGithubSelection(repository.id, {
       selectedForProcessing: selected
     });
+    if (selected) {
+      const existingJob = queue.data?.jobs.find((job) => job.repositoryId === repository.id);
+      if (existingJob && ["FAILED", "INTERRUPTED", "CANCELLED"].includes(existingJob.state)) {
+        await generatorApiClient.retryQueueJob(existingJob.id);
+      } else {
+        await generatorApiClient.enqueueRepositories({
+          mode: "SELECTED",
+          repositoryIds: [repository.id],
+          regenerateCompleted: false
+        });
+      }
+    }
     await Promise.all([repositories.refresh(), status.refresh(), queue.refresh()]);
+    window.dispatchEvent(new Event("repository-selection-changed"));
   }
 
   async function toggleVisibleSelection(selected: boolean) {
@@ -73,7 +86,15 @@ export function RepositoriesPage() {
         offset: 0
       }
     });
+    if (selected) {
+      await generatorApiClient.retryFailedQueue();
+      await generatorApiClient.enqueueRepositories({
+        mode: "SELECTED",
+        regenerateCompleted: false
+      });
+    }
     await Promise.all([repositories.refresh(), status.refresh(), queue.refresh()]);
+    window.dispatchEvent(new Event("repository-selection-changed"));
   }
 
   if ((status.loading || repositories.loading) && !status.data && !repositories.data) {

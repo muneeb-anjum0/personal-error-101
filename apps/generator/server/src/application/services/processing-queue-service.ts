@@ -26,6 +26,7 @@ import { GeneratorError } from "../../domain/errors/generator-error.js";
 export class ProcessingQueueService {
   private running = false;
   private sequence = 0;
+  private activeGeneration: AbortController | null = null;
 
   public constructor(
     private readonly queueRepository: JsonProcessingQueueRepository,
@@ -64,18 +65,73 @@ export class ProcessingQueueService {
   }
 
   public async getQueue(): Promise<ProcessingQueue> {
-    return this.withMetrics(await this.queueRepository.getQueue());
+    const queue = await this.queueRepository.getQueue();
+    const selected = await this.github.getRepositories({ limit: 100, selection: "selected" });
+    const selectedRepositoryIds = new Set(
+      selected.items
+        .filter((repository) => repository.selection.selectedForProcessing)
+        .map((repository) => repository.id)
+    );
+    const jobs = deduplicateJobs(
+      queue.jobs.filter(
+        (job) =>
+          job.state === "COMPLETED" ||
+          activeStates.has(job.state) ||
+          selectedRepositoryIds.has(job.repositoryId)
+      )
+    );
+
+    let normalized = this.withMetrics(queue);
+    if (jobs.length !== queue.jobs.length) {
+      const hasUnfinishedJobs = jobs.some(
+        (job) => job.state === "PENDING" || activeStates.has(job.state)
+      );
+      normalized = await this.saveQueue({
+        ...queue,
+        jobs,
+        state: hasUnfinishedJobs ? queue.state : "IDLE",
+        paused: hasUnfinishedJobs ? queue.paused : false,
+        workerLock: hasUnfinishedJobs ? queue.workerLock : null
+      });
+    }
+
+    if (!normalized.jobs.some((job) => activeStates.has(job.state))) return normalized;
+    try {
+      const runtimeProgress = await this.ai.activeProgress();
+      return {
+        ...normalized,
+        jobs: normalized.jobs.map((job) => {
+          if (!activeStates.has(job.state) || !runtimeProgress) {
+            return { ...job, runtimeProgress: null };
+          }
+          const contextLength = job.checkpoints.find(
+            (checkpoint) => checkpoint.stage === "CONTEXT_PREPARED"
+          )?.metadata.length;
+          const estimatedPromptTokens = Math.ceil(
+            ((typeof contextLength === "number" ? contextLength : 0) + systemPrompt().length) / 4
+          );
+          return {
+            ...job,
+            runtimeProgress: {
+              ...runtimeProgress,
+              promptTokensTotal: Math.max(
+                runtimeProgress.promptTokensTotal,
+                estimatedPromptTokens
+              )
+            }
+          };
+        })
+      };
+    } catch {
+      return normalized;
+    }
   }
 
   public async enqueue(input: unknown) {
     const request: EnqueueRepositoriesRequest = enqueueRepositoriesRequestSchema.parse(input ?? {});
     const queue = await this.getQueue();
     const candidates = await this.candidates(request);
-    const existingRepositoryIds = new Set(
-      queue.jobs
-        .filter((job) => !["FAILED", "CANCELLED", "SKIPPED"].includes(job.state))
-        .map((job) => job.repositoryId)
-    );
+    const existingRepositoryIds = new Set(queue.jobs.map((job) => job.repositoryId));
     const jobs: ProcessingJob[] = [];
     const reasons: string[] = [];
     const now = new Date().toISOString();
@@ -109,6 +165,13 @@ export class ProcessingQueueService {
       );
     }
     const queue = await this.getQueue();
+    if (!queue.jobs.some((job) => job.state === "PENDING")) {
+      throw new GeneratorError(
+        "QUEUE_EMPTY",
+        "Select at least one repository before starting the queue.",
+        409
+      );
+    }
     const lock = {
       ownerId: `worker_${process.pid}_${randomUUID()}`,
       acquiredAt: new Date().toISOString(),
@@ -124,13 +187,15 @@ export class ProcessingQueueService {
   public async pause(): Promise<ProcessingQueue> {
     const queue = await this.getQueue();
     await this.event("QUEUE_PAUSED", null, queue.state, "PAUSED", {});
-    return this.saveQueue({
+    const paused = await this.saveQueue({
       ...queue,
       state: "PAUSED",
       paused: true,
       workerLock: null,
       updatedAt: new Date().toISOString()
     });
+    this.activeGeneration?.abort();
+    return paused;
   }
 
   public async resume(): Promise<ProcessingQueue> {
@@ -183,6 +248,33 @@ export class ProcessingQueueService {
             }
           : job
       )
+    });
+  }
+
+  public async deleteJob(jobId: string): Promise<ProcessingQueue> {
+    const queue = await this.getQueue();
+    const job = queue.jobs.find((item) => item.id === jobId);
+    if (!job) {
+      throw new GeneratorError("QUEUE_JOB_NOT_FOUND", "Queue job was not found.", 404);
+    }
+    if (job.state === "COMPLETED" || job.draftId) {
+      throw new GeneratorError(
+        "QUEUE_JOB_HAS_SUMMARY",
+        "Delete the generated summary to remove this completed job.",
+        409
+      );
+    }
+    if (activeStates.has(job.state)) {
+      throw new GeneratorError(
+        "QUEUE_JOB_ACTIVE",
+        "Pause the queue and wait for generation to stop before deleting this job.",
+        409
+      );
+    }
+    await this.event("JOB_DELETED", jobId, job.state, null, {});
+    return this.saveQueue({
+      ...queue,
+      jobs: queue.jobs.filter((item) => item.id !== jobId)
     });
   }
 
@@ -276,6 +368,8 @@ export class ProcessingQueueService {
       await this.ai.warmUp();
       await this.ai.markBusy(job.id);
       await this.transition(jobId, "GENERATING", "Generating final project summary.");
+      const generation = new AbortController();
+      this.activeGeneration = generation;
       const result = await this.ai.clientForGeneration().generate({
         model: (await this.ai.inspect()).modelName,
         messages: [
@@ -285,14 +379,20 @@ export class ProcessingQueueService {
         temperature: 0.45,
         topP: 0.92,
         maxOutputTokens: 2800,
-        timeoutMs: 600_000
+        signal: generation.signal,
+        timeoutMs: 1_800_000
       });
       await this.checkpoint(jobId, "AI_RESPONSE_RECEIVED", {
         responseHash: hash(result.rawText),
         durationMs: result.latencyMs
       });
       await this.transition(jobId, "VALIDATING", "Validating structured summary output.");
-      const draft = await this.parseDraftWithRepair(result.rawText, repository, job);
+      const draft = await this.parseDraftWithRepair(
+        result.rawText,
+        repository,
+        job,
+        generation.signal
+      );
       await this.checkpoint(jobId, "OUTPUT_VALIDATED", { draftId: draft.id });
       await this.transition(jobId, "PERSISTING", "Saving final project summary.");
       await this.draftRepository.save(draft, result.rawText);
@@ -300,8 +400,14 @@ export class ProcessingQueueService {
       await this.checkpoint(jobId, "DRAFT_PERSISTED", { draftId: draft.id });
       await this.complete(jobId, draft.id, result.latencyMs, result.usage);
     } catch (error) {
-      await this.fail(jobId, error instanceof Error ? error.message : "Processing failed.");
+      const paused = (await this.queueRepository.getQueue()).paused;
+      if (paused && this.activeGeneration?.signal.aborted) {
+        await this.interrupt(jobId, "Paused during generation. Retry or delete this job.");
+      } else {
+        await this.fail(jobId, error instanceof Error ? error.message : "Processing failed.");
+      }
     } finally {
+      this.activeGeneration = null;
       await this.ai.markBusy(null);
     }
   }
@@ -404,10 +510,32 @@ export class ProcessingQueueService {
     await this.event("JOB_FAILED", jobId, null, "FAILED", { error: message });
   }
 
+  private async interrupt(jobId: string, message: string): Promise<void> {
+    const queue = await this.queueRepository.getQueue();
+    const now = new Date().toISOString();
+    await this.saveQueue({
+      ...queue,
+      jobs: queue.jobs.map((job) =>
+        job.id === jobId
+          ? {
+              ...job,
+              state: "INTERRUPTED" as const,
+              completedAt: now,
+              updatedAt: now,
+              error: null,
+              progressMessage: message
+            }
+          : job
+      )
+    });
+    await this.event("JOB_INTERRUPTED", jobId, null, "INTERRUPTED", {});
+  }
+
   private async parseDraftWithRepair(
     rawText: string,
     repository: DiscoveredRepository,
-    job: ProcessingJob
+    job: ProcessingJob,
+    signal: AbortSignal
   ): Promise<GeneratedProjectDraft> {
     let current = rawText;
     let lastError = "";
@@ -444,7 +572,8 @@ export class ProcessingQueueService {
           ],
           temperature: 0,
           maxOutputTokens: 2800,
-          timeoutMs: 300_000
+          signal,
+          timeoutMs: 1_800_000
         });
         current = repair.rawText;
       }
@@ -544,6 +673,7 @@ function createJob(repository: DiscoveredRepository, now: string): ProcessingJob
     warnings: [],
     draftId: null,
     generationMetrics: null,
+    runtimeProgress: null,
     checkpoints: []
   };
 }
@@ -556,6 +686,22 @@ function ineligibleReason(repository: DiscoveredRepository, queue: ProcessingQue
     return "final summary already exists; delete it before generating another";
   }
   return null;
+}
+
+function deduplicateJobs(jobs: ProcessingJob[]): ProcessingJob[] {
+  const byRepository = new Map<string, ProcessingJob>();
+  const priority = (job: ProcessingJob): number => {
+    if (job.state === "COMPLETED" || job.draftId) return 4;
+    if (activeStates.has(job.state)) return 3;
+    if (job.state === "PENDING") return 2;
+    return 1;
+  };
+
+  for (const job of jobs) {
+    const current = byRepository.get(job.repositoryId);
+    if (!current || priority(job) > priority(current)) byRepository.set(job.repositoryId, job);
+  }
+  return [...byRepository.values()];
 }
 
 function prepareContext(repository: DiscoveredRepository): string {

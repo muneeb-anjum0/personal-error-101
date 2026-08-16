@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import {
   cancelQueueJob,
+  deleteQueueJob,
   deleteDraft,
   enqueueRepositories,
   getDraft,
@@ -27,10 +28,11 @@ export function registerQueueRoutes(app: FastifyInstance): void {
   app.post("/api/queue/jobs/:jobId/retry", (request) =>
     retryQueueJob(app.processingQueueService, request)
   );
+  app.delete("/api/queue/jobs/:jobId", (request) =>
+    deleteQueueJob(app.processingQueueService, request)
+  );
   app.post("/api/queue/retry-failed", () => retryFailedQueueJobs(app.processingQueueService));
   app.get("/api/drafts", () => listDrafts(app.processingQueueService));
   app.get("/api/drafts/:draftId", (request) => getDraft(app.processingQueueService, request));
-  app.delete("/api/drafts/:draftId", (request) =>
-    deleteDraft(app.processingQueueService, request)
-  );
+  app.delete("/api/drafts/:draftId", (request) => deleteDraft(app.processingQueueService, request));
 }

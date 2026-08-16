@@ -18,6 +18,12 @@ export function QueuePage({ embedded = false }: { embedded?: boolean }) {
     return () => window.clearInterval(timer);
   });
 
+  useEffect(() => {
+    const refreshForSelection = () => void refreshAll();
+    window.addEventListener("repository-selection-changed", refreshForSelection);
+    return () => window.removeEventListener("repository-selection-changed", refreshForSelection);
+  });
+
   async function refreshAll() {
     await Promise.all([queue.refresh(), ai.refresh()]);
   }
@@ -355,6 +361,7 @@ function JobRow({
   onDelete: (draftId: string) => Promise<void>;
 }) {
   const expandable = job.state === "COMPLETED" && Boolean(job.draftId);
+  const progress = job.runtimeProgress;
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   async function removeSummary() {
@@ -391,6 +398,43 @@ function JobRow({
           {job.draftId ? "VIEW SUMMARY ↗" : "SUMMARY PENDING"}
         </span>
       </button>
+      {progress ? (
+        <div className="job-runtime-progress" aria-live="polite">
+          <div className="job-progress-copy">
+            <strong>
+              {progress.phase === "PROMPT_PROCESSING" ? "READING REPOSITORY" : "WRITING SUMMARY"}
+            </strong>
+            <span>
+              {progress.phase === "PROMPT_PROCESSING"
+                ? `~${promptPercent(progress.promptTokensProcessed, progress.promptTokensTotal)}% · ${progress.promptTokensProcessed.toLocaleString()} / ~${progress.promptTokensTotal.toLocaleString()} TOKENS`
+                : `${progress.generatedTokens.toLocaleString()} TOKENS GENERATED`}
+              {job.startedAt ? ` · ${elapsed(job.startedAt)}` : ""}
+            </span>
+          </div>
+          <div
+            className={`job-progress-track ${progress.phase === "WRITING" ? "is-writing" : ""}`}
+            role="progressbar"
+            aria-label="AI generation progress"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={
+              progress.phase === "PROMPT_PROCESSING"
+                ? promptPercent(progress.promptTokensProcessed, progress.promptTokensTotal)
+                : undefined
+            }
+          >
+            <span
+              style={
+                progress.phase === "PROMPT_PROCESSING"
+                  ? {
+                      width: `${promptPercent(progress.promptTokensProcessed, progress.promptTokensTotal)}%`
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+      ) : null}
       {job.draftId ? (
         <div className="job-delete-actions">
           {confirmingDelete ? (
@@ -408,23 +452,45 @@ function JobRow({
           </button>
         </div>
       ) : null}
-      {!compact ? (
+      {job.state === "PENDING" || ["FAILED", "INTERRUPTED", "CANCELLED"].includes(job.state) ? (
         <div className="button-row">
+          {!compact && job.state === "PENDING" ? (
+            <button
+              type="button"
+              onClick={() => void generatorApiClient.cancelQueueJob(job.id).then(onRefresh)}
+            >
+              CANCEL
+            </button>
+          ) : null}
           <button
+            className="danger-text-button"
             type="button"
-            onClick={() => void generatorApiClient.cancelQueueJob(job.id).then(onRefresh)}
+            onClick={() => void generatorApiClient.deleteQueueJob(job.id).then(onRefresh)}
           >
-            CANCEL
+            DELETE
           </button>
-          <button
-            type="button"
-            onClick={() => void generatorApiClient.retryQueueJob(job.id).then(onRefresh)}
-          >
-            RETRY
-          </button>
+          {["FAILED", "INTERRUPTED", "CANCELLED"].includes(job.state) ? (
+            <button
+              type="button"
+              onClick={() => void generatorApiClient.retryQueueJob(job.id).then(onRefresh)}
+            >
+              RETRY
+            </button>
+          ) : null}
         </div>
       ) : null}
       {job.error ? <p className="notice">{job.error}</p> : null}
     </article>
   );
+}
+
+function promptPercent(processed: number, total: number): number {
+  return total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;
+}
+
+function elapsed(startedAt: string): string {
+  const seconds = Math.max(0, Math.floor((Date.now() - Date.parse(startedAt)) / 1000));
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return minutes > 0 ? `${minutes}M ${remainder}S ELAPSED` : `${remainder}S ELAPSED`;
 }

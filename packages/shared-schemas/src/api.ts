@@ -692,6 +692,17 @@ export const processingJobSchema = z.object({
       usage: generationUsageSchema
     })
     .nullable(),
+  runtimeProgress: z
+    .object({
+      phase: z.enum(["PROMPT_PROCESSING", "WRITING"]),
+      promptTokensProcessed: z.number().int().nonnegative(),
+      promptTokensTotal: z.number().int().nonnegative(),
+      generatedTokens: z.number().int().nonnegative(),
+      maxOutputTokens: z.number().int().nonnegative()
+    })
+    .nullable()
+    .optional()
+    .default(null),
   checkpoints: z.array(processingCheckpointSchema)
 });
 
@@ -994,6 +1005,17 @@ export const stagedContentStatusSchema = z.object({
   skills: z.number().int().nonnegative(),
   conflicts: z.array(z.string()),
   updatedAt: z.string().datetime().nullable()
+});
+
+export const portfolioDeploymentStatusSchema = z.object({
+  schemaVersion: z.literal(1),
+  dirty: z.boolean(),
+  status: z.enum(["IDLE", "DEPLOYING", "SUCCEEDED", "FAILED"]),
+  changeReasons: z.array(z.string()),
+  changedAt: z.string().datetime().nullable(),
+  deploymentStartedAt: z.string().datetime().nullable(),
+  deployedAt: z.string().datetime().nullable(),
+  error: z.string().nullable()
 });
 
 export const stagedContentBundleSchema = z.object({
