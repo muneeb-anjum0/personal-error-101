@@ -59,10 +59,11 @@ export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
             </p>
             <p>{selected.summary}</p>
             <div className="detail-columns">
-              <DetailBlock
+              <DetailNarrative
                 title="Challenge"
-                items={[selected.challenge ?? "Challenge details pending."]}
+                copy={selected.challenge ?? "Challenge details pending."}
               />
+              <DetailBlock title="Highlights" items={selected.highlights} />
               <DetailBlock title="Contributions" items={selected.contributions} />
               <DetailBlock title="Results" items={selected.results} />
             </div>
@@ -70,7 +71,9 @@ export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
               <ExperienceAccordion
                 title="Challenge"
                 items={[selected.challenge ?? "Challenge details pending."]}
+                ordered={false}
               />
+              <ExperienceAccordion title="Highlights" items={selected.highlights} />
               <ExperienceAccordion title="Contributions" items={selected.contributions} />
               <ExperienceAccordion title="Results" items={selected.results} />
             </div>
@@ -86,18 +89,30 @@ export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
   );
 }
 
-function ExperienceAccordion({ title, items }: { title: string; items: string[] }) {
+function ExperienceAccordion({
+  title,
+  items,
+  ordered = true
+}: {
+  title: string;
+  items: string[];
+  ordered?: boolean;
+}) {
   return (
     <details>
       <summary>
         {title}
         <span aria-hidden="true">+</span>
       </summary>
-      <ul>
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+      {ordered ? (
+        <ol>
+          {items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ol>
+      ) : (
+        <p>{items.join(" ")}</p>
+      )}
     </details>
   );
 }
@@ -106,11 +121,20 @@ function DetailBlock({ title, items }: { title: string; items: string[] }) {
   return (
     <section>
       <h4>{title}</h4>
-      <ul>
+      <ol>
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}
-      </ul>
+      </ol>
+    </section>
+  );
+}
+
+function DetailNarrative({ title, copy }: { title: string; copy: string }) {
+  return (
+    <section>
+      <h4>{title}</h4>
+      <p>{copy}</p>
     </section>
   );
 }

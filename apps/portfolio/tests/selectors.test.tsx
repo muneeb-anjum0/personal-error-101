@@ -89,6 +89,18 @@ describe("portfolio selectors", () => {
 
     expect(makeProjectCoverSignature(item)).toEqual(makeProjectCoverSignature(item));
   });
+
+  it("selects compact cover families from project metadata", () => {
+    expect(
+      makeProjectCoverSignature(project({ id: "audio", technologies: ["WavLM"] })).family
+    ).toBe("SIGNAL");
+    expect(
+      makeProjectCoverSignature(project({ id: "security", categories: ["AppSec"] })).family
+    ).toBe("SECURITY");
+    expect(
+      makeProjectCoverSignature(project({ id: "offline", tags: ["offline-first"] })).family
+    ).toBe("OFFLINE");
+  });
 });
 
 describe("portfolio component foundations", () => {

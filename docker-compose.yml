@@ -100,6 +100,11 @@ services:
     volumes:
       - ./data:/workspace/data
       - ./assets:/workspace/assets
+      # Deploy the current host UI instead of the source snapshot baked into
+      # the API image. Next.js writes .next/out here during Save Changes.
+      - ./apps/portfolio:/workspace/apps/portfolio
+      - ./firebase.json:/workspace/firebase.json:ro
+      - ./scripts/generate-firebase-deploy-config.mjs:/workspace/scripts/generate-firebase-deploy-config.mjs:ro
       - ${LOCAL_AI_MODEL_DIR:-/home/muneebanjum/Models/Qwen3-8B-GGUF}:/models:ro
       - ${FIREBASE_CLI_CONFIG_DIR:-/home/muneebanjum/.config/configstore}:/home/node/.config/configstore
     extra_hosts:

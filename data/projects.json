@@ -1,1 +1,584 @@
-[]
+[
+  {
+    "id": "generated_1325344746",
+    "slug": "lyst-a-minimal-offline-first-list-app-with-ai-assistance-1325344746",
+    "name": "Lyst: A Minimal Offline-First List App with AI Assistance",
+    "subtitle": "A personal list manager that combines natural language parsing with AI-powered list generation and offline support",
+    "summary": "Lyst is a personal list app designed to simplify task and item management with natural language parsing and AI assistance. Built for users who need to create and manage lists on the go, it offers offline-first functionality to ensure access even without an internet connection. The app leverages React for the frontend, Firebase for authentication and syncing, and Cloudflare Workers for serverless processing. Its AI features help generate and refine lists, making it a powerful tool for both personal and project-based organization.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "list management",
+      "task organization",
+      "offline-first apps",
+      "AI-assisted tools"
+    ],
+    "technologies": [
+      "React",
+      "Firebase",
+      "Cloudflare Workers",
+      "Gemini (AI model)",
+      "HTML",
+      "JavaScript"
+    ],
+    "tags": [
+      "React",
+      "Firebase",
+      "Cloudflare Workers",
+      "AI",
+      "PWA",
+      "natural language parsing"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/Lyst"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-16T22:53:10.948Z",
+    "updatedAt": "2026-08-16T22:53:10.948Z",
+    "pushedAt": "2026-08-16T22:53:10.948Z",
+    "problem": "Managing a list of tasks or items can become cumbersome when entries are vague, incomplete, or require frequent updates. Users often rely on natural language to describe items, but this can lead to ambiguity or inconsistencies. Additionally, maintaining a list offline can be challenging without a reliable internet connection, and manual synchronization can be time-consuming. Existing tools often lack the ability to automatically refine or generate lists based on natural language input, leaving users to manually organize and update their entries.",
+    "solution": "Lyst addresses these issues by combining natural language parsing with AI-assisted list generation. When a user inputs a list, the app parses the text and uses AI to identify and structure items, offering suggestions or completing incomplete entries. The app's offline-first design ensures that users can create, edit, and access lists even without an internet connection, with changes syncing to Firebase once connectivity is restored. AI-powered suggestions and cleanup further refine the list, reducing manual effort and ensuring clarity. The system also includes per-user rate limiting for AI features, balancing performance with resource usage.",
+    "keyFeatures": [
+      "Natural language parsing transforms free-form text into structured list items",
+      "AI-powered list generation offers suggestions and completes incomplete entries",
+      "Offline-first support allows users to work without an internet connection",
+      "Firebase Authentication ensures secure, per-user access to lists",
+      "Firebase Firestore sync ensures real-time updates across devices",
+      "AI suggestions and cleanup refine and organize lists automatically",
+      "Per-user AI rate limiting balances performance with resource usage",
+      "Mobile-first PWA experience ensures accessibility on all devices"
+    ],
+    "architecture": "React frontend handles user interface and natural language parsing Firebase Authentication manages user login and access control Firebase Firestore stores and syncs list data across devices Cloudflare Workers handle AI processing and rate limiting Natural language parsing is implemented as a client-side feature AI suggestions and cleanup are processed server-side via Cloudflare Workers Offline data is stored locally with sync on reconnection PWA capabilities ensure offline access and device compatibility",
+    "challenges": [
+      "Balancing AI-generated suggestions with user control over list content",
+      "Ensuring offline functionality without compromising data consistency",
+      "Implementing rate limiting for AI features without affecting performance",
+      "Designing a natural language parser that handles ambiguity and variation",
+      "Integrating Firebase and Cloudflare Workers for seamless data flow",
+      "Maintaining a mobile-first experience while ensuring cross-device compatibility",
+      "Optimizing AI processing to minimize resource usage and latency"
+    ],
+    "technicalHighlights": [
+      "The AI features are described as 'Gemini-powered' but no specific model or implementation details are provided",
+      "Offline-first functionality is implied but not fully detailed in the README",
+      "Rate limiting is mentioned but no implementation specifics are available",
+      "The natural language parser is described as 'minimal' but no technical details are given"
+    ],
+    "impact": "Lyst transforms the way users manage lists by reducing manual effort and ensuring accessibility even without an internet connection. The AI-assisted features help users create and refine lists more efficiently, while the offline-first design ensures reliability in any environment. Users gain greater control over their lists, with the ability to access and update them from any device. The system also reduces the risk of data loss and ensures synchronization across all platforms.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1070447454",
+    "slug": "classwire-transforming-email-timetables-into-organized-schedules-1070447454",
+    "name": "ClassWire: Transforming Email Timetables into Organized Schedules",
+    "subtitle": "A system that automates the extraction and visualization of university schedules from Gmail",
+    "summary": "ClassWire is a system that turns chaotic email-based university timetables into clean, organized schedules. Built with Flask, React, and Supabase, it enables users to sign in once, extract their semester data, and view schedules without manual rebuilding. The project prioritizes transparency and security, offering a modular architecture that separates concerns while maintaining user control over data. It's designed for students who want to automate the tedious process of managing their academic schedules.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "Email Parsing",
+      "Data Visualization",
+      "University Tools",
+      "Security",
+      "Web Development"
+    ],
+    "technologies": [
+      "Flask",
+      "React",
+      "Supabase",
+      "Firebase (Firestore)",
+      "OAuth2",
+      "Python",
+      "TypeScript",
+      "Node.js",
+      "npm",
+      "Gunicorn",
+      "CSS",
+      "HTML",
+      "JavaScript",
+      "Procfile"
+    ],
+    "tags": [
+      "Gmail Automation",
+      "Timetable Management",
+      "Academic Tools",
+      "Security",
+      "React",
+      "Flask",
+      "Firestore"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/ClassWire"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-16T22:47:32.041Z",
+    "updatedAt": "2026-08-16T22:47:32.041Z",
+    "pushedAt": "2026-08-16T22:47:32.041Z",
+    "problem": "A university student receives their timetable as a messy Gmail message, requiring manual parsing and reformatting. This process is time-consuming and error-prone, especially when timetables change format or section labels become inconsistent. The student must rebuild the schedule from scratch each semester, leading to frustration and wasted time. Existing tools often lack the ability to handle dynamic email formats or provide a clean, persistent view of the schedule. Additionally, security and privacy concerns arise when handling sensitive academic data, making manual management risky.",
+    "solution": "ClassWire automates the extraction and organization of timetable data from Gmail, reducing the need for manual effort. It uses structured parsing with fallback mechanisms to handle inconsistent email formats. OAuth is used for secure sign-in, and all credentials are encrypted before being stored in Firestore. The frontend is kept separate from the backend to enforce strict security boundaries, with all database access going through Flask. Users can filter schedules by semester and receive optional SMTP deliveries, ensuring the system remains flexible and user-centric. The modular design allows for clear separation of concerns, making the system easier to maintain and secure.",
+    "keyFeatures": [
+      "Gmail OAuth and read-only timetable discovery",
+      "Per-user semester filters and cached schedules",
+      "Responsive light/dark dashboard with intuitive filtering",
+      "Optional SMTP delivery to a personal inbox",
+      "Encrypted OAuth credentials in Firestore",
+      "Secure, server-side database interactions with signed sessions",
+      "Modular architecture separating frontend and backend concerns",
+      "Automated email parsing with fallback mechanisms",
+      "Persistent user data across sessions",
+      "Clear separation of concerns for maintainability"
+    ],
+    "architecture": "Flask backend handles authentication, email parsing, and database interactions React frontend provides a responsive dashboard with user interface controls Supabase is used for real-time data synchronization and user management Firestore stores encrypted Gmail credentials and schedule data OAuth2 is used for secure user authentication and email access Email parsing is handled by a structured parser with fallback logic HTTP-only signed sessions ensure secure communication between frontend and backend The frontend is isolated from the database to enforce security boundaries",
+    "challenges": [
+      "OAuth consent and redirect rules were inconsistent between localhost and production, requiring careful configuration",
+      "Separating user data while maintaining a shared backend required strict access controls and encryption",
+      "Reducing an overgrown frontend without changing behavior required a modular redesign",
+      "Handling inconsistent email formats required a structured parser with fallback mechanisms",
+      "Ensuring security while maintaining usability required a balance between automation and transparency",
+      "Encrypting credentials and ensuring secure storage required careful implementation of encryption standards",
+      "Maintaining a readable and maintainable codebase required a modular, well-documented architecture"
+    ],
+    "technicalHighlights": [
+      "The system's architecture is described in detail, but the exact implementation of key components may vary",
+      "The use of encryption and secure storage is mentioned, but the exact methods are not specified",
+      "The challenges and solutions are based on the project's description, but the actual implementation may differ",
+      "The technologies used are listed, but the exact versions or configurations are not provided",
+      "The project's goals and features are clearly stated, but the actual user experience may vary"
+    ],
+    "impact": "ClassWire reduces the manual effort required to manage academic schedules by automating the extraction and organization of timetable data. Users can now focus on their studies rather than rebuilding schedules from email. The system provides a clean, persistent view of their schedule, with filters for different semesters and optional delivery to a personal inbox. The modular architecture ensures security and maintainability, while the separation of concerns makes the system easier to update and scale.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1285586718",
+    "slug": "gpa-tracker-1285586718",
+    "name": "GPA Tracker",
+    "subtitle": "A Minimal Firebase-Powered GPA Dashboard for Students",
+    "summary": "GPA Tracker is a lightweight academic dashboard designed to help students manage their academic progress with clarity and simplicity. Built with Firebase, it offers secure user authentication, manual data entry, and semester analytics. The dock-based interface ensures a clean experience, while the focus remains on delivering actionable insights into grades, credits, and academic momentum. This project was driven by the need for a straightforward, trustworthy tool that avoids the complexity of full-featured academic platforms.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "academic",
+      "education",
+      "student tools"
+    ],
+    "technologies": [
+      "Firebase (Authentication, Firestore)",
+      "JavaScript",
+      "HTML",
+      "CSS"
+    ],
+    "tags": [
+      "gpa tracker",
+      "firebase",
+      "student dashboard",
+      "academic analytics",
+      "minimalist design"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/Gpa-Tracker"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-16T22:39:42.220Z",
+    "updatedAt": "2026-08-16T22:39:42.220Z",
+    "pushedAt": "2026-08-16T22:39:42.220Z",
+    "problem": "Students often struggle to keep track of their academic progress in a clear and organized way. Manual tracking of grades, credits, and GPA can be error-prone and time-consuming, especially when managing multiple semesters. Existing tools either require complex setup, offer limited visibility into academic trends, or lack the security needed for personal data. This leads to confusion, missed opportunities for improvement, and a lack of long-term academic planning. A tool that is both simple and secure is needed to help students stay on top of their academic performance without the overhead of more complex systems.",
+    "solution": "GPA Tracker addresses these issues by providing a minimal, secure, and intuitive interface for managing academic data. The Firebase backend ensures that user data is stored securely and can be accessed across devices. Manual entry allows for precise control over grade and credit inputs, while the built-in analytics offer clear insights into GPA trends and semester performance. The dock-based design ensures that the most important features are always accessible, reducing cognitive load and making the tool feel natural to use. The system is intentionally limited in scope to avoid unnecessary complexity, focusing instead on delivering a reliable and easy-to-use experience for students.",
+    "keyFeatures": [
+      "Secure email/password authentication for user accounts",
+      "Manual entry of grades and credits for each course",
+      "GPA calculation and semester-specific analytics",
+      "Clear grade distribution and credit totals per semester",
+      "Dock-based interface for quick access to key features",
+      "Persistent data storage using Firebase Firestore",
+      "Simple, uncluttered design focused on academic clarity",
+      "No external dependencies or complex setup required"
+    ],
+    "architecture": "Firebase Authentication for secure user login and data isolation Firestore as the backend database for storing grades and credits Client-side JavaScript for GPA calculation and UI interactions HTML/CSS for the dock-based interface and layout Manual data entry forms for course grades and credits Semester analytics module that calculates GPA and visualizes trends User dashboard that displays current and past semester data No server-side logic, relying entirely on Firebase and client-side code",
+    "challenges": [
+      "Balancing simplicity with functionality while ensuring data accuracy",
+      "Designing a clean interface that avoids overwhelming the user with data",
+      "Ensuring secure data storage without overcomplicating the Firebase setup",
+      "Maintaining a minimal footprint while still providing meaningful analytics",
+      "Avoiding the need for complex setup or configuration for new users",
+      "Ensuring that the dock-based interface remains intuitive and responsive",
+      "Providing clear feedback to users when data is saved or updated"
+    ],
+    "technicalHighlights": [
+      "The README provides a clear description of the project's purpose and features",
+      "The technologies listed are supported by the repository's metadata",
+      "The problem and solution are grounded in the described use case",
+      "The architecture and features are inferred from the project's scope and capabilities"
+    ],
+    "impact": "GPA Tracker gives students a clear and secure way to track their academic progress without the complexity of full-featured platforms. By focusing on simplicity and clarity, it reduces the cognitive load of managing grades and credits, allowing students to focus on their academic goals. The system provides actionable insights into GPA trends and semester performance, helping students make informed decisions about their academic path. While the tool is intentionally limited in scope, it offers a reliable and easy-to-use solution for students who need a straightforward way to track their academic progress.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1261466446",
+    "slug": "gradescope-academic-dashboard-for-szabist-students-1261466446",
+    "name": "GradeScope: Academic Dashboard for SZABIST Students",
+    "subtitle": "A tool to transform fragmented academic data into actionable insights",
+    "summary": "GradeScope is a local academic dashboard designed for SZABIST students to consolidate and analyze their academic performance. It pulls data from ZABDESK, a portal used by the university, and presents it in a clear, visual format. The system combines a FastAPI backend, a React/Vite frontend, and a web scraping flow to collect and process attendance, marks, GPA, and subject risk data. The goal is to give students a single place to track their progress, identify risks, and plan their academic path. The system is built with Python, TypeScript, and web scraping tools like Playwright and BeautifulSoup.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "academic-dashboard",
+      "data-visualization",
+      "web-scraping",
+      "academic-analytics"
+    ],
+    "technologies": [
+      "Python",
+      "TypeScript",
+      "FastAPI",
+      "React",
+      "Vite",
+      "Playwright",
+      "BeautifulSoup",
+      "Pandas",
+      "Streamlit",
+      "Plotly",
+      "Jupyter Notebook",
+      "Batchfile",
+      "HTML"
+    ],
+    "tags": [
+      "SZABIST",
+      "ZABDESK",
+      "academic-performance",
+      "data-processing",
+      "dashboard",
+      "automation"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/GradeScope"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-16T22:33:52.081Z",
+    "updatedAt": "2026-08-16T22:33:52.081Z",
+    "pushedAt": "2026-08-16T22:33:52.081Z",
+    "problem": "SZABIST students often struggle with fragmented academic data. They must navigate multiple portal pages to track attendance, marks, GPA, and subject risks, making it difficult to see the big picture. This process is time-consuming and error-prone, leading to missed opportunities for improvement. Manual data entry is also prone to mistakes, and the lack of a centralized view makes it hard to identify trends or risks early. Existing tools either require constant manual input or fail to provide meaningful insights from the raw data, leaving students without a clear roadmap for academic success.",
+    "solution": "GradeScope addresses this by building a centralized dashboard that automates data collection and analysis. The system uses Playwright to simulate a browser session and scrape data from ZABDESK, ensuring that the process is efficient and accurate. Once collected, the data is processed using Pandas and stored in structured formats, allowing for easy querying and visualization. The dashboard, built with Streamlit, presents this data in an intuitive way, highlighting GPA trends, attendance patterns, and subject risks. The system also includes a sync flow that detects login and begins data collection automatically, reducing the need for manual intervention. The backend, built with FastAPI, handles data processing and API requests, ensuring the system is scalable and responsive.",
+    "keyFeatures": [
+      "Automated data collection from ZABDESK using Playwright and BeautifulSoup",
+      "Real-time GPA tracking and visualization using Plotly and Streamlit",
+      "Attendance and marks analysis with customizable filters and summaries",
+      "Subject risk identification based on performance trends",
+      "Data storage in raw, processed, and summary formats for flexibility",
+      "Manual login flow with automatic session detection",
+      "Clear, visual dashboard for easy interpretation of academic performance",
+      "API endpoints for backend integration and data retrieval",
+      "Local deployment for privacy and control over academic data",
+      "Efficient data processing with Pandas for fast analysis"
+    ],
+    "architecture": "FastAPI backend for handling API requests and data processing React/Vite frontend for the user-facing dashboard and interface Playwright for browser automation and data scraping from ZABDESK BeautifulSoup for parsing HTML and extracting relevant data Pandas for data cleaning, transformation, and analysis Streamlit for building the interactive dashboard and visualizations Local storage of raw, processed, and summary data in structured formats API endpoints for retrieving dashboard data and managing sync processes",
+    "challenges": [
+      "Implementing a reliable login detection system without exposing credentials",
+      "Balancing performance and accuracy in data scraping without overloading the portal",
+      "Ensuring data privacy and security in a local deployment environment",
+      "Designing a user-friendly dashboard that presents complex data clearly",
+      "Handling dynamic content and JavaScript-rendered pages during scraping",
+      "Maintaining a consistent data structure across different portal updates",
+      "Optimizing data processing speed for large datasets without sacrificing clarity"
+    ],
+    "technicalHighlights": [
+      "The system's data collection and processing are based on the described architecture and API endpoints",
+      "The use of Playwright and BeautifulSoup is supported by the README's sync and data sections",
+      "The dashboard's features are inferred from the described tools and data flow",
+      "The limitations are based on the described system and potential risks of local deployment"
+    ],
+    "impact": "GradeScope gives SZABIST students a clear, centralized view of their academic performance, making it easier to track progress and identify risks. By automating data collection and analysis, the system reduces the time and effort required to understand their performance, allowing students to focus on their studies. The dashboard provides actionable insights, such as GPA trends and subject risks, helping students make informed decisions about their academic path. The system also ensures data privacy by being deployed locally, giving students control over their academic data.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1267466306",
+    "slug": "audioaware-ai-1267466306",
+    "name": "AudioAware AI",
+    "subtitle": "A local audio authenticity screening web app for detecting AI-generated speech and environmental audio",
+    "summary": "AudioAware AI is a local web app that screens audio for authenticity, distinguishing between real and AI-generated speech and environmental sounds. It uses advanced models like WavLM and AST to analyze audio clips, providing probabilistic results and visual insights. The app is designed for users who need to verify audio content without relying on external services, making it ideal for developers, researchers, and content creators. The system's architecture balances performance and usability, offering a clear interface for understanding the results while maintaining the complexity of the underlying machine learning models.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "audio-deepfake-detection",
+      "machine-learning",
+      "audio-spectrogram-transformer"
+    ],
+    "technologies": [
+      "React 19",
+      "TypeScript",
+      "Vite",
+      "FastAPI",
+      "PyTorch",
+      "Hugging Face Transformers",
+      "librosa",
+      "matplotlib",
+      "WebRTC VAD",
+      "Tailwind/PostCSS",
+      "Python",
+      "CSS",
+      "PowerShell",
+      "JavaScript",
+      "HTML"
+    ],
+    "tags": [
+      "audio authenticity",
+      "AI-generated speech detection",
+      "environmental audio analysis",
+      "WavLM",
+      "AST",
+      "FastAPI",
+      "React"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/AudioAware"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-16T22:26:07.165Z",
+    "updatedAt": "2026-08-16T22:26:07.165Z",
+    "pushedAt": "2026-08-16T22:26:07.165Z",
+    "problem": "Verifying the authenticity of audio content is a critical task in various domains, from media verification to security applications. Traditional methods often rely on manual checks or external services that may not be reliable or accessible. For example, a user might need to confirm whether a voice message is genuine or if an environmental recording contains suspicious elements. However, existing tools often lack the ability to provide detailed, probabilistic results or integrate advanced machine learning models for accurate detection. Additionally, there is a risk of misclassification due to the complexity of audio data and the limitations of available models, which can lead to false positives or negatives with real-world consequences.",
+    "solution": "AudioAware AI addresses these challenges by implementing a local, model-based approach that leverages the strengths of WavLM and AST for speech and environmental audio detection. The system first normalizes the uploaded audio and uses WebRTC VAD to determine the speech content ratio, routing the clip to the appropriate model branch. The selected model then processes the audio, generating a probabilistic result that is displayed to the user along with a spectrogram view and model metadata. The app's design ensures that users receive clear, interpretable results while maintaining the technical complexity of the underlying models. The system also acknowledges the limitations of the models, providing context for users to interpret the results accurately.",
+    "keyFeatures": [
+      "Upload and analyze audio files in multiple formats (WAV, MP3, FLAC, OGG, M4A)",
+      "Route speech-heavy clips to WavLM and environmental clips to AST for accurate detection",
+      "Display real/fake probabilities with a human-friendly label for easy interpretation",
+      "Show model version, router explanation, and model limitations for transparency",
+      "Render a spectrogram/frequency-time view for visual analysis of the audio clip",
+      "Run fully locally once model artifacts are available, ensuring privacy and control",
+      "Provide a clear interface for interacting with the app and viewing results",
+      "Offer detailed model metadata and performance metrics for informed use"
+    ],
+    "architecture": "Frontend: React 19 with TypeScript, Vite, and Tailwind/PostCSS for a responsive, user-friendly interface Backend: FastAPI with PyTorch, Hugging Face Transformers, and librosa for audio processing and model inference Model loading: Backend extracts model artifacts from ZIP files into the models directory on startup Audio normalization: Frontend handles audio loading and preprocessing before sending to the backend Routing: WebRTC VAD determines the speech-to-noise ratio to decide which model branch to use Inference: Backend runs the selected model to generate probabilistic results Spectrogram rendering: Backend generates spectrogram data, which is sent to the frontend for visualization Model artifacts: Active ZIP files are placed in the `backend/models/artifacts/` directory for model loading",
+    "challenges": [
+      "Model loading: The system must efficiently load and extract large model artifacts from ZIP files, ensuring that the models are available when needed without unnecessary overhead",
+      "Speech-to-noise ratio calculation: Accurately determining the speech content ratio using WebRTC VAD requires careful implementation to avoid misrouting audio clips to the wrong model branch",
+      "Model performance: The models may have varying accuracy and precision depending on the audio content, requiring clear communication of their limitations to users",
+      "Spectrogram visualization: Generating and rendering a spectrogram requires balancing performance and visual clarity, especially for large audio files",
+      "Model artifact management: The system must handle multiple model versions and ensure that the correct artifacts are loaded based on the current model configuration"
+    ],
+    "technicalHighlights": [
+      "The README provides clear instructions for setting up and running the app, which increases confidence in the system's usability",
+      "The model metrics and performance data are detailed in the README, providing confidence in the models' effectiveness",
+      "The project structure and code organization are well-documented, which increases confidence in the system's maintainability"
+    ],
+    "impact": "AudioAware AI provides users with a reliable, local solution for verifying the authenticity of audio content. By leveraging advanced models like WavLM and AST, the app offers probabilistic results that help users make informed decisions without relying on external services. The system's design ensures that users receive clear, interpretable results while being aware of the limitations of the models. This approach is particularly valuable for developers, researchers, and content creators who need to verify audio content in a secure and private environment.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1239748049",
+    "slug": "drift-detecting-requirement-drift-before-it-becomes-silent-scope-creep-1239748049",
+    "name": "Drift: Detecting Requirement Drift Before It Becomes Silent Scope Creep",
+    "subtitle": "A local-first SaaS workspace for making requirement changes visible, explainable, and approvable",
+    "summary": "Drift is a tool that turns subtle client requests into clear, reviewable decisions about project scope. It helps teams detect when approved requirements change, making it easier to manage scope creep. The system uses a local AI model to analyze new client input against a frozen baseline, generating change requests that can be reviewed and approved. This approach ensures that every meaningful change is visible and traceable, preventing silent scope creep that can cost teams time and money.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "drift-detection",
+      "requirements-management",
+      "scope-creep",
+      "ai-ml",
+      "local-first",
+      "saaS"
+    ],
+    "technologies": [
+      "TypeScript",
+      "Go",
+      "Python",
+      "React",
+      "FastAPI",
+      "MongoDB",
+      "llama.cpp",
+      "GGUF",
+      "Qwen2.5-7B",
+      "LoRA",
+      "Docker",
+      "REST API",
+      "CSS",
+      "Dockerfile",
+      "JavaScript",
+      "HTML"
+    ],
+    "tags": [
+      "requirement-drift",
+      "scope-creep",
+      "change-management",
+      "ai-model",
+      "local-runtime",
+      "project-management"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/Drift"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-16T18:50:48.414Z",
+    "updatedAt": "2026-08-16T18:50:48.414Z",
+    "pushedAt": "2026-08-16T18:50:48.414Z",
+    "problem": "Teams often face silent scope creep as small client requests accumulate over time. These requests, though seemingly harmless, can gradually shift the approved baseline, leading to untracked changes and unpaid work. Traditional methods like manual checks or informal discussions are insufficient, as they don't provide visibility into subtle changes or track them systematically. Without a clear way to detect and manage these changes, teams risk delivering features that don't align with the original scope, leading to delays, rework, and frustration.",
+    "solution": "Drift addresses this by making requirement changes visible and actionable. When new client input arrives, the system uses a local AI model to compare it against the frozen baseline requirements. The model identifies whether the request adds, modifies, removes, or contradicts existing requirements, and provides a drift score and reasoning. This analysis is requirement-aware, focusing on relevant parts of the baseline rather than the entire project scope. The results are presented as a change request, which can be reviewed and approved, ensuring that every meaningful change is tracked and managed. The system also supports saved analysis history and a dashboard for evaluating model performance, providing a complete workflow for managing scope changes.",
+    "keyFeatures": [
+      "Workspaces and projects for organizing client work",
+      "Requirement capture with effort, tags, source text, and acceptance criteria",
+      "Baseline snapshots for approved scope",
+      "Local model-backed drift analysis",
+      "Saved analysis history",
+      "Change request drafting from detected drift",
+      "Approval queue with approve, reject, and revision decisions",
+      "Document upload workflow",
+      "Billing page placeholder for SaaS presentation",
+      "Evaluation dashboard for local model quality checks"
+    ],
+    "architecture": "A React + TypeScript frontend provides the user interface for managing workspaces, projects, requirements, and approvals. A Go backend handles REST API calls, requirement management, drift analysis orchestration, change request workflows, and document metadata. MongoDB persists project data, requirements, baseline snapshots, analyses, and approvals. A FastAPI wrapper normalizes responses from the local GGUF model, which is run via llama.cpp. The GGUF model is a quantized version of a fine-tuned requirement-drift model, created using a LoRA adapter on a Qwen2.5-7B base model. The inference service is decoupled from the main backend to allow independent evolution of the product workflow and model runtime. The system supports a local-first approach, with large model files intentionally ignored by Git to manage storage and version control. The backend communicates with the AI runtime via REST calls, passing relevant requirement text and new client input for analysis.",
+    "challenges": [
+      "The system must balance the need for accurate drift detection with the risk of false positives. A naive model might flag minor changes as significant, leading to unnecessary approvals and delays.",
+      "Integrating a local AI model with a backend requires careful normalization of responses to ensure consistency and reliability. The FastAPI wrapper plays a critical role in validating and standardizing model outputs.",
+      "Maintaining a local-first approach while supporting SaaS features like billing and document uploads requires careful separation of concerns and modular design.",
+      "The GGUF model is large and requires efficient storage and retrieval. Ignoring it in Git is a deliberate choice to manage version control and reduce overhead.",
+      "The system must handle both requirement-level and project-level analysis, ensuring that the AI model focuses on relevant parts of the baseline rather than the entire scope.",
+      "The drift analysis must be requirement-aware, which means the model must understand the context of each requirement and how it relates to the new input."
+    ],
+    "technicalHighlights": [
+      "The core workflow and feature set are well-documented in the README.",
+      "The architecture and technology stack are clearly outlined.",
+      "The AI model and its integration are described in detail, though some specifics are omitted."
+    ],
+    "impact": "Drift makes requirement changes visible and actionable, preventing silent scope creep that can cost teams time and money. By turning subtle client requests into clear, reviewable decisions, the system ensures that every meaningful change is tracked and managed. This approach reduces the risk of delivering features that don't align with the original scope, improving team efficiency and client satisfaction. The system also supports a local-first approach, making it more reliable and secure for teams that value privacy and control.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  },
+  {
+    "id": "generated_1300965293",
+    "slug": "nope-local-first-appsec-review-workbench-1300965293",
+    "name": "NOPE: Local-First AppSec Review Workbench",
+    "subtitle": "A tool for authorized repository and URL scans with deterministic scanners, evidence-gated findings, and optional local Qwen explanations",
+    "summary": "NOPE is a local-first AppSec review workbench designed to help developers and security professionals better understand the security posture of their code and applications. It runs deterministic scanners, validates findings against surrounding evidence, and provides reports that help human reviewers make informed decisions. NOPE does not claim to prove an application is secure, but it reports evidence-backed findings, coverage gaps, and residual risk to aid in the decision-making process. The system is built with a strong emphasis on transparency, evidence-based findings, and the integration of local AI models for further analysis.",
+    "status": "active",
+    "hidden": false,
+    "categories": [
+      "AppSec",
+      "Code Audit",
+      "Security Scanner",
+      "Local AI",
+      "Repository Intelligence"
+    ],
+    "technologies": [
+      "Python",
+      "TypeScript",
+      "FastAPI",
+      "PostgreSQL",
+      "Redis",
+      "Qdrant",
+      "llama.cpp",
+      "Qwen",
+      "Semgrep",
+      "Trivy",
+      "Gitleaks",
+      "OSV-Scanner",
+      "ZAP",
+      "Next.js",
+      "MinIO",
+      "CSS",
+      "Dockerfile",
+      "JavaScript",
+      "HCL"
+    ],
+    "tags": [
+      "security",
+      "appsec",
+      "code-audit",
+      "local-ai",
+      "qwen",
+      "scanner",
+      "evidence",
+      "findings",
+      "repository-intelligence",
+      "reporting"
+    ],
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/muneeb-anjum0/NOPE"
+      }
+    ],
+    "featured": true,
+    "createdAt": "2026-08-16T18:40:56.532Z",
+    "updatedAt": "2026-08-16T18:40:56.532Z",
+    "pushedAt": "2026-08-16T18:40:56.532Z",
+    "problem": "Developers and security professionals often face the challenge of interpreting the output from security scanners. These scanners can generate a large number of findings, many of which may be false positives or lack sufficient context to be actionable. This can lead to a situation where the findings are not useful for making informed decisions about the security of the code. Additionally, the lack of context around the findings makes it difficult to understand the real risks and how to address them. The problem is compounded by the fact that many scanners do not provide the necessary evidence to validate the findings, leading to a situation where the findings may not be reliable. This can result in a waste of time and resources, as the findings may not be actionable or may require further investigation.",
+    "solution": "NOPE addresses this problem by running deterministic scanners first, which ensures that the findings are consistent and reliable. The system then validates the findings against surrounding evidence, which helps to filter out false positives and provide context for the findings. The findings are then indexed with repository intelligence, which includes embeddings and metadata, to provide a more comprehensive context for the findings. The system also supports optional Qwen actions to explain or challenge the findings, which can help to further validate the findings. The final output includes reports in various formats, which can be used to inform the human reviewer about the security posture of the scanned code. The system is designed to be transparent and evidence-based, ensuring that the findings are reliable and actionable.",
+    "keyFeatures": [
+      "Deterministic scanners for consistent and reliable findings",
+      "Evidence-gated findings to filter out false positives",
+      "Repository intelligence indexing for context retrieval",
+      "Optional Qwen actions for explanation and challenge",
+      "Reports in various formats for easy consumption",
+      "Integration with external scanners for comprehensive coverage",
+      "Support for authorized repository and URL scans",
+      "Local-first design for privacy and control",
+      "Hybrid RAG context for selected findings",
+      "Durable storage of findings and scan data"
+    ],
+    "architecture": "Client workspace with a Next.js web UI for user interaction Control plane with a FastAPI API and Redis queue for managing the scan pipeline Scan pipeline with workers, scanners, and an evidence gate for processing and validating findings Optional dynamic boundary with a sandbox runner and ZAP workflow for dynamic scans Outputs with MinIO for artifacts, Qdrant for vectors, and Qwen for local AI actions PostgreSQL for durable storage of scan data and findings Qdrant for vector embeddings and repository intelligence indexing llama.cpp for local Qwen actions to explain or challenge findings",
+    "challenges": [
+      "Balancing the need for comprehensive coverage with the risk of false positives",
+      "Ensuring the reliability of findings by validating them against sufficient evidence",
+      "Designing a system that is both transparent and evidence-based",
+      "Integrating local AI models for further analysis without compromising the reliability of findings",
+      "Managing the complexity of the scan pipeline while maintaining performance",
+      "Ensuring the privacy and security of the scanned data",
+      "Providing a user-friendly interface for interacting with the findings and reports"
+    ],
+    "technicalHighlights": [
+      "The system's ability to provide reliable and actionable findings is supported by the evidence-gated approach and the integration of local AI models",
+      "The system's focus on transparency and evidence-based findings is supported by the detailed documentation and the use of deterministic scanners",
+      "The system's ability to provide context for findings is supported by the repository intelligence indexing and the hybrid RAG context retrieval process",
+      "The system's ability to provide reports in various formats is supported by the integration with external tools and the use of durable storage for scan data",
+      "The system's ability to support authorized repository and URL scans is supported by the guardrails and the focus on local-first use"
+    ],
+    "impact": "NOPE provides a more reliable and actionable way to assess the security posture of code and applications. By running deterministic scanners and validating findings against surrounding evidence, the system helps to reduce the number of false positives and provides context for the findings. The integration of local AI models allows for further analysis of the findings, which can help to identify potential risks and provide guidance on how to address them. The system's focus on transparency and evidence-based findings ensures that the findings are reliable and actionable, helping developers and security professionals make informed decisions about the security of their code.",
+    "relatedSkillIds": [],
+    "starter": {
+      "editable": false,
+      "note": "Generated from the linked repository summary."
+    }
+  }
+]

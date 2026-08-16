@@ -548,7 +548,7 @@ main {
 }
 
 .engineering-system {
-  width: min(100%, 520px);
+  width: min(100%, 620px);
   justify-self: end;
   margin: 0;
   overflow: hidden;
@@ -620,6 +620,7 @@ main {
 
 .engineering-system .system-stage {
   cursor: default;
+  outline: none;
 }
 
 .engineering-system .system-stage circle {
@@ -632,6 +633,10 @@ main {
   transition:
     fill var(--motion-fast) var(--ease-standard),
     stroke var(--motion-fast) var(--ease-standard);
+}
+
+.engineering-system .system-stage:focus-visible rect {
+  stroke-width: 2;
 }
 
 .engineering-system .system-stage.is-active rect,
@@ -793,7 +798,11 @@ main {
   place-items: center;
   padding: 24px;
   font-weight: 800;
+  letter-spacing: 0.1em;
   text-align: center;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
 .capability-core::after {
@@ -1000,6 +1009,32 @@ main {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--gap);
   margin-block: 28px;
+}
+
+.detail-columns {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.detail-columns p,
+.detail-columns ol {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.48;
+}
+
+.detail-columns ol {
+  padding-left: 1.55rem;
+}
+
+.detail-columns li + li {
+  margin-top: 0.35rem;
+}
+
+.detail-columns li::marker,
+.experience-accordions li::marker {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7em;
+  font-weight: 700;
 }
 
 .experience-accordions,
@@ -1382,7 +1417,7 @@ main {
 
   .hero-section {
     min-height: min(780px, 100svh);
-    grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.62fr);
+    grid-template-columns: minmax(0, 0.95fr) minmax(460px, 0.8fr);
     padding-top: 94px;
   }
 
@@ -1391,7 +1426,7 @@ main {
   }
 
   .engineering-system {
-    width: min(100%, 470px);
+    width: min(100%, 620px);
   }
 
   .section-heading {
@@ -1452,8 +1487,11 @@ main {
   }
 
   .capability-detail {
+    block-size: 414px;
     gap: 14px;
+    overflow-y: auto;
     padding: 20px;
+    scrollbar-gutter: stable;
   }
 
   .capability-detail-header {
@@ -1503,7 +1541,7 @@ main {
     margin-block: 20px;
   }
 
-  .detail-columns ul {
+  .detail-columns ol {
     margin-bottom: 0;
     padding-left: 18px;
     font-size: 0.9rem;
@@ -1743,6 +1781,9 @@ main {
     margin-bottom: 12px;
     padding: 12px;
     font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    writing-mode: horizontal-tb;
+    transform: none;
   }
 
   .capability-core::after {
@@ -1875,11 +1916,19 @@ main {
     transform: rotate(45deg);
   }
 
-  .experience-accordions ul {
+  .experience-accordions ol,
+  .experience-accordions details > p {
     margin: 0;
-    padding: 0 0 16px 18px;
     font-size: 0.88rem;
     line-height: 1.5;
+  }
+
+  .experience-accordions ol {
+    padding: 0 0 16px 24px;
+  }
+
+  .experience-accordions details > p {
+    padding: 0 0 16px;
   }
 
   .project-filter {
