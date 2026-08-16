@@ -61,7 +61,6 @@ export function QuickViewDialog(props: QuickViewDialogProps) {
       <button
         ref={triggerRef}
         className="nav-quick-view"
-        data-cursor="OPEN"
         type="button"
         onClick={() => setOpen(true)}
       >
