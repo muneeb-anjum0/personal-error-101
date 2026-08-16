@@ -18,11 +18,13 @@ import type {
   StagedContentRepository,
   StagedContentType
 } from "../../infrastructure/staged/staged-content-repository.js";
+import type { PortfolioDeploymentService } from "./portfolio-deployment-service.js";
 
 export class StagedContentService {
   public constructor(
     private readonly repository: StagedContentRepository,
-    private readonly logger: ApplicationLogger
+    private readonly logger: ApplicationLogger,
+    private readonly deployment: PortfolioDeploymentService
   ) {}
 
   public async status(): Promise<StagedContentStatus> {
@@ -50,6 +52,7 @@ export class StagedContentService {
   public async updateProfile(input: unknown): Promise<Profile> {
     const value = profileSchema.parse(input);
     await this.repository.writeAndPublish("profile", value);
+    await this.deployment.markDirty("Profile updated");
     await this.logger.log("INFO", "STAGED_CONTENT", "Profile published", { hash: hash(value) });
     return value;
   }
@@ -57,12 +60,14 @@ export class StagedContentService {
   public async updateSkills(input: unknown): Promise<SkillCategory[]> {
     const value = skillCategorySchema.array().parse(input);
     await this.repository.writeAndPublish("skills", value);
+    await this.deployment.markDirty("Skills updated");
     return value;
   }
 
   public async updateProjects(input: unknown): Promise<Project[]> {
     const value = projectSchema.array().parse(input);
     await this.repository.write("projects", value);
+    await this.deployment.markDirty("Projects updated");
     return value;
   }
 
@@ -70,6 +75,7 @@ export class StagedContentService {
     const projects = projectSchema.array().parse(await this.repository.readEffective("projects"));
     const project = projectSchema.parse({ id: `project_${randomUUID()}`, ...objectInput(input) });
     await this.repository.write("projects", [...projects, project]);
+    await this.deployment.markDirty("Project added");
     return project;
   }
 
@@ -81,6 +87,7 @@ export class StagedContentService {
     if (index === -1) projects.push(next);
     else projects[index] = next;
     await this.repository.write("projects", projects);
+    await this.deployment.markDirty("Project updated");
     return next;
   }
 
@@ -95,6 +102,7 @@ export class StagedContentService {
   public async updateExperience(input: unknown): Promise<ExperienceEntry[]> {
     const value = experienceEntrySchema.array().parse(input);
     await this.repository.writeAndPublish("experience", value);
+    await this.deployment.markDirty("Experience updated");
     return value;
   }
 
@@ -110,6 +118,7 @@ export class StagedContentService {
     if (index === -1) entries.push(next);
     else entries[index] = next;
     await this.repository.write("experience", entries);
+    await this.deployment.markDirty("Experience updated");
     return next;
   }
 
@@ -136,9 +145,9 @@ export class StagedContentService {
 
   public async publishExistingEditableContent(): Promise<void> {
     const profile = profileSchema.parse(await this.repository.readEffective("profile"));
-    const experience = experienceEntrySchema.array().parse(
-      await this.repository.readEffective("experience")
-    );
+    const experience = experienceEntrySchema
+      .array()
+      .parse(await this.repository.readEffective("experience"));
     const skills = skillCategorySchema.array().parse(await this.repository.readEffective("skills"));
     await Promise.all([
       this.repository.writePublic("profile", profile),
@@ -156,11 +165,9 @@ export class StagedContentService {
   public async publishGeneratedProject(draft: GeneratedProjectDraft): Promise<Project> {
     const projects = projectSchema.array().parse(await this.repository.readEffective("projects"));
     const project = generatedDraftToProject(draft);
-    const next = [
-      ...projects.filter((item) => item.id !== project.id),
-      project
-    ];
+    const next = [...projects.filter((item) => item.id !== project.id), project];
     await this.repository.writeAndPublish("projects", next);
+    await this.deployment.markDirty(`Summary generated for ${draft.repositoryFullName}`);
     return project;
   }
 
@@ -170,6 +177,7 @@ export class StagedContentService {
       "projects",
       projects.filter((project) => project.id !== generatedProjectId(repositoryId))
     );
+    await this.deployment.markDirty("Generated repository summary deleted");
   }
 }
 

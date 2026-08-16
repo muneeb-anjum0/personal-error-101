@@ -17,6 +17,7 @@ import { registerReadinessRoutes } from "./api/routes/readiness-routes.js";
 import { registerQueueRoutes } from "./api/routes/queue-routes.js";
 import { registerSettingsRoutes } from "./api/routes/settings-routes.js";
 import { registerStagedContentRoutes } from "./api/routes/staged-content-routes.js";
+import { registerPortfolioDeploymentRoutes } from "./api/routes/portfolio-deployment-routes.js";
 import { registerSystemRoutes } from "./api/routes/system-routes.js";
 import { registerVersionRoutes } from "./api/routes/version-routes.js";
 import { ContentStatusService } from "./application/services/content-status-service.js";
@@ -25,6 +26,7 @@ import { DashboardService } from "./application/services/dashboard-service.js";
 import { GitHubService } from "./application/services/github-service.js";
 import { LogQueryService } from "./application/services/log-query-service.js";
 import { ProcessingQueueService } from "./application/services/processing-queue-service.js";
+import { PortfolioDeploymentService } from "./application/services/portfolio-deployment-service.js";
 import { ReadinessService } from "./application/services/readiness-service.js";
 import { SettingsService } from "./application/services/settings-service.js";
 import { StagedContentService } from "./application/services/staged-content-service.js";
@@ -52,6 +54,7 @@ declare module "fastify" {
     githubService: GitHubService;
     logQueryService: LogQueryService;
     processingQueueService: ProcessingQueueService;
+    portfolioDeploymentService: PortfolioDeploymentService;
     readinessService: ReadinessService;
     settingsService: SettingsService;
     stagedContentService: StagedContentService;
@@ -76,9 +79,11 @@ export async function buildServer() {
   const logQueryService = new LogQueryService(applicationLogger);
   const aiRuntimeService = new AiRuntimeService(appConfig, applicationLogger);
   const draftRepository = new JsonDraftRepository(appConfig);
+  const portfolioDeploymentService = new PortfolioDeploymentService(appConfig, applicationLogger);
   const stagedContentService = new StagedContentService(
     new StagedContentRepository(appConfig),
-    applicationLogger
+    applicationLogger,
+    portfolioDeploymentService
   );
   const githubService = new GitHubService(
     appConfig,
@@ -103,6 +108,7 @@ export async function buildServer() {
     generatedProjects.filter((draft) => draft !== null)
   );
   await processingQueueService.recover();
+  await portfolioDeploymentService.recover();
 
   app.decorate("appConfig", appConfig);
   app.decorate("aiRuntimeService", aiRuntimeService);
@@ -124,6 +130,7 @@ export async function buildServer() {
   app.decorate("githubService", githubService);
   app.decorate("logQueryService", logQueryService);
   app.decorate("processingQueueService", processingQueueService);
+  app.decorate("portfolioDeploymentService", portfolioDeploymentService);
   app.decorate("readinessService", createReadinessService(appConfig));
   app.decorate("settingsService", settingsService);
   app.decorate("stagedContentService", stagedContentService);
@@ -154,6 +161,7 @@ export async function buildServer() {
   await app.register(registerGitHubRoutes);
   await app.register(registerQueueRoutes);
   await app.register(registerStagedContentRoutes);
+  await app.register(registerPortfolioDeploymentRoutes);
   await app.register(registerSystemRoutes);
   await app.register(registerDocsRoutes);
 

@@ -120,6 +120,7 @@ import type {
   saveReviewRevisionRequestSchema,
   stagedContentBundleSchema,
   stagedContentStatusSchema,
+  portfolioDeploymentStatusSchema,
   updateReviewMappingRequestSchema,
   updateWorkingCopyRequestSchema,
   safeConfigurationSummarySchema,
@@ -201,6 +202,7 @@ export type ContentDiff = z.infer<typeof contentDiffSchema>;
 export type RevisionComparison = z.infer<typeof revisionComparisonSchema>;
 export type StagedContentStatus = z.infer<typeof stagedContentStatusSchema>;
 export type StagedContentBundle = z.infer<typeof stagedContentBundleSchema>;
+export type PortfolioDeploymentStatus = z.infer<typeof portfolioDeploymentStatusSchema>;
 export type PreviewSession = z.infer<typeof previewSessionSchema>;
 export type PublishingBundle = z.infer<typeof publishingBundleSchema>;
 export type PublishingRunStage = z.infer<typeof publishingRunStageSchema>;

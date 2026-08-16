@@ -28,6 +28,7 @@ import {
   gitPushReadinessSchema,
   githubTokenStatusSchema,
   portfolioBuildResultSchema,
+  portfolioDeploymentStatusSchema,
   publicContentBackupSchema,
   publicContentValidationResultSchema,
   publishingConfirmationTokenSchema,
@@ -316,6 +317,13 @@ export class GeneratorApiClient {
     );
   }
 
+  public deleteQueueJob(jobId: string, signal?: AbortSignal) {
+    return this.request(`/api/queue/jobs/${encodeURIComponent(jobId)}`, processingQueueSchema, {
+      method: "DELETE",
+      signal
+    });
+  }
+
   public retryFailedQueue(signal?: AbortSignal) {
     return this.request("/api/queue/retry-failed", processingQueueSchema, {
       method: "POST",
@@ -345,6 +353,18 @@ export class GeneratorApiClient {
 
   public stagedContent(type: string, signal?: AbortSignal) {
     return this.get(`/api/staged/${encodeURIComponent(type)}`, z.unknown(), signal);
+  }
+
+  public portfolioDeploymentStatus(signal?: AbortSignal) {
+    return this.get("/api/portfolio-deployment", portfolioDeploymentStatusSchema, signal);
+  }
+
+  public deployPortfolio(signal?: AbortSignal) {
+    return this.request("/api/portfolio-deployment", portfolioDeploymentStatusSchema, {
+      method: "POST",
+      body: JSON.stringify({}),
+      signal
+    });
   }
 
   public updateStagedContent(type: string, content: unknown, signal?: AbortSignal) {

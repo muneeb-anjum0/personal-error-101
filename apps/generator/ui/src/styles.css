@@ -2282,6 +2282,57 @@ button.danger-action {
   white-space: nowrap;
 }
 
+.job-runtime-progress {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 7px;
+  padding: 2px 10px 9px;
+}
+
+.job-progress-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+}
+
+.job-progress-copy strong {
+  color: var(--ink);
+  font-size: inherit;
+}
+
+.job-progress-track {
+  position: relative;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-strong);
+}
+
+.job-progress-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ink);
+  transition: width 300ms ease;
+}
+
+.job-progress-track.is-writing > span {
+  width: 34%;
+  animation: job-writing-progress 1.4s ease-in-out infinite;
+}
+
+@keyframes job-writing-progress {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(310%);
+  }
+}
+
 .job-delete-actions {
   display: flex;
   gap: 5px;
@@ -2786,6 +2837,45 @@ button.danger-action {
   width: min(360px, calc(100vw - 32px));
 }
 
+.save-changes-toast {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 90;
+  display: grid;
+  gap: 12px;
+  width: min(390px, calc(100vw - 32px));
+  border: 1px solid var(--foreground);
+  border-radius: 10px;
+  background: var(--background);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 14%);
+  padding: 14px;
+  animation: toast-enter 180ms ease-out both;
+}
+
+.save-changes-toast > div {
+  display: grid;
+  gap: 4px;
+}
+
+.save-changes-toast strong {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.save-changes-toast span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.save-changes-toast button {
+  width: 100%;
+  min-height: 38px;
+  background: var(--foreground);
+  color: var(--background);
+}
+
 .toast {
   border: 1px solid var(--foreground);
   border-radius: 8px;
@@ -2997,6 +3087,11 @@ button.danger-action {
   .job-delete-actions {
     justify-content: flex-end;
     padding: 4px 8px 8px;
+  }
+
+  .job-progress-copy {
+    display: grid;
+    gap: 3px;
   }
 
   .settings-intro-strip {

@@ -32,6 +32,11 @@ export function retryQueueJob(service: ProcessingQueueService, request: FastifyR
   return service.retryJob(jobId);
 }
 
+export function deleteQueueJob(service: ProcessingQueueService, request: FastifyRequest) {
+  const { jobId } = request.params as { jobId: string };
+  return service.deleteJob(jobId);
+}
+
 export function retryFailedQueueJobs(service: ProcessingQueueService) {
   return service.retryFailed();
 }
