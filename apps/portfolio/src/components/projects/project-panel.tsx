@@ -10,7 +10,7 @@ interface ProjectPanelProps {
 
 export function ProjectPanel({ project, index }: ProjectPanelProps) {
   return (
-    <article className="project-panel" data-cursor="VIEW">
+    <article className="project-panel">
       <div className="project-panel-copy">
         <div className="project-panel-top">
           <span>{String(index + 1).padStart(2, "0")}</span>
