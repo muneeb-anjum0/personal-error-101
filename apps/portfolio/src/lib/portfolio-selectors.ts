@@ -7,6 +7,16 @@ import type {
 } from "@muneeb-systems/shared-types";
 
 export type VisibleProject = Project & { slug: string };
+export type ProjectCoverFamily =
+  | "OFFLINE"
+  | "INTEGRATION"
+  | "CLOUD"
+  | "DATA"
+  | "SIGNAL"
+  | "AI"
+  | "SECURITY"
+  | "FULL_STACK"
+  | "WORKFLOW";
 
 export const projectFilters = [
   "Featured",
@@ -119,7 +129,8 @@ export function formatDisplayDate(value?: string): string {
   return new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "short",
-    year: "numeric"
+    year: "numeric",
+    timeZone: "UTC"
   })
     .format(new Date(time))
     .toUpperCase();
@@ -135,13 +146,21 @@ export function buildExternalLinkProps(href: string) {
 }
 
 export function makeProjectCoverSignature(
-  project: Pick<Project, "id" | "name" | "technologies" | "categories">
+  project: Pick<Project, "id" | "name" | "technologies" | "categories" | "tags">
 ) {
   const seed = [...project.id].reduce((total, char) => total + char.charCodeAt(0), 0);
-  const nodeCount = Math.max(
-    4,
-    Math.min(8, project.technologies.length + project.categories.length)
-  );
+  const family = selectProjectCoverFamily(project);
+  const nodeCountByFamily: Record<ProjectCoverFamily, number> = {
+    OFFLINE: 6,
+    INTEGRATION: 6,
+    CLOUD: 7,
+    DATA: 7,
+    SIGNAL: 7,
+    AI: 7,
+    SECURITY: 7,
+    FULL_STACK: 6,
+    WORKFLOW: 5
+  };
 
   return {
     abbreviation: project.name
@@ -151,9 +170,39 @@ export function makeProjectCoverSignature(
       .map((word) => word[0]?.toUpperCase())
       .join(""),
     seed,
-    nodeCount,
+    family,
+    nodeCount: nodeCountByFamily[family],
     offset: seed % 19
   };
+}
+
+function selectProjectCoverFamily(
+  project: Pick<Project, "technologies" | "categories" | "tags">
+): ProjectCoverFamily {
+  const vocabulary = [...project.technologies, ...project.categories, ...project.tags]
+    .join(" ")
+    .toLowerCase();
+  const has = (...terms: string[]) => terms.some((term) => vocabulary.includes(term));
+
+  if (has("appsec", "security scanner", "code audit", "semgrep", "vulnerability")) {
+    return "SECURITY";
+  }
+  if (has("audio", "speech", "wavlm", "spectrogram", "sound")) return "SIGNAL";
+  if (has("offline", "pwa", "offline-first")) return "OFFLINE";
+  if (has("email", "gmail", "timetable", "oauth")) return "INTEGRATION";
+  if (has("firebase", "firestore") && !has("fastapi", "flask", "express", "node.js")) {
+    return "CLOUD";
+  }
+  if (has("data visualization", "data-visualization", "dashboard", "analytics", "pandas")) {
+    return "DATA";
+  }
+  if (has("llama", "qwen", "gguf", "machine learning", "ai-ml", "transformers")) {
+    return "AI";
+  }
+  if (has("react", "next.js") && has("fastapi", "flask", "express", "node.js", "asp.net")) {
+    return "FULL_STACK";
+  }
+  return "WORKFLOW";
 }
 
 export function getProjectTime(project: Project): number {
