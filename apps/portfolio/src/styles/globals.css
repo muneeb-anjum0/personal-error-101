@@ -1062,6 +1062,153 @@ main {
   padding: 0 16px;
 }
 
+.project-carousel {
+  display: grid;
+  gap: 14px;
+}
+
+.project-carousel-stage {
+  position: relative;
+}
+
+.project-carousel-stage.is-looping {
+  overflow: hidden;
+  padding: 8px clamp(100px, 10vw, 165px) 12px;
+}
+
+.project-carousel-stage .project-list {
+  position: relative;
+  z-index: 2;
+}
+
+.project-carousel-stage.is-looping .project-panel {
+  padding: clamp(18px, 2vw, 28px);
+}
+
+.project-carousel-stage.is-looping .project-cover {
+  min-height: 150px;
+  max-height: 190px;
+}
+
+.project-carousel-preview {
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  z-index: 1;
+  width: min(31vw, 390px);
+  filter: grayscale(1);
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.project-carousel-preview-left {
+  left: calc(min(31vw, 390px) * -0.68);
+  transform-origin: right center;
+}
+
+.project-carousel-preview-right {
+  right: calc(min(31vw, 390px) * -0.68);
+  transform-origin: left center;
+}
+
+.project-carousel-preview-card {
+  display: grid;
+  height: 100%;
+  align-content: start;
+  gap: 12px;
+  border: 1px solid var(--border-medium);
+  padding: 16px;
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+}
+
+.project-carousel-preview-card .project-cover {
+  min-height: 145px;
+  max-height: 175px;
+}
+
+.project-carousel-preview-card > div {
+  display: grid;
+  gap: 7px;
+}
+
+.project-carousel-preview-card span {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+}
+
+.project-carousel-preview-card h3 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2vw, 2rem);
+  line-height: 1.02;
+}
+
+.project-carousel-preview-mobile {
+  display: none;
+}
+
+.project-carousel-count-mobile {
+  display: none;
+}
+
+.project-carousel-track {
+  position: relative;
+  z-index: 2;
+}
+
+.project-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--foreground);
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 1.1rem;
+  place-items: center;
+  transform: translateY(-50%);
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.project-carousel-arrow-left {
+  left: 18px;
+}
+
+.project-carousel-arrow-right {
+  right: 18px;
+}
+
+.project-carousel-arrow:hover,
+.project-carousel-arrow:focus-visible {
+  background: var(--foreground);
+  color: var(--background);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.project-carousel-arrow:disabled {
+  cursor: wait;
+}
+
+.project-carousel-position {
+  position: absolute;
+  right: 50%;
+  bottom: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 5px 9px;
+  background: var(--background);
+  color: var(--foreground-muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  transform: translateX(50%);
+}
+
 .project-list {
   display: grid;
   gap: 20px;
@@ -1944,6 +2091,14 @@ main {
     min-height: 46px;
   }
 
+  .project-carousel-count-desktop {
+    display: none;
+  }
+
+  .project-carousel-count-mobile {
+    display: inline;
+  }
+
   .project-list > div {
     width: min(86vw, 344px);
     flex: 0 0 auto;
@@ -2073,6 +2228,77 @@ main {
   .capability-node:hover,
   .capability-node:focus-visible {
     transform: none;
+  }
+}
+
+@media (min-width: 761px) {
+  .project-list {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    overflow: visible;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
+  .project-list > div {
+    width: auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .project-carousel-stage.is-looping {
+    padding: 6px 30px 10px;
+  }
+
+  .project-carousel-preview {
+    top: 8%;
+    bottom: 8%;
+    width: 62vw;
+  }
+
+  .project-carousel-preview-left {
+    left: -50vw;
+  }
+
+  .project-carousel-preview-right {
+    right: -50vw;
+  }
+
+  .project-carousel-preview-desktop {
+    display: none;
+  }
+
+  .project-carousel-preview-mobile {
+    display: block;
+  }
+
+  .project-carousel-preview-card > div {
+    display: none;
+  }
+
+  .project-carousel-preview-card .project-cover {
+    min-height: 132px;
+  }
+
+  .project-list {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
+  .project-list > div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .project-list-windowed > div:nth-child(2) {
+    display: none;
   }
 }
 

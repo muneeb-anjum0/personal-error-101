@@ -18,7 +18,6 @@ export function ProjectPanel({ project, index }: ProjectPanelProps) {
         </div>
         <h3>{project.name}</h3>
         {project.subtitle ? <p className="project-subtitle">{project.subtitle}</p> : null}
-        <p>{project.summary}</p>
         <div className="inline-list">
           {project.technologies.map((technology) => (
             <span className="project-technology" key={technology}>{technology}</span>
