@@ -18,15 +18,6 @@ export type ProjectCoverFamily =
   | "FULL_STACK"
   | "WORKFLOW";
 
-export const projectFilters = [
-  "Featured",
-  "AI",
-  "Full Stack",
-  "Security",
-  "Machine Learning",
-  "All"
-];
-
 export function getVisibleProjects(projects: Project[]): VisibleProject[] {
   return projects
     .filter((project) => !project.hidden)
@@ -38,22 +29,6 @@ export function sortProjectsByLatestPush<TProject extends Project>(
 ): TProject[] {
   return [...projects].sort((first, second) => {
     return getProjectTime(second) - getProjectTime(first);
-  });
-}
-
-export function filterProjects(projects: VisibleProject[], filter: string): VisibleProject[] {
-  if (filter === "All") {
-    return projects;
-  }
-
-  if (filter === "Featured") {
-    return projects.filter((project) => project.featured);
-  }
-
-  return projects.filter((project) => {
-    return [...project.categories, ...project.tags].some(
-      (category) => category.toLowerCase() === filter.toLowerCase()
-    );
   });
 }
 

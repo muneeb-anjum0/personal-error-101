@@ -14,8 +14,8 @@ export function CapabilitySection({ skills, projects }: CapabilitySectionProps) 
     <section id="capabilities" className="portfolio-section capability-section">
       <SectionHeading
         label="02 / CAPABILITIES"
-        heading="A STRUCTURED MAP OF THE ENGINEERING CORE."
-        description="Editable skill categories and related projects."
+        heading="THE TOOLS BEHIND THE WORK."
+        description="A focused view of the technologies and practices I use to build dependable software."
       />
       {skills.length > 0 ? (
         <CapabilityMap skills={skills} projects={projects} />

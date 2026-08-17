@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 import type { Project } from "@muneeb-systems/shared-types";
 import {
   buildExternalLinkProps,
-  filterProjects,
   formatDisplayDate,
   getVisibleProjects,
   makeProjectCoverSignature,
@@ -45,18 +44,6 @@ describe("portfolio selectors", () => {
     ]);
 
     expect(sorted.map((item) => item.id)).toEqual(["new", "old"]);
-  });
-
-  it("filters visible projects by category and featured state", () => {
-    const projects = getVisibleProjects([
-      project({ id: "a", categories: ["AI"], featured: true }),
-      project({ id: "b", categories: ["Security"], featured: false }),
-      project({ id: "hidden", hidden: true })
-    ]);
-
-    expect(filterProjects(projects, "AI")).toHaveLength(1);
-    expect(filterProjects(projects, "Featured")).toHaveLength(1);
-    expect(filterProjects(projects, "All")).toHaveLength(2);
   });
 
   it("selects featured projects and fills from newest projects", () => {

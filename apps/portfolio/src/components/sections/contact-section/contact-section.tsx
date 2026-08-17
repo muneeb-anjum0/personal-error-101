@@ -12,12 +12,12 @@ interface ContactSectionProps {
 export function ContactSection({ profile, resumeAvailable }: ContactSectionProps) {
   return (
     <section id="contact" className="portfolio-section contact-section">
-      <SectionHeading label="07 / CONTACT" heading="THE SYSTEM IS READY." />
+      <SectionHeading label="07 / CONTACT" heading="LET'S MAKE THE NEXT THING COUNT." />
       <Reveal className="contact-grid" pattern="stagger">
         <p>
-          LET&apos;S BUILD
+          LET&apos;S TURN A GOOD IDEA
           <br />
-          SOMETHING USEFUL.
+          INTO USEFUL SOFTWARE.
         </p>
         <div className="contact-actions">
           {getContactLinks(profile).map((link, index) => (

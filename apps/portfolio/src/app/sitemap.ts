@@ -16,6 +16,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...getVisibleProjects(content.projects).map((project) => ({
       url: `${siteUrl}/projects/${project.slug}`,
       lastModified: project.pushedAt ? new Date(project.pushedAt) : new Date()
+    })),
+    ...content.experience.map((entry) => ({
+      url: `${siteUrl}/experience/${entry.id}`,
+      lastModified: new Date()
     }))
   ];
 }

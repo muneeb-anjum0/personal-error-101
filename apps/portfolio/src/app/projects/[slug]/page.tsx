@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/page-shell";
 import { ProjectCaseStudy } from "@/components/projects/project-case-study";
-import { isResumeAvailable, loadPortfolioContent } from "@/lib/content";
+import { loadPortfolioContent } from "@/lib/content";
 import {
   getVisibleProjects,
   selectAdjacentProjects,
@@ -59,10 +59,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   const visibleProjects = sortProjectsByLatestPush(getVisibleProjects(content.projects));
   const adjacent = selectAdjacentProjects(visibleProjects, project.slug);
-  const resumeAvailable = await isResumeAvailable(content.profile.resumePath);
-
   return (
-    <PageShell content={content} resumeAvailable={resumeAvailable}>
+    <PageShell>
       <ProjectCaseStudy next={adjacent.next} previous={adjacent.previous} project={project} />
       <script
         type="application/ld+json"

@@ -1,31 +1,17 @@
 "use client";
 
-import type { ContentBundle } from "@muneeb-systems/shared-types";
 import { useEffect, useMemo, useState } from "react";
-import {
-  selectFeaturedProjects,
-  sortProjectsByLatestPush,
-  getVisibleProjects
-} from "@/lib/portfolio-selectors";
 import { useSectionVisibility } from "@/hooks/use-section-visibility";
 import { MobileNavigation } from "./mobile-navigation";
-import { QuickViewDialog } from "@/components/quick-view/quick-view-dialog";
 
 const navItems = [
   { label: "ABOUT", href: "/#identity", section: "#identity" },
   { label: "EXPERIENCE", href: "/#experience", section: "#experience" },
   { label: "WORK", href: "/#projects", section: "#projects" },
-  { label: "PHILOSOPHY", href: "/#philosophy", section: "#philosophy" },
-  { label: "CONTACT", href: "/#contact", section: "#contact" }
+  { label: "PHILOSOPHY", href: "/#philosophy", section: "#philosophy" }
 ];
 
-interface SiteHeaderProps {
-  content: ContentBundle;
-  resumeAvailable: boolean;
-}
-
-export function SiteHeader({ content, resumeAvailable }: SiteHeaderProps) {
-  const visibleProjects = sortProjectsByLatestPush(getVisibleProjects(content.projects));
+export function SiteHeader() {
   const [compressed, setCompressed] = useState(false);
   const sectionIds = useMemo(() => navItems.map((item) => item.section), []);
   const activeSection = useSectionVisibility(sectionIds);
@@ -53,14 +39,15 @@ export function SiteHeader({ content, resumeAvailable }: SiteHeaderProps) {
           </a>
         ))}
       </nav>
-      <QuickViewDialog
-        experience={content.experience}
-        profile={content.profile}
-        projects={selectFeaturedProjects(visibleProjects)}
-        resumeAvailable={resumeAvailable}
-        skills={content.skills}
+      <a className="nav-contact-action" href="/#contact">
+        CONTACT
+      </a>
+      <MobileNavigation
+        items={[
+          ...navItems,
+          { label: "CONTACT", href: "/#contact", section: "#contact" }
+        ]}
       />
-      <MobileNavigation items={navItems} />
     </header>
   );
 }

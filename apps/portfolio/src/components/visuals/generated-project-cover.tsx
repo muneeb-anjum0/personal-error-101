@@ -7,30 +7,57 @@ import {
 interface GeneratedProjectCoverProps {
   project: Project;
   index: number;
+  wide?: boolean;
+  className?: string;
 }
 
-export function GeneratedProjectCover({ project, index }: GeneratedProjectCoverProps) {
+export function GeneratedProjectCover({
+  project,
+  index,
+  wide = false,
+  className = ""
+}: GeneratedProjectCoverProps) {
   const signature = makeProjectCoverSignature(project);
   const topology = coverTopologies[signature.family];
+  const frame = wide
+    ? { width: 520, height: 205, horizontalLines: 5, verticalLines: 11 }
+    : { width: 360, height: 230, horizontalLines: 6, verticalLines: 8 };
+  const frameInset = 2;
+  const drawableWidth = frame.width - frameInset * 2;
+  const drawableHeight = frame.height - frameInset * 2;
+  const xScale = frame.width / 360;
+  const yScale = frame.height / 230;
   const nodes = topology.nodes.map(([x, y], nodeIndex) => ({
-    x: x + seededJitter(signature.seed, nodeIndex, 0),
-    y: y + seededJitter(signature.seed, nodeIndex, 1)
+    x: (x + seededJitter(signature.seed, nodeIndex, 0)) * xScale,
+    y: (y + seededJitter(signature.seed, nodeIndex, 1)) * yScale
   }));
 
   return (
     <svg
-      className="project-cover"
-      viewBox="0 0 360 230"
+      className={`project-cover${wide ? " project-cover--wide" : ""} ${className}`}
+      viewBox={`0 0 ${frame.width} ${frame.height}`}
       role="img"
       aria-label={`${project.name} ${topology.label.toLowerCase()} architecture cover`}
     >
-      <rect x="0" y="0" width="360" height="230" />
+      <rect x={frameInset} y={frameInset} width={drawableWidth} height={drawableHeight} />
       <g className="cover-grid">
-        {Array.from({ length: 8 }, (_, lineIndex) => (
-          <line key={`v-${lineIndex}`} x1={lineIndex * 52} y1="0" x2={lineIndex * 52} y2="230" />
+        {Array.from({ length: frame.verticalLines }, (_, lineIndex) => (
+          <line
+            key={`v-${lineIndex}`}
+            x1={frameInset + lineIndex * (drawableWidth / (frame.verticalLines - 1))}
+            y1={frameInset}
+            x2={frameInset + lineIndex * (drawableWidth / (frame.verticalLines - 1))}
+            y2={frame.height - frameInset}
+          />
         ))}
-        {Array.from({ length: 6 }, (_, lineIndex) => (
-          <line key={`h-${lineIndex}`} x1="0" y1={lineIndex * 46} x2="360" y2={lineIndex * 46} />
+        {Array.from({ length: frame.horizontalLines }, (_, lineIndex) => (
+          <line
+            key={`h-${lineIndex}`}
+            x1={frameInset}
+            y1={frameInset + lineIndex * (drawableHeight / (frame.horizontalLines - 1))}
+            x2={frame.width - frameInset}
+            y2={frameInset + lineIndex * (drawableHeight / (frame.horizontalLines - 1))}
+          />
         ))}
       </g>
       <g className="cover-routes">
@@ -55,17 +82,17 @@ export function GeneratedProjectCover({ project, index }: GeneratedProjectCoverP
             key={`${node.x}-${node.y}-${nodeIndex}`}
             cx={node.x}
             cy={node.y}
-            r={topology.primary.includes(nodeIndex) ? 9 : 5}
+            r={(topology.primary.includes(nodeIndex) ? 9 : 5) * Math.min(xScale, yScale)}
           />
         ))}
       </g>
-      <text x="24" y="42" className="cover-index">
+      <text x={24 * xScale} y={42 * yScale} className="cover-index">
         {String(index + 1).padStart(2, "0")}
       </text>
-      <text x="24" y="190" className="cover-title">
+      <text x={24 * xScale} y={190 * yScale} className="cover-title">
         {signature.abbreviation}
       </text>
-      <text x="24" y="211" className="cover-meta">
+      <text x={24 * xScale} y={211 * yScale} className="cover-meta">
         {topology.label} / N{signature.nodeCount} / S{signature.seed}
       </text>
     </svg>

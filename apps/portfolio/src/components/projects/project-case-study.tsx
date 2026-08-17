@@ -12,11 +12,22 @@ interface ProjectCaseStudyProps {
 export function ProjectCaseStudy({ project, previous, next }: ProjectCaseStudyProps) {
   return (
     <article className="case-study">
-      <a className="back-link" href="/#projects">
-        BACK TO PROJECTS
-      </a>
-      <header className="case-study-hero">
-        <div>
+      <header className="case-study-masthead">
+        <div className="case-study-strip">
+          <a className="back-link" href="/#projects">
+            ← ALL PROJECTS
+          </a>
+          <span>PROJECT FILE / {project.slug.toUpperCase()}</span>
+        </div>
+        <div className="case-study-hero">
+          <div className="case-study-visual">
+            <GeneratedProjectCover index={0} project={project} />
+            <div className="case-study-visual-ledger">
+              <span>STACK / {String(project.technologies.length).padStart(2, "0")} TOOLS</span>
+              <span>STATUS / DOCUMENTED</span>
+            </div>
+          </div>
+        <div className="case-study-summary">
           <p className="technical-label">SYSTEM CASE STUDY</p>
           <h1>{project.name}</h1>
           {project.subtitle ? <p>{project.subtitle}</p> : null}
@@ -26,38 +37,50 @@ export function ProjectCaseStudy({ project, previous, next }: ProjectCaseStudyPr
           </p>
           <ProjectActions context="detail" project={project} />
         </div>
-        <GeneratedProjectCover index={0} project={project} />
+        </div>
       </header>
-      <div className="case-study-grid">
-        <CaseBlock title="Introduction" body={project.summary} />
-        <CaseBlock title="Problem" body={project.problem} />
-        <CaseBlock title="Solution" body={project.solution} />
-        <CaseBlock title="Architecture" body={project.architecture} />
-        <CaseList title="Key features" items={project.keyFeatures} />
-        <CaseList title="Engineering challenges" items={project.challenges} />
-        <CaseList title="Technical highlights" items={project.technicalHighlights} />
-        <CaseBlock title="Impact summary" body={project.impact} />
-        <TechnologyMatrix technologies={project.technologies} />
+      <div className="case-study-story">
+        <div className="case-study-frame">
+          <CaseBlock className="case-study-introduction" title="Introduction" body={project.summary} />
+          <CaseBlock className="case-study-problem" title="Problem" body={project.problem} />
+        </div>
+        <div className="case-study-response">
+          <CaseBlock className="case-study-solution" title="Solution" body={project.solution} />
+          <CaseBlock className="case-study-architecture" title="Architecture" body={project.architecture} />
+        </div>
+        <div className="case-study-evidence">
+          <CaseList title="Key features" items={project.keyFeatures} />
+          <CaseList title="Engineering challenges" items={project.challenges} />
+          <CaseList title="Technical highlights" items={project.technicalHighlights} />
+        </div>
+        <CaseBlock className="case-study-impact" title="Impact summary" body={project.impact} />
       </div>
+      <TechnologyMatrix technologies={project.technologies} />
       <nav className="case-study-nav" aria-label="Adjacent projects">
         {previous ? (
-          <a href={`/projects/${previous.slug}`}>PREVIOUS / {previous.name}</a>
+          <a className="case-study-nav-previous" href={`/projects/${previous.slug}`}>
+            <small>← PREVIOUS</small>
+            <strong>{previous.name}</strong>
+          </a>
         ) : (
           <span />
         )}
-        {next ? <a href={`/projects/${next.slug}`}>NEXT / {next.name}</a> : <span />}
+        {next ? (
+          <a className="case-study-nav-next" href={`/projects/${next.slug}`}>
+            <small>NEXT →</small>
+            <strong>{next.name}</strong>
+          </a>
+        ) : <span />}
       </nav>
     </article>
   );
 }
 
-function CaseBlock({ title, body }: { title: string; body?: string }) {
-  if (!body) {
-    return null;
-  }
+function CaseBlock({ className, title, body }: { className?: string; title: string; body?: string }) {
+  if (!body) return null;
 
   return (
-    <section>
+    <section className={className}>
       <h2>{title}</h2>
       <p>{body}</p>
     </section>
@@ -65,9 +88,7 @@ function CaseBlock({ title, body }: { title: string; body?: string }) {
 }
 
 function CaseList({ title, items }: { title: string; items: string[] }) {
-  if (items.length === 0) {
-    return null;
-  }
+  if (items.length === 0) return null;
 
   return (
     <section>

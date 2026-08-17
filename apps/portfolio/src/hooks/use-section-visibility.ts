@@ -21,7 +21,10 @@ export function useSectionVisibility(sectionIds: string[]) {
       const configuredOffset = Number.parseFloat(
         getComputedStyle(document.documentElement).scrollPaddingTop
       );
-      const marker = Number.isFinite(configuredOffset) ? configuredOffset + 1 : 1;
+      const marker = Math.max(
+        Number.isFinite(configuredOffset) ? configuredOffset + 1 : 1,
+        window.innerHeight * 0.35
+      );
       const reachedPageEnd =
         window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
       const active = reachedPageEnd

@@ -3,31 +3,31 @@
   "role": "Full-stack engineer",
   "headline": "Full-stack developer building intelligent, secure, and useful software.",
   "shortBio": "Muneeb Anjum is a full-stack developer focused on backend systems, AI-assisted workflows, and practical product engineering.",
-  "longBio": "I build software as connected systems: interfaces, APIs, data flows, automation, and the operational details that make products useful. ",
+  "longBio": "I bring interfaces, APIs, data flows, and automation together with an eye for the small details that make a product feel clear, dependable, and easy to use.",
   "heroTitleLines": [
     "I BUILD",
     "SYSTEMS THAT",
     "THINK."
   ],
-  "identityHeading": "I DESIGN HOW SYSTEMS BEHAVE.",
+  "identityHeading": "SOFTWARE, BUILT WITH INTENT.",
   "projectsHeading": [
-    "MY PROJECTS",
-    "LIVE HERE."
+    "SELECTED WORK.",
+    "BUILT WITH CARE."
   ],
-  "projectsDescription": "Add real projects from the local admin when you are ready.",
-  "philosophyHeading": "CODE IS NOT THE PRODUCT.",
+  "projectsDescription": "A selection of systems shaped by real constraints, practical decisions, and continuous iteration.",
+  "philosophyHeading": "GOOD SOFTWARE EARNS ITS PLACE.",
   "philosophyStatementLines": [
-    "THE SYSTEM,",
-    "THE EXPERIENCE,",
-    "AND THE RESULT",
-    "ARE THE PRODUCT"
+    "USEFUL TO PEOPLE.",
+    "CLEAR TO MAINTAIN.",
+    "BUILT WITH THE",
+    "WHOLE SYSTEM IN MIND."
   ],
   "philosophyPrinciples": [
-    "Build for actual problems",
-    "Understand the entire system",
-    "Automate repetitive work",
-    "Measure before claiming improvement",
-    "Keep learning"
+    "Start with the real constraint",
+    "Understand the full path",
+    "Automate the repeatable",
+    "Measure what changed",
+    "Keep improving the craft"
   ],
   "location": "Islamabad, Pakistan",
   "availability": "Available",
