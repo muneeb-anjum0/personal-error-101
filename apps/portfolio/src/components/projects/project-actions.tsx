@@ -12,13 +12,8 @@ export function ProjectActions({ project, context = "listing" }: ProjectActionsP
 
   return (
     <div className="project-actions">
-      {context === "listing" ? (
-        <Button href={`/projects/${project.slug}`} variant="primary">
-          VIEW SYSTEM
-        </Button>
-      ) : null}
       {githubLink ? (
-        <Button href={githubLink.url} variant="ghost">
+        <Button href={githubLink.url} variant="primary">
           SOURCE CODE
         </Button>
       ) : null}

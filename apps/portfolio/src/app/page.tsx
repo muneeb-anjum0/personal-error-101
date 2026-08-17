@@ -16,8 +16,8 @@ export default async function HomePage() {
   const projects = sortProjectsByLatestPush(getVisibleProjects(content.projects));
 
   return (
-    <PageShell content={content} resumeAvailable={resumeAvailable}>
-      <HeroSection profile={content.profile} resumeAvailable={resumeAvailable} />
+    <PageShell>
+      <HeroSection profile={content.profile} resumeAvailable={resumeAvailable} projects={projects} />
       <IdentitySection content={content} />
       <CapabilitySection projects={projects} skills={content.skills} />
       <ExperienceSection entries={content.experience} />
