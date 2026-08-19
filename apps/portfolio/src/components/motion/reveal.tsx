@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface RevealProps {
   children: React.ReactNode;
   className?: string;
-  pattern?: "rise" | "side" | "line" | "stagger";
+  pattern?: "rise" | "side" | "line" | "stagger" | "hero";
   as?: "div" | "section";
 }
 
@@ -27,28 +27,36 @@ export function Reveal({ children, className, pattern = "rise", as: Tag = "div" 
 
     const context = gsap.context(() => {
       const targets =
-        pattern === "stagger"
+        pattern === "hero"
+          ? element.querySelectorAll("[data-hero-reveal]")
+          : pattern === "stagger"
           ? Array.from(element.children)
           : pattern === "line"
             ? element.querySelectorAll(".motion-line")
             : [element];
+      const heroReveal = pattern === "hero";
 
       gsap.fromTo(
         targets,
         {
           opacity: pattern === "line" ? 1 : 0,
-          y: pattern === "side" ? 0 : 18,
+          y: heroReveal ? 34 : pattern === "side" ? 0 : 18,
           x: pattern === "side" ? -18 : 0,
-          clipPath: pattern === "line" ? "inset(0 100% 0 0)" : "inset(0 0% 0 0)"
+          clipPath:
+            pattern === "line"
+              ? "inset(0 100% 0 0)"
+              : heroReveal
+                ? "inset(0 0 100% 0)"
+                : "inset(0 0% 0 0)"
         },
         {
           opacity: 1,
           y: 0,
           x: 0,
           clipPath: "inset(0 0% 0 0)",
-          duration: pattern === "line" ? 0.58 : 0.7,
-          ease: gsapEasings.entrance,
-          stagger: pattern === "stagger" || pattern === "line" ? 0.08 : 0,
+          duration: pattern === "line" ? 0.58 : heroReveal ? 0.82 : 0.7,
+          ease: heroReveal ? gsapEasings.emphasis : gsapEasings.entrance,
+          stagger: pattern === "stagger" || pattern === "line" ? 0.08 : heroReveal ? 0.13 : 0,
           scrollTrigger: {
             trigger: element,
             start: "top 84%",
