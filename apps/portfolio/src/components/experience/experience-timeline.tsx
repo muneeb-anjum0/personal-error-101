@@ -5,6 +5,19 @@ interface ExperienceTimelineProps {
   entries: ExperienceEntry[];
 }
 
+function formatExperienceMonth(value?: string | null): string {
+  if (!value) return "Present";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat("en", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(date);
+}
+
 export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
   if (entries.length === 0) {
     return (
@@ -26,7 +39,7 @@ export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
               <small>{entry.organization}</small>
             </span>
             <span className="experience-record-period">
-              {entry.startDate} — {entry.endDate ?? "Present"}
+              {formatExperienceMonth(entry.startDate)} — {formatExperienceMonth(entry.endDate)}
             </span>
             <span className="experience-record-state" aria-hidden="true">
               View role <i>↗</i>

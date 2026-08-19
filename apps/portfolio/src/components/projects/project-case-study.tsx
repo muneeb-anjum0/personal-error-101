@@ -59,16 +59,14 @@ export function ProjectCaseStudy({ project, previous, next }: ProjectCaseStudyPr
       <nav className="case-study-nav" aria-label="Adjacent projects">
         {previous ? (
           <a className="case-study-nav-previous" href={`/projects/${previous.slug}`}>
-            <small>← PREVIOUS</small>
-            <strong>{previous.name}</strong>
+            ← PREVIOUS
           </a>
         ) : (
           <span />
         )}
         {next ? (
           <a className="case-study-nav-next" href={`/projects/${next.slug}`}>
-            <small>NEXT →</small>
-            <strong>{next.name}</strong>
+            NEXT →
           </a>
         ) : <span />}
       </nav>

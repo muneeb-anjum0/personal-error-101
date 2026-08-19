@@ -2,6 +2,7 @@ import type { Profile, Project } from "@muneeb-systems/shared-types";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { EngineeringSystem } from "@/components/visuals/engineering-system";
+import { HeroTypewriter } from "./hero-typewriter";
 
 interface HeroSectionProps {
   profile: Profile;
@@ -15,17 +16,17 @@ export function HeroSection({ profile, resumeAvailable, projects }: HeroSectionP
 
   return (
     <section id="top" className="hero-section">
-      <Reveal className="hero-copy hero-entrance" pattern="stagger">
-        <div className="hero-meta">
+      <Reveal className="hero-copy hero-entrance" pattern="hero">
+        <div className="hero-meta" data-hero-reveal>
           <span>[ {profile.role ?? "Engineer"} ]</span>
         </div>
-        <p className="hero-greeting">{profile.location.toUpperCase()}</p>
+        <p className="hero-greeting" data-hero-reveal>
+          {profile.location.toUpperCase()}
+        </p>
         <h1>
-          {heroTitleLines.map((line) => (
-            <span key={line}>{line}</span>
-          ))}
+          <HeroTypewriter lines={heroTitleLines} />
         </h1>
-        <div className="hero-actions">
+        <div className="hero-actions" data-hero-reveal>
           <Button href="#projects" variant="primary" size="large">
             EXPLORE MY SYSTEM
           </Button>

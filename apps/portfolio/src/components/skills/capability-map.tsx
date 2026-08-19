@@ -12,8 +12,19 @@ interface CapabilityMapProps {
 
 export function CapabilityMap({ skills, projects }: CapabilityMapProps) {
   const [selectedId, setSelectedId] = useState("");
-  const selected = skills.find((skill) => skill.id === selectedId);
+  const [presentedId, setPresentedId] = useState("");
+  const selected = skills.find((skill) => skill.id === presentedId);
   const usage = selected ? getCapabilityUsage(selected, projects) : undefined;
+  const isExpanded = selectedId.length > 0;
+
+  function selectDiscipline(skillId: string) {
+    if (selectedId === skillId) {
+      setSelectedId("");
+      return;
+    }
+    setPresentedId(skillId);
+    setSelectedId(skillId);
+  }
 
   return (
     <section className="capability-index" aria-label="Engineering disciplines">
@@ -26,7 +37,7 @@ export function CapabilityMap({ skills, projects }: CapabilityMapProps) {
               key={skill.id}
               aria-selected={isSelected}
               className="capability-index-card"
-              onClick={() => setSelectedId((current) => (current === skill.id ? "" : skill.id))}
+              onClick={() => selectDiscipline(skill.id)}
               role="tab"
               type="button"
             >
@@ -37,35 +48,41 @@ export function CapabilityMap({ skills, projects }: CapabilityMapProps) {
         })}
       </div>
 
-      {usage ? (
-        <section className="capability-index-drawer" role="tabpanel">
-          <header>
-            <div>
-              <p className="technical-label">OPEN DISCIPLINE</p>
-              <h3>{usage.skill.name}</h3>
-            </div>
-            <p>{String(usage.skill.skills.length).padStart(2, "0")} / SKILL SET</p>
-          </header>
-          <div className="capability-index-skills" aria-label={`${usage.skill.name} skills`}>
-            {usage.skill.skills.map((skill, index) => (
-              <span key={skill}>
-                <i>{String(index + 1).padStart(2, "0")}</i>
-                {skill}
-              </span>
-            ))}
-          </div>
-          {usage.projectCount > 0 ? (
-            <footer>
-              <p className="technical-label">RELATED SYSTEMS</p>
-              <div className="inline-list">
-                {usage.relatedProjects.map((project) => (
-                  <span key={project.id}>{project.name}</span>
-                ))}
+      <section
+        aria-hidden={!isExpanded}
+        className={`capability-index-drawer${isExpanded ? " is-open" : ""}`}
+        role="tabpanel"
+      >
+        {usage ? (
+          <div className="capability-index-drawer-content" key={usage.skill.id}>
+            <header>
+              <div>
+                <p className="technical-label">OPEN DISCIPLINE</p>
+                <h3>{usage.skill.name}</h3>
               </div>
-            </footer>
-          ) : null}
-        </section>
-      ) : null}
+              <p>{String(usage.skill.skills.length).padStart(2, "0")} / SKILL SET</p>
+            </header>
+            <div className="capability-index-skills" aria-label={`${usage.skill.name} skills`}>
+              {usage.skill.skills.map((skill, index) => (
+                <span key={skill}>
+                  <i>{String(index + 1).padStart(2, "0")}</i>
+                  {skill}
+                </span>
+              ))}
+            </div>
+            {usage.projectCount > 0 ? (
+              <footer>
+                <p className="technical-label">RELATED SYSTEMS</p>
+                <div className="inline-list">
+                  {usage.relatedProjects.map((project) => (
+                    <span key={project.id}>{project.name}</span>
+                  ))}
+                </div>
+              </footer>
+            ) : null}
+          </div>
+        ) : null}
+      </section>
     </section>
   );
 }
