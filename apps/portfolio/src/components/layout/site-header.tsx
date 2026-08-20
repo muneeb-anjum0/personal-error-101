@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSectionVisibility } from "@/hooks/use-section-visibility";
 import { MobileNavigation } from "./mobile-navigation";
+import { ThemeToggle } from "./theme-toggle";
 
 const navItems = [
   { label: "ABOUT", href: "/#identity", section: "#identity" },
@@ -39,6 +40,7 @@ export function SiteHeader() {
           </a>
         ))}
       </nav>
+      <ThemeToggle />
       <a className="nav-contact-action" href="/#contact">
         CONTACT
       </a>

@@ -24,6 +24,21 @@
   --anchor-offset: 96px;
 }
 
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #111110;
+  --foreground: #f5f4ef;
+  --foreground-muted: rgba(245, 244, 239, 0.64);
+  --foreground-subtle: rgba(245, 244, 239, 0.43);
+  --border: rgba(245, 244, 239, 0.16);
+  --border-medium: rgba(245, 244, 239, 0.3);
+  --border-strong: rgba(245, 244, 239, 0.56);
+  --surface: #181817;
+  --surface-translucent: rgba(24, 24, 23, 0.9);
+  --selection-background: #f5f4ef;
+  --selection-foreground: #111110;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -43,6 +58,40 @@ body {
   color: var(--foreground);
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
+}
+
+::view-transition-old(root),
+::view-transition-new(root),
+::view-transition-group(root),
+::view-transition-image-pair(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+html[data-theme-transition="to-light"]::view-transition-new(root) {
+  z-index: 1;
+}
+
+html[data-theme-transition="to-light"]::view-transition-old(root) {
+  z-index: 2;
+}
+
+/* Set the snapshot's first frame in CSS. This prevents the browser from
+   painting a full new theme while the View Transition callback is queued. */
+html[data-theme-transition="to-dark"]::view-transition-new(root) {
+  clip-path: circle(0px at var(--theme-reveal-x) var(--theme-reveal-y));
+}
+
+html[data-theme-transition="to-light"]::view-transition-old(root) {
+  clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y));
 }
 
 ::-webkit-scrollbar {
@@ -118,7 +167,7 @@ a {
   left: clamp(18px, 5vw, 72px);
   z-index: 100;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 20px;
   border: 1px solid var(--border-medium);
@@ -171,6 +220,47 @@ a {
   font-weight: 650;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.theme-toggle {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--border-medium);
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  border-color: var(--foreground);
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.theme-toggle:disabled {
+  cursor: wait;
+}
+
+.theme-toggle svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  transition: transform 360ms var(--ease-entrance), opacity 180ms var(--ease-standard);
+}
+
+.theme-toggle.is-dark svg {
+  transform: rotate(80deg) scale(1.04);
 }
 
 .desktop-nav {
@@ -3061,7 +3151,7 @@ main {
   }
 
   .site-header {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
   }
 
   .hero-section,
@@ -3126,6 +3216,11 @@ main {
     min-height: 42px;
     gap: 8px;
     padding-inline: 12px;
+  }
+
+  .theme-toggle {
+    width: 42px;
+    height: 42px;
   }
 
   .mobile-menu-button > span:first-child {

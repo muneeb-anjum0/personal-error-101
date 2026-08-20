@@ -1,0 +1,153 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
+
+type Theme = "light" | "dark";
+
+const THEME_STORAGE_KEY = "muneeb-systems-theme";
+
+function applyTheme(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem(THEME_STORAGE_KEY, theme);
+}
+
+export function ThemeToggle() {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const transitioningRef = useRef(false);
+  const animationRef = useRef<Animation | null>(null);
+  const [theme, setTheme] = useState<Theme>("light");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  useEffect(() => {
+    setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+  }, []);
+
+  async function toggleTheme() {
+    // A View Transition can only own one root snapshot sequence at a time.
+    // The guard runs before any state or DOM mutation, so a spammed click is
+    // a true no-op rather than an unanimated theme update.
+    if (transitioningRef.current) {
+      return;
+    }
+
+    const fromTheme: Theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    const nextTheme: Theme = fromTheme === "light" ? "dark" : "light";
+    const button = buttonRef.current;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!button || reducedMotion || !("startViewTransition" in document)) {
+      applyTheme(nextTheme);
+      setTheme(nextTheme);
+      return;
+    }
+
+    const rect = button.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.max(
+      Math.hypot(x, y),
+      Math.hypot(window.innerWidth - x, y),
+      Math.hypot(x, window.innerHeight - y),
+      Math.hypot(window.innerWidth - x, window.innerHeight - y)
+    );
+    transitioningRef.current = true;
+    setIsTransitioning(true);
+
+    let transition: ViewTransition;
+    try {
+      const root = document.documentElement;
+      root.style.setProperty("--theme-reveal-x", `${x}px`);
+      root.style.setProperty("--theme-reveal-y", `${y}px`);
+      root.style.setProperty("--theme-reveal-radius", `${radius}px`);
+      root.dataset.themeTransition = `to-${nextTheme}`;
+      transition = document.startViewTransition(() => {
+        // This is the only interactive mutation of the page theme. It happens
+        // after the old snapshot is captured and before the new one is taken.
+        applyTheme(nextTheme);
+        flushSync(() => setTheme(nextTheme));
+      });
+    } catch {
+      delete document.documentElement.dataset.themeTransition;
+      document.documentElement.style.removeProperty("--theme-reveal-x");
+      document.documentElement.style.removeProperty("--theme-reveal-y");
+      document.documentElement.style.removeProperty("--theme-reveal-radius");
+      transitioningRef.current = false;
+      setIsTransitioning(false);
+      applyTheme(nextTheme);
+      setTheme(nextTheme);
+      return;
+    }
+
+    try {
+      await transition.ready;
+      const origin = `${x}px ${y}px`;
+      const keyframes =
+        nextTheme === "dark"
+          ? ["circle(0px at " + origin + ")", "circle(" + radius + "px at " + origin + ")"]
+          : ["circle(" + radius + "px at " + origin + ")", "circle(0px at " + origin + ")"];
+
+      const animation = document.documentElement.animate(
+        { clipPath: keyframes },
+        {
+          duration: 720,
+          easing: "cubic-bezier(0.76, 0, 0.24, 1)",
+          fill: "both",
+          pseudoElement: nextTheme === "dark" ? "::view-transition-new(root)" : "::view-transition-old(root)"
+        }
+      );
+      animationRef.current = animation;
+
+      // transition.finished can resolve before a Web Animation created from
+      // transition.ready has finished. The circle itself is authoritative.
+      await animation.finished;
+      await transition.finished;
+    } catch {
+      // A skipped transition still leaves the correct theme selected. Cleanup
+      // below returns the control to its stable state without a stale mask.
+    } finally {
+      animationRef.current?.cancel();
+      animationRef.current = null;
+      delete document.documentElement.dataset.themeTransition;
+      document.documentElement.style.removeProperty("--theme-reveal-x");
+      document.documentElement.style.removeProperty("--theme-reveal-y");
+      document.documentElement.style.removeProperty("--theme-reveal-radius");
+      transitioningRef.current = false;
+      setIsTransitioning(false);
+    }
+  }
+
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      ref={buttonRef}
+      className={`theme-toggle${isDark ? " is-dark" : ""}`}
+      type="button"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      onClick={toggleTheme}
+      disabled={isTransitioning}
+    >
+      <span className="sr-only">{isDark ? "Light mode" : "Dark mode"}</span>
+      {isDark ? <SunIcon /> : <MoonIcon />}
+    </button>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z" />
+    </svg>
+  );
+}
+
+function SunIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="3.5" />
+      <path d="M12 2.5v2M12 19.5v2M21.5 12h-2M4.5 12h-2M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4M18.7 18.7l-1.4-1.4M6.7 6.7 5.3 5.3" />
+    </svg>
+  );
+}
