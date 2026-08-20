@@ -19,16 +19,16 @@ function applyTheme(theme: Theme) {
 }
 
 /**
- * `getBoundingClientRect` and VisualViewport are both expressed in visible
- * viewport CSS pixels. Capture this once, immediately before the view
- * transition begins; mobile browser chrome is then unable to move an active
- * reveal's origin or radius halfway through its animation.
+ * Root View Transition snapshots use the layout viewport. Capture the button
+ * center and those root bounds together immediately before the transition;
+ * mobile browser chrome then cannot move an active reveal's origin or radius
+ * halfway through its animation.
  */
 function measureRevealGeometry(button: HTMLButtonElement): RevealGeometry {
   const rect = button.getBoundingClientRect();
-  const viewport = window.visualViewport;
-  const width = viewport?.width ?? window.innerWidth;
-  const height = viewport?.height ?? window.innerHeight;
+  const root = document.documentElement;
+  const width = root.clientWidth;
+  const height = root.clientHeight;
   const x = rect.left + rect.width / 2;
   const y = rect.top + rect.height / 2;
   const radius =
