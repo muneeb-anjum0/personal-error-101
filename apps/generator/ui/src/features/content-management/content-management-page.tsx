@@ -320,7 +320,7 @@ function CollectionForm({
             <header className="content-record-header">
               <div>
                 <p className="eyebrow">
-                  {singular(type).toUpperCase()} {index + 1}
+                  {singular(type).toUpperCase()}
                 </p>
                 <h3>{recordTitle(type, record)}</h3>
                 {!editing ? <RecordPreview type={type} record={record} /> : null}

@@ -11,6 +11,7 @@ export function Sidebar({
     <aside className="sidebar">
       <div className="brand">
         <strong>MUNEEB.SYSTEMS</strong>
+        <small>LOCAL GENERATOR</small>
       </div>
       <nav aria-label="Generator navigation">
         <p className="nav-group">
@@ -44,9 +45,9 @@ export function Sidebar({
       <div className="sidebar-foot">
         <span aria-hidden="true" />
         <p className="version-label">
-          LOCAL WORKSPACE
+          LOCAL ENDPOINT
           <br />
-          LAN ENABLED
+          PRIVATE ACCESS
         </p>
       </div>
     </aside>
