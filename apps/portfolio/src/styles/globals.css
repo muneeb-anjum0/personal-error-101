@@ -64,7 +64,7 @@ body {
 ::view-transition-new(root),
 ::view-transition-group(root),
 ::view-transition-image-pair(root) {
-  animation: none;
+  animation: none !important;
   mix-blend-mode: normal;
 }
 
@@ -84,14 +84,32 @@ html[data-theme-transition="to-light"]::view-transition-old(root) {
   z-index: 2;
 }
 
-/* Set the snapshot's first frame in CSS. This prevents the browser from
-   painting a full new theme while the View Transition callback is queued. */
+@keyframes theme-reveal-to-dark {
+  from {
+    clip-path: circle(0px at var(--theme-reveal-x) var(--theme-reveal-y));
+  }
+
+  to {
+    clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y));
+  }
+}
+
+@keyframes theme-reveal-to-light {
+  from {
+    clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y));
+  }
+
+  to {
+    clip-path: circle(0px at var(--theme-reveal-x) var(--theme-reveal-y));
+  }
+}
+
 html[data-theme-transition="to-dark"]::view-transition-new(root) {
-  clip-path: circle(0px at var(--theme-reveal-x) var(--theme-reveal-y));
+  animation: theme-reveal-to-dark 720ms cubic-bezier(0.76, 0, 0.24, 1) both !important;
 }
 
 html[data-theme-transition="to-light"]::view-transition-old(root) {
-  clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y));
+  animation: theme-reveal-to-light 720ms cubic-bezier(0.76, 0, 0.24, 1) both !important;
 }
 
 ::-webkit-scrollbar {
@@ -256,7 +274,9 @@ a {
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.7;
-  transition: transform 360ms var(--ease-entrance), opacity 180ms var(--ease-standard);
+  transition:
+    transform 360ms var(--ease-entrance),
+    opacity 180ms var(--ease-standard);
 }
 
 .theme-toggle.is-dark svg {
@@ -1185,7 +1205,9 @@ main {
   color: var(--background);
   cursor: pointer;
   text-align: left;
-  transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
 }
 
 .capability-console-tab:last-child {
@@ -1353,7 +1375,10 @@ main {
   color: var(--foreground);
   cursor: pointer;
   text-align: left;
-  transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
 }
 
 .capability-index-card::before {
@@ -2870,7 +2895,6 @@ main {
   pointer-events: none;
 }
 
-
 @keyframes menu-enter {
   from {
     opacity: 0;
@@ -3189,7 +3213,6 @@ main {
   .capability-detail {
     min-height: 0;
   }
-
 }
 
 @media (max-width: 760px) {
@@ -3840,7 +3863,6 @@ main {
   .project-window-controls p {
     font-size: 0.6rem;
   }
-
 }
 
 .philosophy-section,
@@ -4408,5 +4430,4 @@ main {
   .timeline-marker[aria-selected="true"] {
     transform: none !important;
   }
-
 }
