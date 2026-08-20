@@ -4,12 +4,50 @@ import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 type Theme = "light" | "dark";
+type RevealGeometry = Readonly<{
+  x: number;
+  y: number;
+  radius: number;
+}>;
 
 const THEME_STORAGE_KEY = "muneeb-systems-theme";
+const REVEAL_SAFETY_MARGIN = 20;
 
 function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem(THEME_STORAGE_KEY, theme);
+}
+
+/**
+ * `getBoundingClientRect` and VisualViewport are both expressed in visible
+ * viewport CSS pixels. Capture this once, immediately before the view
+ * transition begins; mobile browser chrome is then unable to move an active
+ * reveal's origin or radius halfway through its animation.
+ */
+function measureRevealGeometry(button: HTMLButtonElement): RevealGeometry {
+  const rect = button.getBoundingClientRect();
+  const viewport = window.visualViewport;
+  const width = viewport?.width ?? window.innerWidth;
+  const height = viewport?.height ?? window.innerHeight;
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  const radius =
+    Math.max(
+      Math.hypot(x, y),
+      Math.hypot(width - x, y),
+      Math.hypot(x, height - y),
+      Math.hypot(width - x, height - y)
+    ) + REVEAL_SAFETY_MARGIN;
+
+  return Object.freeze({ x, y, radius });
+}
+
+function clearRevealState() {
+  const root = document.documentElement;
+  delete root.dataset.themeTransition;
+  root.style.removeProperty("--theme-reveal-x");
+  root.style.removeProperty("--theme-reveal-y");
+  root.style.removeProperty("--theme-reveal-radius");
 }
 
 export function ThemeToggle() {
@@ -42,24 +80,20 @@ export function ThemeToggle() {
       return;
     }
 
-    const rect = button.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const radius = Math.max(
-      Math.hypot(x, y),
-      Math.hypot(window.innerWidth - x, y),
-      Math.hypot(x, window.innerHeight - y),
-      Math.hypot(window.innerWidth - x, window.innerHeight - y)
-    );
     transitioningRef.current = true;
     setIsTransitioning(true);
+
+    // This ref belongs to the actual interactive button, not its icon, the
+    // navbar, or a responsive wrapper. Its geometry is frozen for the whole
+    // transition so a mobile browser toolbar resize cannot restart the circle.
+    const geometry = measureRevealGeometry(button);
 
     let transition: ViewTransition;
     try {
       const root = document.documentElement;
-      root.style.setProperty("--theme-reveal-x", `${x}px`);
-      root.style.setProperty("--theme-reveal-y", `${y}px`);
-      root.style.setProperty("--theme-reveal-radius", `${radius}px`);
+      root.style.setProperty("--theme-reveal-x", `${geometry.x}px`);
+      root.style.setProperty("--theme-reveal-y", `${geometry.y}px`);
+      root.style.setProperty("--theme-reveal-radius", `${geometry.radius}px`);
       root.dataset.themeTransition = `to-${nextTheme}`;
       transition = document.startViewTransition(() => {
         // This is the only interactive mutation of the page theme. It happens
@@ -68,10 +102,7 @@ export function ThemeToggle() {
         flushSync(() => setTheme(nextTheme));
       });
     } catch {
-      delete document.documentElement.dataset.themeTransition;
-      document.documentElement.style.removeProperty("--theme-reveal-x");
-      document.documentElement.style.removeProperty("--theme-reveal-y");
-      document.documentElement.style.removeProperty("--theme-reveal-radius");
+      clearRevealState();
       transitioningRef.current = false;
       setIsTransitioning(false);
       applyTheme(nextTheme);
@@ -81,11 +112,11 @@ export function ThemeToggle() {
 
     try {
       await transition.ready;
-      const origin = `${x}px ${y}px`;
+      const origin = `${geometry.x}px ${geometry.y}px`;
       const keyframes =
         nextTheme === "dark"
-          ? ["circle(0px at " + origin + ")", "circle(" + radius + "px at " + origin + ")"]
-          : ["circle(" + radius + "px at " + origin + ")", "circle(0px at " + origin + ")"];
+          ? [`circle(0px at ${origin})`, `circle(${geometry.radius}px at ${origin})`]
+          : [`circle(${geometry.radius}px at ${origin})`, `circle(0px at ${origin})`];
 
       const animation = document.documentElement.animate(
         { clipPath: keyframes },
@@ -93,7 +124,8 @@ export function ThemeToggle() {
           duration: 720,
           easing: "cubic-bezier(0.76, 0, 0.24, 1)",
           fill: "both",
-          pseudoElement: nextTheme === "dark" ? "::view-transition-new(root)" : "::view-transition-old(root)"
+          pseudoElement:
+            nextTheme === "dark" ? "::view-transition-new(root)" : "::view-transition-old(root)"
         }
       );
       animationRef.current = animation;
@@ -108,10 +140,7 @@ export function ThemeToggle() {
     } finally {
       animationRef.current?.cancel();
       animationRef.current = null;
-      delete document.documentElement.dataset.themeTransition;
-      document.documentElement.style.removeProperty("--theme-reveal-x");
-      document.documentElement.style.removeProperty("--theme-reveal-y");
-      document.documentElement.style.removeProperty("--theme-reveal-radius");
+      clearRevealState();
       transitioningRef.current = false;
       setIsTransitioning(false);
     }

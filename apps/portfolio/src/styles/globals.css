@@ -64,7 +64,7 @@ body {
 ::view-transition-new(root),
 ::view-transition-group(root),
 ::view-transition-image-pair(root) {
-  animation: none;
+  animation: none !important;
   mix-blend-mode: normal;
 }
 
@@ -82,16 +82,6 @@ html[data-theme-transition="to-light"]::view-transition-new(root) {
 
 html[data-theme-transition="to-light"]::view-transition-old(root) {
   z-index: 2;
-}
-
-/* Set the snapshot's first frame in CSS. This prevents the browser from
-   painting a full new theme while the View Transition callback is queued. */
-html[data-theme-transition="to-dark"]::view-transition-new(root) {
-  clip-path: circle(0px at var(--theme-reveal-x) var(--theme-reveal-y));
-}
-
-html[data-theme-transition="to-light"]::view-transition-old(root) {
-  clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y));
 }
 
 ::-webkit-scrollbar {
