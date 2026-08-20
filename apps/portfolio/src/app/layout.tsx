@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const themeBootstrapScript = `(() => { try { const theme = localStorage.getItem("muneeb-systems-theme"); if (theme === "dark") document.documentElement.dataset.theme = "dark"; } catch {} })();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -42,7 +43,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <SecurityViolationMonitor />
         <MotionProvider>{children}</MotionProvider>
