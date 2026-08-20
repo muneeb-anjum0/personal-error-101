@@ -18,6 +18,13 @@ function applyTheme(theme: Theme) {
   localStorage.setItem(THEME_STORAGE_KEY, theme);
 }
 
+function shouldUseMobileThemeOverlay() {
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(max-width: 760px)").matches
+  );
+}
+
 /**
  * Root View Transition snapshots use the layout viewport. Capture the button
  * center and those root bounds together immediately before the transition;
@@ -42,6 +49,57 @@ function measureRevealGeometry(button: HTMLButtonElement): RevealGeometry {
   return Object.freeze({ x, y, radius });
 }
 
+function measureOverlayGeometry(button: HTMLButtonElement): RevealGeometry {
+  const rect = button.getBoundingClientRect();
+  const viewport = window.visualViewport;
+  const width = viewport?.width ?? window.innerWidth;
+  const height = viewport?.height ?? window.innerHeight;
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  const radius =
+    Math.max(
+      Math.hypot(x, y),
+      Math.hypot(width - x, y),
+      Math.hypot(x, height - y),
+      Math.hypot(width - x, height - y)
+    ) + REVEAL_SAFETY_MARGIN;
+
+  return Object.freeze({ x, y, radius });
+}
+
+function createMobileThemeOverlay(theme: Theme) {
+  const layer = document.createElement("div");
+  const snapshot = document.createElement("div");
+
+  layer.className = "theme-transition-layer";
+  layer.dataset.theme = theme;
+  layer.setAttribute("aria-hidden", "true");
+  layer.inert = true;
+
+  snapshot.className = "theme-transition-snapshot";
+  snapshot.style.top = `${-window.scrollY}px`;
+  snapshot.style.left = `${-window.scrollX}px`;
+
+  for (const child of Array.from(document.body.children)) {
+    if (
+      child.matches(
+        "script, style, link, noscript, nextjs-portal, [data-nextjs-toast], .theme-transition-layer"
+      )
+    ) {
+      continue;
+    }
+
+    snapshot.append(child.cloneNode(true));
+  }
+
+  layer.append(snapshot);
+  return layer;
+}
+
+function nextFrame() {
+  return new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+}
+
 function clearRevealState() {
   const root = document.documentElement;
   delete root.dataset.themeTransition;
@@ -60,6 +118,61 @@ export function ThemeToggle() {
     setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
   }, []);
 
+  function commitTheme(nextTheme: Theme) {
+    applyTheme(nextTheme);
+    flushSync(() => setTheme(nextTheme));
+  }
+
+  async function runMobileThemeTransition(
+    fromTheme: Theme,
+    nextTheme: Theme,
+    button: HTMLButtonElement
+  ) {
+    const geometry = measureOverlayGeometry(button);
+    const origin = `${geometry.x}px ${geometry.y}px`;
+    const fullCircle = `circle(${geometry.radius}px at ${origin})`;
+    const pointCircle = `circle(0px at ${origin})`;
+    const overlay = createMobileThemeOverlay(nextTheme);
+    const isDarkToLight = fromTheme === "dark";
+    let themeCommitted = false;
+
+    try {
+      overlay.style.clipPath = isDarkToLight ? fullCircle : pointCircle;
+      document.body.append(overlay);
+      // Force the first clipped frame to exist before the only animation starts.
+      void overlay.getBoundingClientRect();
+
+      if (isDarkToLight) {
+        commitTheme(nextTheme);
+        themeCommitted = true;
+      }
+
+      await nextFrame();
+      const animation = overlay.animate(
+        {
+          clipPath: isDarkToLight ? [fullCircle, pointCircle] : [pointCircle, fullCircle]
+        },
+        {
+          duration: 720,
+          easing: "cubic-bezier(0.76, 0, 0.24, 1)",
+          fill: "forwards"
+        }
+      );
+
+      await animation.finished;
+
+      if (!themeCommitted) {
+        commitTheme(nextTheme);
+        themeCommitted = true;
+      }
+    } finally {
+      if (!themeCommitted) {
+        commitTheme(nextTheme);
+      }
+      overlay.remove();
+    }
+  }
+
   async function toggleTheme() {
     // A View Transition can only own one root snapshot sequence at a time.
     // The guard runs before any state or DOM mutation, so a spammed click is
@@ -73,43 +186,39 @@ export function ThemeToggle() {
     const button = buttonRef.current;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!button || reducedMotion || !("startViewTransition" in document)) {
-      applyTheme(nextTheme);
-      setTheme(nextTheme);
+    if (!button || reducedMotion) {
+      commitTheme(nextTheme);
       return;
     }
 
     transitioningRef.current = true;
     setIsTransitioning(true);
 
-    // This ref belongs to the actual interactive button, not its icon, the
-    // navbar, or a responsive wrapper. Its geometry is frozen for the whole
-    // transition so a mobile browser toolbar resize cannot restart the circle.
-    const geometry = measureRevealGeometry(button);
-
-    let transition: ViewTransition;
     try {
+      if (shouldUseMobileThemeOverlay()) {
+        await runMobileThemeTransition(fromTheme, nextTheme, button);
+        return;
+      }
+
+      if (!("startViewTransition" in document)) {
+        commitTheme(nextTheme);
+        return;
+      }
+
+      // This ref belongs to the actual interactive button, not its icon, the
+      // navbar, or a responsive wrapper. Its geometry is frozen for the whole
+      // desktop View Transition so layout changes cannot restart the circle.
+      const geometry = measureRevealGeometry(button);
       const root = document.documentElement;
       root.style.setProperty("--theme-reveal-x", `${geometry.x}px`);
       root.style.setProperty("--theme-reveal-y", `${geometry.y}px`);
       root.style.setProperty("--theme-reveal-radius", `${geometry.radius}px`);
       root.dataset.themeTransition = `to-${nextTheme}`;
-      transition = document.startViewTransition(() => {
+      const transition = document.startViewTransition(() => {
         // This is the only interactive mutation of the page theme. It happens
         // after the old snapshot is captured and before the new one is taken.
-        applyTheme(nextTheme);
-        flushSync(() => setTheme(nextTheme));
+        commitTheme(nextTheme);
       });
-    } catch {
-      clearRevealState();
-      transitioningRef.current = false;
-      setIsTransitioning(false);
-      applyTheme(nextTheme);
-      setTheme(nextTheme);
-      return;
-    }
-
-    try {
       await transition.ready;
       // The CSS animation attached to the View Transition snapshot is the
       // sole owner of the reveal. Unlike WAAPI's pseudoElement option, this
@@ -118,6 +227,9 @@ export function ThemeToggle() {
     } catch {
       // A skipped transition still leaves the correct theme selected. Cleanup
       // below returns the control to its stable state without a stale mask.
+      if (document.documentElement.dataset.theme !== nextTheme) {
+        commitTheme(nextTheme);
+      }
     } finally {
       clearRevealState();
       transitioningRef.current = false;

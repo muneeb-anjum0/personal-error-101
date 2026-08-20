@@ -24,7 +24,8 @@
   --anchor-offset: 96px;
 }
 
-html[data-theme="dark"] {
+html[data-theme="dark"],
+.theme-transition-layer[data-theme="dark"] {
   color-scheme: dark;
   --background: #111110;
   --foreground: #f5f4ef;
@@ -110,6 +111,35 @@ html[data-theme-transition="to-dark"]::view-transition-new(root) {
 
 html[data-theme-transition="to-light"]::view-transition-old(root) {
   animation: theme-reveal-to-light 720ms cubic-bezier(0.76, 0, 0.24, 1) both !important;
+}
+
+.theme-transition-layer {
+  position: fixed;
+  z-index: 2147483000;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  pointer-events: none;
+  user-select: none;
+  contain: paint;
+  will-change: clip-path;
+}
+
+.theme-transition-snapshot {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+}
+
+.theme-transition-layer *,
+.theme-transition-layer *::before,
+.theme-transition-layer *::after {
+  animation-play-state: paused !important;
+  caret-color: transparent !important;
+  transition: none !important;
 }
 
 ::-webkit-scrollbar {
