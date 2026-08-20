@@ -53,7 +53,6 @@ function clearRevealState() {
 export function ThemeToggle() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const transitioningRef = useRef(false);
-  const animationRef = useRef<Animation | null>(null);
   const [theme, setTheme] = useState<Theme>("light");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -112,34 +111,14 @@ export function ThemeToggle() {
 
     try {
       await transition.ready;
-      const origin = `${geometry.x}px ${geometry.y}px`;
-      const keyframes =
-        nextTheme === "dark"
-          ? [`circle(0px at ${origin})`, `circle(${geometry.radius}px at ${origin})`]
-          : [`circle(${geometry.radius}px at ${origin})`, `circle(0px at ${origin})`];
-
-      const animation = document.documentElement.animate(
-        { clipPath: keyframes },
-        {
-          duration: 720,
-          easing: "cubic-bezier(0.76, 0, 0.24, 1)",
-          fill: "both",
-          pseudoElement:
-            nextTheme === "dark" ? "::view-transition-new(root)" : "::view-transition-old(root)"
-        }
-      );
-      animationRef.current = animation;
-
-      // transition.finished can resolve before a Web Animation created from
-      // transition.ready has finished. The circle itself is authoritative.
-      await animation.finished;
+      // The CSS animation attached to the View Transition snapshot is the
+      // sole owner of the reveal. Unlike WAAPI's pseudoElement option, this
+      // is also honored by the Chromium build used on Android.
       await transition.finished;
     } catch {
       // A skipped transition still leaves the correct theme selected. Cleanup
       // below returns the control to its stable state without a stale mask.
     } finally {
-      animationRef.current?.cancel();
-      animationRef.current = null;
       clearRevealState();
       transitioningRef.current = false;
       setIsTransitioning(false);
