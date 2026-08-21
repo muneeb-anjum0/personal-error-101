@@ -402,19 +402,25 @@ function JobRow({
         <div className="job-runtime-progress" aria-live="polite">
           <div className="job-progress-copy">
             <strong>
-              {progress.phase === "PROMPT_PROCESSING" ? "READING REPOSITORY" : "WRITING SUMMARY"}
+              {progress.phase === "PROMPT_PROCESSING"
+                ? "ANALYSING PROJECT CONTEXT"
+                : "DRAFTING CASE STUDY"}
             </strong>
             <span>
               {progress.phase === "PROMPT_PROCESSING"
-                ? `~${promptPercent(progress.promptTokensProcessed, progress.promptTokensTotal)}% · ${progress.promptTokensProcessed.toLocaleString()} / ~${progress.promptTokensTotal.toLocaleString()} TOKENS`
-                : `${progress.generatedTokens.toLocaleString()} TOKENS GENERATED`}
+                ? `${promptPercent(progress.promptTokensProcessed, progress.promptTokensTotal)}% CONTEXT PROCESSED · ${progress.promptTokensProcessed.toLocaleString()} / ${progress.promptTokensTotal.toLocaleString()} TOKENS`
+                : `${progress.generatedTokens.toLocaleString()} TOKENS WRITTEN · OUTPUT IN PROGRESS`}
               {job.startedAt ? ` · ${elapsed(job.startedAt)}` : ""}
             </span>
           </div>
           <div
             className={`job-progress-track ${progress.phase === "WRITING" ? "is-writing" : ""}`}
             role="progressbar"
-            aria-label="AI generation progress"
+            aria-label={
+              progress.phase === "PROMPT_PROCESSING"
+                ? "Project context analysis progress"
+                : "Case study is being drafted"
+            }
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={

@@ -57,7 +57,6 @@ export function CapabilityMap({ skills, projects }: CapabilityMapProps) {
           <div className="capability-index-drawer-content" key={usage.skill.id}>
             <header>
               <div>
-                <p className="technical-label">OPEN DISCIPLINE</p>
                 <h3>{usage.skill.name}</h3>
               </div>
               <p>{String(usage.skill.skills.length).padStart(2, "0")} / SKILL SET</p>
