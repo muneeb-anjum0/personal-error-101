@@ -299,11 +299,31 @@ a {
   text-transform: uppercase;
 }
 
+.desktop-nav a {
+  padding: 7px 9px;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
 .desktop-nav a:hover,
 .desktop-nav a[aria-current="true"],
 .site-footer a:hover {
   border-color: var(--foreground);
   color: var(--foreground);
+}
+
+.desktop-nav a:hover,
+.desktop-nav a:focus-visible {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 8px,
+    color-mix(in srgb, var(--foreground) 20%, transparent) 8px,
+    color-mix(in srgb, var(--foreground) 20%, transparent) 9px
+  );
+  background-size: 14px 14px;
+  animation: experience-hatch-drift 0.72s linear infinite;
 }
 
 .mobile-menu-button,
@@ -2225,6 +2245,30 @@ main {
   font-size: 0.75rem;
 }
 
+.project-origin-badge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--border-medium);
+  padding: 6px 8px;
+  color: var(--foreground-muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.project-origin-badge > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--foreground);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--foreground) 14%, transparent);
+}
+
 .project-subtitle {
   margin: -12px 0 0;
   font-size: clamp(1.2rem, 2vw, 1.65rem);
@@ -2659,11 +2703,21 @@ main {
 }
 
 .case-study-story {
+  position: relative;
   display: grid;
   gap: 0;
   margin-top: clamp(34px, 5vw, 68px);
   margin-bottom: 0;
   border: 1px solid var(--foreground);
+  background: var(--background);
+}
+
+.case-study-story > .project-origin-badge {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: clamp(12px, 2.4vw, 28px);
+  transform: translateY(-50%);
   background: var(--background);
 }
 
@@ -4279,23 +4333,65 @@ main {
   }
 
   .capability-index-drawer-content > header {
-    gap: 10px;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    min-height: 48px;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
     border-right: 0;
     border-bottom: 1px solid var(--border-medium);
-    padding: 14px;
+    padding: 11px 12px;
   }
 
   .capability-index-drawer-content h3 {
-    font-size: 1.35rem;
+    max-width: 27ch;
+    font-size: 1rem;
+    line-height: 1;
   }
 
   .capability-index-skills {
-    gap: 6px 11px;
-    padding: 14px;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: start;
+    gap: 0 8px;
+    overflow: visible;
+    padding: 8px 12px;
   }
 
   .capability-index-skills > span {
-    font-size: 0.72rem;
+    min-width: 0;
+    gap: 4px;
+    padding: 5px 0;
+    font-size: 0.59rem;
+    line-height: 1.18;
+  }
+
+  .capability-index-drawer-content footer {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding: 8px 12px;
+    scrollbar-width: none;
+  }
+
+  .capability-index-drawer-content footer::-webkit-scrollbar {
+    display: none;
+  }
+
+  .capability-index-drawer-content footer .inline-list {
+    flex-wrap: nowrap;
+  }
+
+  .capability-index-drawer-content footer .inline-list span {
+    white-space: nowrap;
   }
 
   .capability-index-drawer-content footer {

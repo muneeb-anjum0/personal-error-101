@@ -2,6 +2,7 @@ import type { VisibleProject } from "@/lib/portfolio-selectors";
 import { GeneratedProjectCover } from "@/components/visuals/generated-project-cover";
 import { ProjectActions } from "./project-actions";
 import { formatDisplayDate } from "@/lib/portfolio-selectors";
+import { ProjectOriginBadge } from "./project-origin-badge";
 
 interface ProjectCaseStudyProps {
   project: VisibleProject;
@@ -26,7 +27,7 @@ export function ProjectCaseStudy({ project, previous, next }: ProjectCaseStudyPr
               <span>STACK / {String(project.technologies.length).padStart(2, "0")} TOOLS</span>
               <span>STATUS / DOCUMENTED</span>
             </div>
-          </div>
+        </div>
         <div className="case-study-summary">
           <p className="technical-label">SYSTEM CASE STUDY</p>
           <h1>{project.name}</h1>
@@ -40,6 +41,7 @@ export function ProjectCaseStudy({ project, previous, next }: ProjectCaseStudyPr
         </div>
       </header>
       <div className="case-study-story">
+        <ProjectOriginBadge project={project} />
         <div className="case-study-frame">
           <CaseBlock className="case-study-introduction" title="Introduction" body={project.summary} />
           <CaseBlock className="case-study-problem" title="Problem" body={project.problem} />
