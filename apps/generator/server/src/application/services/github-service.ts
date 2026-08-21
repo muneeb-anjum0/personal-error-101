@@ -305,7 +305,8 @@ export class GitHubService {
           const identifier = {
             id: String(record.id),
             owner: record.owner.login,
-            name: record.name
+            name: record.name,
+            defaultBranch: record.default_branch
           };
           const [readme, languages, latestCommitSha] = await Promise.all([
             this.source.getReadme(

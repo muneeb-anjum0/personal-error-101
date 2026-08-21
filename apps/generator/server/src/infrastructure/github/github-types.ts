@@ -13,6 +13,7 @@ export interface RepositoryIdentifier {
   owner: string;
   name: string;
   id: string;
+  defaultBranch?: string | null;
 }
 
 export interface RepositoryDiscoveryOptions {
