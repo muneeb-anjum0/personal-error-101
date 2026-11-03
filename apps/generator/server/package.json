@@ -18,7 +18,7 @@
     "@muneeb-systems/shared-schemas": "workspace:*",
     "@muneeb-systems/shared-types": "workspace:*",
     "fastify": "5.12.0",
-    "zod": "4.4.3"
+    "zod": "4.6.6"
   },
   "devDependencies": {
     "@types/node": "26.2.0",
