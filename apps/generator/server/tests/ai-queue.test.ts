@@ -22,6 +22,16 @@ afterEach(async () => {
 });
 
 describe("local AI runtime", () => {
+  it("counts model tokens through llama.cpp when its tokenizer is available", async () => {
+    const client = new OpenAiCompatibleClient(
+      "http://localhost:8080/v1",
+      "local",
+      () => Promise.resolve(new Response(JSON.stringify({ tokens: [10, 20, 30] }), { status: 200 }))
+    );
+
+    await expect(client.countTokens("A short prompt")).resolves.toBe(3);
+  });
+
   it("assembles streamed chat completions used by slow CPU-only inference", async () => {
     const stream = [
       'data: {"model":"Qwen3-8B-Q4_K_M","choices":[{"delta":{"content":"{\\"title\\":"}}]}\n\n',
@@ -32,8 +42,8 @@ describe("local AI runtime", () => {
     const client = new OpenAiCompatibleClient(
       "http://localhost:8080/v1",
       "local",
-      async () =>
-        new Response(
+      () =>
+        Promise.resolve(new Response(
           new ReadableStream({
             start(controller) {
               for (const chunk of stream) controller.enqueue(new TextEncoder().encode(chunk));
@@ -41,7 +51,7 @@ describe("local AI runtime", () => {
             }
           }),
           { status: 200, headers: { "content-type": "text/event-stream" } }
-        )
+        ))
     );
 
     await expect(
@@ -183,6 +193,26 @@ describe("processing queue", () => {
     });
   }, 15_000);
 
+  it("reads oversized documentation in multiple AI passes rather than omitting the rest", async () => {
+    const source = repository("long", { selectedForProcessing: true });
+    source.readme.content = [
+      `<!-- DOCUMENT: README.md -->\n# Overview\n${"Primary system detail. ".repeat(600)}`,
+      `<!-- DOCUMENT: docs/unusual.md -->\n# Unusual but important\n${"Secondary system detail. ".repeat(600)}`
+    ].join("\n\n");
+    const { service } = await queueFixture([source]);
+
+    await service.enqueue({ mode: "SELECTED" });
+    await service.start();
+    await waitFor(() => service.getQueue().then((queue) => queue.jobs[0]?.state === "COMPLETED"));
+
+    const job = (await service.getQueue()).jobs[0];
+    const prepared = job?.checkpoints.find((checkpoint) => checkpoint.stage === "CONTEXT_PREPARED");
+    expect(prepared?.metadata).toMatchObject({
+      includedMarkdownFiles: ["README.md", "docs/unusual.md"]
+    });
+    expect(Number(prepared?.metadata.evidenceChunks)).toBeGreaterThan(1);
+  }, 15_000);
+
   it("marks active persisted jobs interrupted on recovery", async () => {
     const { config, service } = await queueFixture([
       repository("101", { selectedForProcessing: true })
@@ -314,6 +344,7 @@ async function testConfig(): Promise<GeneratorAppConfig> {
 function mockClient(outputs = [validDraftJson()]) {
   let index = 0;
   return {
+    countTokens: (content: string) => Promise.resolve(Math.ceil(content.length / 3)),
     healthCheck: () =>
       Promise.resolve({
         endpointReachable: true,
