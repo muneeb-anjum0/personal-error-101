@@ -18,14 +18,24 @@ export async function fetchRepositoryReadme(
 ) {
   const fetchedAt = new Date().toISOString();
   const primary = await fetchPrimaryReadme(request, repository, signal, fetchedAt);
-  const markdownPaths = await listMarkdownPaths(request, repository, signal);
+  const { paths: markdownPaths, complete: treeComplete } = await listMarkdownPaths(request, repository, signal);
   const paths = uniquePaths([...(primary.path ? [primary.path] : []), ...markdownPaths]);
 
-  if (!paths.length) return primary;
+  if (!paths.length) {
+    return treeComplete ? {
+      ...primary,
+      truncated: primary.truncated || primary.status === "FETCH_FAILED" || primary.status === "UNSUPPORTED_ENCODING"
+    } : {
+      ...primary,
+      truncated: true,
+      warning: "The repository file tree was incomplete; some Markdown files may be missing."
+    };
+  }
 
   const documents: MarkdownDocument[] = [];
   const warnings: string[] = primary.warning ? [primary.warning] : [];
-  let truncated = primary.truncated;
+  let truncated = primary.truncated || !treeComplete || primary.status === "FETCH_FAILED" || primary.status === "UNSUPPORTED_ENCODING";
+  if (!treeComplete) warnings.push("The repository file tree was incomplete; some Markdown files may be missing.");
 
   for (const path of paths) {
     if (path === primary.path && primary.content !== null) {
@@ -37,10 +47,15 @@ export async function fetchRepositoryReadme(
     else if (document.kind === "TOO_LARGE") {
       truncated = true;
       warnings.push(`${path} exceeds the 1 MB documentation cap and was omitted.`);
-    } else warnings.push(`${path} could not be read and was omitted.`);
+    } else {
+      truncated = true;
+      warnings.push(`${path} could not be read and was omitted.`);
+    }
   }
 
-  if (!documents.length) return primary;
+  if (!documents.length) {
+    return { ...primary, truncated, warning: warnings.length ? warnings.join(" ") : primary.warning };
+  }
   const content = documents
     .map((document) => `<!-- DOCUMENT: ${document.path} -->\n${document.content}`)
     .join("\n\n");
@@ -81,20 +96,21 @@ async function listMarkdownPaths(
   request: (path: string, init?: RequestInit) => Promise<Response>,
   repository: RepositoryIdentifier,
   signal: AbortSignal
-): Promise<string[]> {
+): Promise<{ paths: string[]; complete: boolean }> {
   const tree = repository.defaultBranch ?? "HEAD";
   const response = await request(
     `/repos/${repository.owner}/${repository.name}/git/trees/${encodeURIComponent(tree)}?recursive=1`,
     { signal }
   );
-  if (!response.ok) return [];
+  if (!response.ok) return { paths: [], complete: false };
   const body = await parseGitHubJson(response);
-  if (!isRecord(body) || !Array.isArray(body.tree)) return [];
-  return body.tree
+  if (!isRecord(body) || !Array.isArray(body.tree)) return { paths: [], complete: false };
+  const paths = body.tree
     .filter((item): item is Record<string, unknown> => isRecord(item))
     .filter((item) => item.type === "blob" && typeof item.path === "string" && /\.md$/i.test(item.path))
     .map((item) => item.path as string)
     .sort((left, right) => markdownPathPriority(left) - markdownPathPriority(right) || left.localeCompare(right));
+  return { paths, complete: body.truncated !== true };
 }
 
 async function fetchMarkdownDocument(

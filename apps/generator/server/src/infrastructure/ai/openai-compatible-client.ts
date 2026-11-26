@@ -46,6 +46,23 @@ export class OpenAiCompatibleClient {
       }));
   }
 
+  /** llama.cpp's tokenizer gives the real model token count when available. */
+  public async countTokens(content: string, signal?: AbortSignal): Promise<number | null> {
+    try {
+      const response = await this.request("/tokenize", {
+        method: "POST",
+        body: JSON.stringify({ content }),
+        signal,
+        timeoutMs: 5000
+      });
+      if (!response.ok) return null;
+      const result = (await response.json()) as { tokens?: unknown };
+      return Array.isArray(result.tokens) ? result.tokens.length : null;
+    } catch {
+      return null;
+    }
+  }
+
   public async inspectActiveProgress(signal?: AbortSignal): Promise<LocalAiRuntimeProgress | null> {
     const response = await this.request("/slots", { method: "GET", signal, timeoutMs: 2000 });
     if (!response.ok) return null;
